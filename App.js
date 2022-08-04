@@ -9,8 +9,12 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Listas de Compras">
-        <Stack.Screen name="Listas de Compras" component={ListShoppingScreen} />
+      <Stack.Navigator initialRouteName="ListShoppingScreen">
+        <Stack.Screen
+          name="ListShoppingScreen"
+          component={ListShoppingScreen}
+          options={{ title: "Listas de Compras" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
