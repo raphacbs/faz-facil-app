@@ -2,13 +2,22 @@ import React, { useEffect, useState } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import { FAB } from "@rneui/themed";
 import { Text, ListItem } from "@rneui/themed";
+import ShoppingListComponent from "../components/ShoppingListComponent";
+import { ScrollView } from "react-native-web";
 
 export default function ListShoppingScreen() {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const onRefresh = () => {
+    setIsFetching(true);
+    getShoppingList();
+    setIsFetching(false);
+  };
 
   const getShoppingList = async () => {
-    //TODO move getShoppingList to folder providers
+    //TODO move getShoppingList to folder provider
     try {
       const response = await fetch(
         "https://feira-facil-dev.herokuapp.com/api/v1/shopping-carts"
@@ -26,37 +35,12 @@ export default function ListShoppingScreen() {
     getShoppingList();
   }, []);
 
-  const list = [
-    {
-      id: "18191593-7256-4262-921c-8e112550a1bc",
-      description: "Feira de Julho 2022",
-      supermarket: "Assaí Avenida Recife",
-      createAt: "2022-08-03T16:47:40.168246",
-      updateAt: "2022-08-03T16:47:40.168253",
-      amount: 0.0,
-      amountProducts: 0,
-    },
-    {
-      id: "a749f08b-9428-4e0e-9005-cfe5f5848c85",
-      description: "Feira de Julho 2022",
-      supermarket: "Assaí Avenida Recife",
-      createAt: "2022-08-03T16:53:31.434969",
-      updateAt: "2022-08-03T16:53:31.434976",
-      amount: 0.0,
-      amountProducts: 0,
-    },
-  ];
-
-  const keyExtractor = (item, index) => index.toString();
+  const keyExtractor = (item) => item.id;
 
   const renderItem = ({ item }) => (
     <ListItem bottomDivider>
       <ListItem.Content>
-        <ListItem.Title>
-          <Text h4>{item.description}</Text>
-        </ListItem.Title>
-        {/* TODO add custom component */}
-        <ListItem.Subtitle>{item.createAt}</ListItem.Subtitle>
+        <ShoppingListComponent shoppingList={item}></ShoppingListComponent>
       </ListItem.Content>
       <ListItem.Chevron />
     </ListItem>
@@ -74,11 +58,13 @@ export default function ListShoppingScreen() {
       ) : (
         <FlatList
           keyExtractor={keyExtractor}
-          data={list}
+          data={data}
           renderItem={renderItem}
+          refreshing={isFetching}
+          onRefresh={onRefresh}
         />
       )}
-      <FAB
+      {/* <FAB
         style={{
           flex: 1,
           alignItems: "flex-end",
@@ -90,7 +76,7 @@ export default function ListShoppingScreen() {
         visible={true}
         icon={{ name: "add", color: "white" }}
         color="green"
-      />
+      /> */}
     </View>
   );
 }
