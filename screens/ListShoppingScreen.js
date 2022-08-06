@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
-import { FAB } from "@rneui/themed";
-import { Text, ListItem } from "@rneui/themed";
+import { ListItem, FAB } from "@rneui/themed";
 import ShoppingListComponent from "../components/ShoppingListComponent";
-import { ScrollView } from "react-native-web";
+import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
+import TouchableScale from "react-native-touchable-scale";
+import { SearchBar } from "@rneui/base";
 
-export default function ListShoppingScreen() {
+export default function ListShoppingScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [search, setSearch] = useState("");
+  const [fullData, setFullData] = useState([]);
 
   const onRefresh = () => {
     setIsFetching(true);
@@ -19,11 +22,11 @@ export default function ListShoppingScreen() {
   const getShoppingList = async () => {
     //TODO move getShoppingList to folder provider
     try {
-      const response = await fetch(
-        "https://feira-facil-dev.herokuapp.com/api/v1/shopping-carts"
-      );
+      const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
+      const response = await fetch(url);
       const json = await response.json();
       setData(json);
+      setFullData(json);
     } catch (error) {
       console.error(error);
     } finally {
@@ -38,13 +41,36 @@ export default function ListShoppingScreen() {
   const keyExtractor = (item) => item.id;
 
   const renderItem = ({ item }) => (
-    <ListItem bottomDivider>
+    <ListItem
+      bottomDivider
+      Component={TouchableScale}
+      friction={90} //
+      tension={100} // These props are passed to the parent component (here TouchableScale)
+      activeScale={0.95}
+      onPress={() => {
+        navigation.navigate("ShoppingCart", {
+          id: item.id,
+          name: item.description,
+        });
+        // navigation.navigate("ShoppingCart", { id: item.id })
+      }}
+    >
       <ListItem.Content>
         <ShoppingListComponent shoppingList={item}></ShoppingListComponent>
       </ListItem.Content>
       <ListItem.Chevron />
     </ListItem>
   );
+
+  const updateSearch = (search) => {
+    setSearch(search);
+    console.log(search);
+    let filteredData = fullData.filter((x) =>
+      x.description.toLowerCase().includes(search.toLowerCase())
+    );
+    console.log(filteredData);
+    setData(search == "" ? fullData : filteredData);
+  };
 
   return (
     <View
@@ -53,8 +79,31 @@ export default function ListShoppingScreen() {
         flexGrow: 1,
       }}
     >
+      <SearchBar
+        platform="android"
+        containerStyle={{}}
+        inputContainerStyle={{}}
+        inputStyle={{}}
+        leftIconContainerStyle={{}}
+        rightIconContainerStyle={{}}
+        loadingProps={{}}
+        onChangeText={updateSearch}
+        onClearText={() => console.log(onClearText())}
+        placeholder="pesquisar"
+        placeholderTextColor="#888"
+        cancelButtonTitle="Cancelar"
+        cancelButtonProps={{}}
+        value={search}
+      />
       {isLoading ? (
-        <ActivityIndicator size={100} />
+        <ActivityIndicator
+          style={{
+            justifyContent: "center",
+            flexDirection: "column",
+            alignSelf: "center",
+          }}
+          size={100}
+        />
       ) : (
         <FlatList
           keyExtractor={keyExtractor}

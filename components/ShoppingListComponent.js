@@ -1,46 +1,25 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text, Chip, Icon } from "@rneui/themed";
-import moment from "moment";
 
 const ShoppingListComponent = (props) => {
   const { shoppingList } = props;
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ fontWeight: "bold", marginBottom: 10, fontSize: 15 }}>
-          {shoppingList.description}
-        </Text>
-        <Text
-          style={{
-            fontWeight: "bold",
-            marginBottom: 10,
-            marginTop: 10,
-            fontSize: 20,
-          }}
-        >
-          R$ {shoppingList.amount}
-        </Text>
+      <View style={styles.viewDescriptionAndAmount}>
+        <Text style={styles.description}>{shoppingList.description}</Text>
+        <Text style={styles.amount}>R$ {shoppingList.amount}</Text>
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View style={styles.body}>
         <View>
-          <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
+          <View style={styles.viewIconAndSupermarket}>
             <Icon name="place" type="material" color="green" />
-            <Text style={{ marginTop: 3, marginLeft: 2 }}>
-              {shoppingList.supermarket}
-            </Text>
+            <Text style={styles.supermarket}>{shoppingList.supermarket}</Text>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginTop: 3,
-              marginLeft: 3,
-            }}
-          >
+          <View style={styles.viewIconAndCreateAt}>
             <Icon size={20} name="calendar" type="font-awesome" color="green" />
             <Text style={{ marginLeft: 4 }}>
-              {"Criada " + moment(shoppingList.createAt).locale("pt").fromNow()}
+              {"Criada em " + shoppingList.createAt}
             </Text>
           </View>
         </View>
@@ -65,30 +44,28 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: "stretch",
   },
-  details: {
+  viewDescriptionAndAmount: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  fonts: {
-    marginBottom: 8,
-  },
-  user: {
-    flexDirection: "row",
-    marginBottom: 6,
-  },
-  image: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
-  },
-  name: {
-    fontSize: 16,
-    marginTop: 5,
-  },
+  description: { fontWeight: "bold", marginBottom: 10, fontSize: 15 },
   amount: {
-    fontSize: 16,
-    marginTop: 5,
     fontWeight: "bold",
+    marginBottom: 10,
+    marginTop: 10,
+    fontSize: 20,
+  },
+  body: { flexDirection: "row", justifyContent: "space-between" },
+  viewIconAndSupermarket: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  supermarket: { marginTop: 3, marginLeft: 2 },
+  viewIconAndCreateAt: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginTop: 3,
+    marginLeft: 3,
   },
 });
 
