@@ -4,6 +4,7 @@ import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
 import { ListItem, Icon } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
 import { ListItemTitle } from "@rneui/base/dist/ListItem/ListItem.Title";
+import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
@@ -47,26 +48,37 @@ export default function ShoppingCartScreen({ route, navigation }) {
       style={{
         flex: 1,
         flexGrow: 1,
+        flexDirection: "column",
       }}
     >
-      {isLoading ? (
-        <ActivityIndicator
-          style={{
-            justifyContent: "center",
-            flexDirection: "column",
-            alignSelf: "center",
-          }}
-          size={100}
-        />
-      ) : (
-        <FlatList
-          keyExtractor={keyExtractor}
-          data={data}
-          renderItem={renderItem}
-          refreshing={isFetching}
-          onRefresh={onRefresh}
-        />
-      )}
+      <View
+        style={{
+          flex: 11,
+        }}
+      >
+        {isLoading ? (
+          <ActivityIndicator
+            style={{
+              justifyContent: "center",
+              flexDirection: "column",
+              alignSelf: "center",
+            }}
+            size={100}
+          />
+        ) : (
+          <FlatList
+            keyExtractor={keyExtractor}
+            data={data.cartItems}
+            renderItem={renderItem}
+            refreshing={isFetching}
+            onRefresh={onRefresh}
+          />
+        )}
+      </View>
+      <SummaryBarComponent
+        backgroundColor="green"
+        cartItemList={data}
+      ></SummaryBarComponent>
     </View>
   );
 }

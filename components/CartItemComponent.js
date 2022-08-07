@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { ListItem, Icon, Chip, Avatar, Text } from "@rneui/themed";
+import { ListItem, Chip, Avatar, Text } from "@rneui/themed";
 import { SimpleStepper } from "react-native-simple-stepper";
-import { List } from "native-base";
 
 const CartItem = (props) => {
   const { cartItem } = props;

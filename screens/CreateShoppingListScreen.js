@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { View, ActivityIndicator } from "react-native";
+import React, { useState, useRef } from "react";
+import { View } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
 import { Input, Button, Dialog, Text } from "@rneui/themed";
 
