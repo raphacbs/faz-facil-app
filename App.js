@@ -2,12 +2,15 @@ import * as React from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNavigationContainerRef } from "@react-navigation/native";
 import ListShoppingScreen from "./screens/ListShoppingScreen";
 import ShoppingCartScreen from "./screens/ShoppingCartScreen";
 import HelloWorldScreen from "./screens/HelloWorldScreen";
 import { ThemeProvider, createTheme, Button, Icon } from "@rneui/themed";
+import CreateShoppingListScreen from "./screens/CreateShoppingListScreen";
 
 const Stack = createNativeStackNavigator();
+const navigationRef = createNavigationContainerRef();
 
 function App() {
   const theme = createTheme({
@@ -29,7 +32,7 @@ function App() {
           <Stack.Screen
             name="ListShopping"
             component={ListShoppingScreen}
-            options={{
+            options={({ navigation }) => ({
               title: "Listas de Compras",
               headerRight: () => (
                 <Button
@@ -41,11 +44,18 @@ function App() {
                     borderColor: "white",
                     borderRadius: 30,
                   }}
+                  onPress={() => {
+                    navigation.navigate("CreateShoppingList", {
+                      id: null,
+                      description: "",
+                      supermarket: "",
+                    });
+                  }}
                 >
                   <Icon name="plus" type="font-awesome" color="white" />
                 </Button>
               ),
-            }}
+            })}
           />
           <Stack.Screen
             name="ShoppingCart"
@@ -53,6 +63,13 @@ function App() {
             options={({ route }) => ({
               title: route.params.name,
             })}
+          />
+          <Stack.Screen
+            name="CreateShoppingList"
+            component={CreateShoppingListScreen}
+            options={{
+              title: "Criar lista",
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

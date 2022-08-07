@@ -52,7 +52,9 @@ export default function ListShoppingScreen({ navigation }) {
           id: item.id,
           name: item.description,
         });
-        // navigation.navigate("ShoppingCart", { id: item.id })
+      }}
+      onLongPress={() => {
+        navigation.navigate("CreateShoppingList", item);
       }}
     >
       <ListItem.Content>

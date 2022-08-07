@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, Text } from "react-native";
+import { View, FlatList, ActivityIndicator } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
 import { ListItem, Icon } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
