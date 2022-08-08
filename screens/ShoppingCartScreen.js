@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View, FlatList, ActivityIndicator, Text, Modal } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
-import { ListItem, Dialog } from "@rneui/themed";
+import { ListItem, Dialog, Button } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
 
@@ -15,6 +15,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const [cartItems, setCartItems] = useState([]);
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [showProductComponent, setShowProductComponent] = useState(false);
 
   const onRefresh = () => {
     setIsFetching(true);
@@ -62,6 +63,36 @@ export default function ShoppingCartScreen({ route, navigation }) {
     }
   };
 
+  const addProduct = async (item) => {
+    console.log(item.barCode);
+    try {
+      setUpdating(true);
+      const url = `${BASE_URL_DEV}/api/v1/products?ean=${item.barCode}`;
+      const response = await fetch(url);
+      if (response.status == 200) {
+        const json = await response.json();
+        setShowProductComponent(true);
+        console.log(showProductComponent);
+      } else {
+        console.error("Produto não cadastrado!");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const readItemCodeBar = () => {
+    console.log("readItemCodeBar");
+    navigation.navigate("ReadBarCode", {
+      onGoBack: (ean) => {
+        console.log(ean);
+        navigation.navigate("Product", { ean, id });
+      },
+    });
+  };
+
   const renderItem = ({ item }) => (
     <ListItem bottomDivider>
       <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
@@ -71,6 +102,12 @@ export default function ShoppingCartScreen({ route, navigation }) {
   useEffect(() => {
     getItems();
   }, []);
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     console.log(showProductComponent);
+  //   }, [showProductComponent])
+  // );
 
   return (
     <View
@@ -109,7 +146,9 @@ export default function ShoppingCartScreen({ route, navigation }) {
         amount={amountItems}
         totalProducts={totalProducts}
         totalCartItems={totalCartItems}
+        onPressAddItem={readItemCodeBar}
       ></SummaryBarComponent>
+
       <Dialog style={{ backgroundColor: "transparent" }} isVisible={updating}>
         <Dialog.Loading />
       </Dialog>

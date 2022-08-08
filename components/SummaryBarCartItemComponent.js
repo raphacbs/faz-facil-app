@@ -3,7 +3,13 @@ import { View } from "react-native";
 import { Text, FAB, Icon, withBadge } from "@rneui/themed";
 
 const SummaryBarComponent = (props) => {
-  const { backgroundColor, amount, totalCartItems, totalProducts } = props;
+  const {
+    backgroundColor,
+    amount,
+    totalCartItems,
+    totalProducts,
+    onPressAddItem,
+  } = props;
   const BadgedIconTotalCartItems = withBadge(totalCartItems)(Icon);
   const BadgedIconTotalProducts = withBadge(totalProducts)(Icon);
   return (
@@ -43,6 +49,7 @@ const SummaryBarComponent = (props) => {
             color: "green",
             type: "material",
           }}
+          onPress={onPressAddItem}
           color="white"
         />
       </View>

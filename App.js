@@ -8,6 +8,8 @@ import ShoppingCartScreen from "./screens/ShoppingCartScreen";
 import HelloWorldScreen from "./screens/HelloWorldScreen";
 import { ThemeProvider, createTheme, Button, Icon } from "@rneui/themed";
 import CreateShoppingListScreen from "./screens/CreateShoppingListScreen";
+import BarCodeScanScreen from "./screens/BarCodeScanScreen";
+import ProductScreen from "./screens/ProductScreen";
 
 const Stack = createNativeStackNavigator();
 const navigationRef = createNavigationContainerRef();
@@ -69,6 +71,20 @@ function App() {
             component={CreateShoppingListScreen}
             options={{
               title: "Criar lista",
+            }}
+          />
+          <Stack.Screen
+            name="ReadBarCode"
+            component={BarCodeScanScreen}
+            options={{
+              title: "Lê produto",
+            }}
+          />
+          <Stack.Screen
+            name="Product"
+            component={ProductScreen}
+            options={{
+              title: "Produto",
             }}
           />
         </Stack.Navigator>
