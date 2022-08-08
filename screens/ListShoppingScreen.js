@@ -5,6 +5,7 @@ import ShoppingListComponent from "../components/ShoppingListComponent";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
 import TouchableScale from "react-native-touchable-scale";
 import { SearchBar } from "@rneui/base";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ListShoppingScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
@@ -33,6 +34,12 @@ export default function ListShoppingScreen({ navigation }) {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getShoppingList();
+    }, [])
+  );
 
   useEffect(() => {
     getShoppingList();

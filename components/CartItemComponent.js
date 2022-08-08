@@ -4,11 +4,21 @@ import { ListItem, Chip, Avatar, Text } from "@rneui/themed";
 import { SimpleStepper } from "react-native-simple-stepper";
 
 const CartItem = (props) => {
-  const { cartItem } = props;
+  const { cartItem, increment, decrement } = props;
   const [amountOfProduct, setAmountOfProduct] = useState(
     cartItem.amountOfProduct
   );
   const [subtotal, setSubtotal] = useState(cartItem.subtotal);
+
+  const update = (value) => {
+    const item = {
+      id: cartItem.id,
+      unitValue: cartItem.unitValue,
+      amountOfProduct: value,
+    };
+    console.log(item);
+    increment(item);
+  };
 
   return (
     <View style={{ flexDirection: "row" }}>
@@ -40,7 +50,7 @@ const CartItem = (props) => {
               marginRight: 10,
             }}
           >
-            <Text h3>{subtotal}</Text>
+            <Text h3>{cartItem.subtotal}</Text>
           </View>
           <View
             style={{
@@ -51,10 +61,7 @@ const CartItem = (props) => {
           >
             <SimpleStepper
               valueChanged={(amountOfProduct) => {
-                setAmountOfProduct(amountOfProduct);
-                setSubtotal((amountOfProduct * cartItem.unitValue).toFixed(2));
-                cartItem.amountOfProduct = amountOfProduct;
-                cartItem.subtotal = subtotal;
+                update(amountOfProduct);
               }}
               initialValue={amountOfProduct}
               minimumValue={1}

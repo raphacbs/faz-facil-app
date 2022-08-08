@@ -19,7 +19,6 @@ export default function CreateShoppingListScreen({ route, navigation }) {
 
   const [textRequiredDescription, setTextRequiredDescription] = useState("");
   const [textRequiredSupermarket, setTextRequiredSupermarket] = useState("");
-  const messageRequired = "Este campo é obrigatório!";
 
   const onChangeDescription = (value) => {
     shoppingList.description = value;
@@ -100,10 +99,7 @@ export default function CreateShoppingListScreen({ route, navigation }) {
         }}
         onPress={save}
       />
-      <Dialog
-        isVisible={dialogVisible}
-        onBackdropPress={() => setDialogVisible(!dialogVisible)}
-      >
+      <Dialog isVisible={dialogVisible}>
         <Dialog.Title title="Sucesso" />
         <Text>A lista foi cadastrada com sucesso!</Text>
         <Dialog.Actions>
