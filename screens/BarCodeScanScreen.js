@@ -11,7 +11,7 @@ import { BarCodeScanner, BarCodeScannerResult } from "expo-barcode-scanner";
 import BarcodeMask from "react-native-barcode-mask";
 
 export default function BarCodeScanScreen({ route, navigation }, props) {
-  const { callbackHandleScannedCode } = props;
+  // const { callbackHandleScannedCode } = props;
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const finderWidth = 280;
@@ -42,10 +42,9 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         y <= viewMinY + finderHeight / 2
       ) {
         setScanned(true);
-        if (callbackHandleScannedCode != undefined) {
-          callbackHandleScannedCode(data);
-        }
-        // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+        // if (callbackHandleScannedCode != undefined) {
+        //   callbackHandleScannedCode(data);
+        // }
         navigation.goBack();
         route.params.onGoBack(data);
       }

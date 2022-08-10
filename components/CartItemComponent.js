@@ -10,6 +10,8 @@ const CartItem = (props) => {
   );
   const [subtotal, setSubtotal] = useState(cartItem.subtotal);
 
+  console.log(cartItem.image);
+
   const update = (value) => {
     const item = {
       id: cartItem.id,
@@ -25,7 +27,7 @@ const CartItem = (props) => {
       <Avatar
         rounded
         source={{
-          uri: "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png",
+          uri: cartItem.product.image,
         }}
         size={80}
       />

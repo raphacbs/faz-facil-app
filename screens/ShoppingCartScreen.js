@@ -87,8 +87,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
     console.log("readItemCodeBar");
     navigation.navigate("ReadBarCode", {
       onGoBack: (ean) => {
-        console.log(ean);
-        navigation.navigate("Product", { ean, id });
+        navigation.navigate("Product", { ean, idShoppingCart: id });
       },
     });
   };
