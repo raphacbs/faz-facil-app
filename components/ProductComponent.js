@@ -26,8 +26,7 @@ const ProductComponent = (props) => {
   const [product, setProduct] = useState({ ...props.product });
   const [isEditing, setIsEditing] = useState(props.isEditing);
   const [amountOfProduct, setAmountOfProduct] = useState(1);
-  const [subtotal, setSubtotal] = useState("0");
-  console.log(product);
+  const [subtotal, setSubtotal] = useState("");
   useEffect(() => {
     setProduct(props.product);
   }, [props.product, props.isEditing]);

@@ -10,8 +10,6 @@ const CartItem = (props) => {
   );
   const [subtotal, setSubtotal] = useState(cartItem.subtotal);
 
-  console.log(cartItem.image);
-
   const update = (value) => {
     const item = {
       id: cartItem.id,

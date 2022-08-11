@@ -10,20 +10,40 @@ import { ThemeProvider, createTheme, Button, Icon } from "@rneui/themed";
 import CreateShoppingListScreen from "./screens/CreateShoppingListScreen";
 import BarCodeScanScreen from "./screens/BarCodeScanScreen";
 import ProductScreen from "./screens/ProductScreen";
+import { NativeBaseProvider, extendTheme } from "native-base";
 
 const Stack = createNativeStackNavigator();
 const navigationRef = createNavigationContainerRef();
 
 function App() {
-  const theme = createTheme({
-    components: {
-      Button: {
-        raised: true,
+  const theme = extendTheme({
+    colors: {
+      // Add new color
+      primary: {
+        50: "#E3F2F9",
+        100: "#C5E4F3",
+        200: "#A2D4EC",
+        300: "#7AC1E4",
+        400: "#47A9DA",
+        500: "#0088CC",
+        600: "#007AB8",
+        700: "#006BA1",
+        800: "#005885",
+        900: "#003F5E",
+      },
+      // Redefining only one shade, rest of the color will remain same.
+      amber: {
+        400: "#d97706",
       },
     },
+    config: {
+      // Changing initialColorMode to 'dark'
+      initialColorMode: "dark",
+    },
   });
+
   return (
-    <ThemeProvider theme={theme}>
+    <NativeBaseProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="ListShopping">
           <Stack.Screen
@@ -89,7 +109,7 @@ function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </ThemeProvider>
+    </NativeBaseProvider>
   );
 }
 

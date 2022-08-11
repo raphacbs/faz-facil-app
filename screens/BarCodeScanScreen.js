@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, TouchableOpacity, Dimensions, Text } from "react-native";
 import { BarCodeScanner, BarCodeScannerResult } from "expo-barcode-scanner";
 import BarcodeMask from "react-native-barcode-mask";
+import {
+  Entypo,
+  FontAwesome,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import { View, Button, AlertDialog, Input, Icon } from "native-base";
 
 export default function BarCodeScanScreen({ route, navigation }, props) {
-  // const { callbackHandleScannedCode } = props;
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const finderWidth = 280;
@@ -20,6 +19,11 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
   const height = Dimensions.get("window").height;
   const viewMinX = (width - finderWidth) / 2;
   const viewMinY = (height - finderHeight) / 2;
+  const onClose = () => setIsOpen(false);
+
+  const cancelRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [ean, setEan] = useState("");
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -29,12 +33,15 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
     getBarCodeScannerPermissions();
   }, []);
 
+  const sendEan = () => {
+    navigation.goBack();
+    route.params.onGoBack(ean);
+  };
+
   const handleBarCodeScanned = (scanningResult) => {
     if (!scanned) {
       const { type, data, bounds: { origin } = {} } = scanningResult;
-
       const { x, y } = origin;
-
       if (
         x >= viewMinX &&
         y >= viewMinY &&
@@ -42,11 +49,10 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         y <= viewMinY + finderHeight / 2
       ) {
         setScanned(true);
-        // if (callbackHandleScannedCode != undefined) {
-        //   callbackHandleScannedCode(data);
-        // }
-        navigation.goBack();
-        route.params.onGoBack(data);
+        // navigation.goBack();
+        // route.params.onGoBack(data);
+        setEan(data);
+        sendEan();
       }
     }
   };
@@ -64,9 +70,6 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )}
       <View
         style={{
           flex: 1,
@@ -86,24 +89,62 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
                 : BarCodeScanner.Constants.Type.back
             );
           }}
-        >
-          <Text style={{ fontSize: 18, margin: 5, color: "white" }}>
-            {" "}
-            Flip{" "}
-          </Text>
-        </TouchableOpacity>
+        ></TouchableOpacity>
       </View>
-
       <BarcodeMask
         width={300}
         height={100}
         edgeColor={"#62B1F6"}
         showAnimatedLine
       />
-
-      {scanned && (
-        <Button title="Scan Again" onPress={() => setScanned(false)} />
-      )}
+      <Button colorScheme="blue" onPress={() => setIsOpen(!isOpen)}>
+        Digitar código
+      </Button>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Header>Informe o Código de Barra</AlertDialog.Header>
+          <AlertDialog.Body>
+            <Input
+              size="full"
+              w={{
+                base: "100%",
+                md: "25%",
+              }}
+              value={ean}
+              onChangeText={(text) => setEan(text)}
+              InputLeftElement={
+                <Icon
+                  as={<FontAwesome name="barcode" />}
+                  size={6}
+                  ml="3"
+                  color="muted.400"
+                />
+              }
+              placeholder="código de barras"
+            />
+          </AlertDialog.Body>
+          <AlertDialog.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="unstyled"
+                colorScheme="coolGray"
+                onPress={onClose}
+                ref={cancelRef}
+              >
+                Cancelar
+              </Button>
+              <Button colorScheme="green" onPress={sendEan}>
+                Pesquisar
+              </Button>
+            </Button.Group>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
     </View>
   );
 }
