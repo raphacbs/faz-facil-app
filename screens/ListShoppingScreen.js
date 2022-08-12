@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
-import { ListItem, FAB } from "@rneui/themed";
+import { ListItem, Button } from "@rneui/themed";
 import ShoppingListComponent from "../components/ShoppingListComponent";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
 import TouchableScale from "react-native-touchable-scale";
@@ -21,9 +21,8 @@ export default function ListShoppingScreen({ navigation }) {
   };
 
   const getShoppingList = async () => {
-    //TODO move getShoppingList to folder provider
     try {
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
+      const url = `${BASE_URL_DEV}/api/v1/shopping-carts?isArchived=false`;
       const response = await fetch(url);
       const json = await response.json();
       setData(json);
@@ -32,6 +31,34 @@ export default function ListShoppingScreen({ navigation }) {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const archive = async (item) => {
+    try {
+      item.isArchived = true;
+      const body = {
+        id: item.id,
+        description: item.description,
+        supermarket: item.supermarket,
+        archived: true,
+      };
+
+      const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      onRefresh();
     }
   };
 
@@ -48,7 +75,7 @@ export default function ListShoppingScreen({ navigation }) {
   const keyExtractor = (item) => item.id;
 
   const renderItem = ({ item }) => (
-    <ListItem
+    <ListItem.Swipeable
       bottomDivider
       Component={TouchableScale}
       friction={90} //
@@ -60,15 +87,34 @@ export default function ListShoppingScreen({ navigation }) {
           name: item.description,
         });
       }}
-      onLongPress={() => {
-        navigation.navigate("CreateShoppingList", item);
-      }}
+      leftContent={(reset) => (
+        <Button
+          title="Editar"
+          onPress={() => {
+            navigation.navigate("CreateShoppingList", item);
+            reset();
+          }}
+          icon={{ name: "edit", color: "white" }}
+          buttonStyle={{ minHeight: "100%" }}
+        />
+      )}
+      rightContent={(reset) => (
+        <Button
+          title="Arquivar"
+          onPress={() => {
+            archive(item);
+            reset();
+          }}
+          icon={{ name: "delete", color: "white" }}
+          buttonStyle={{ minHeight: "100%", backgroundColor: "red" }}
+        />
+      )}
     >
       <ListItem.Content>
         <ShoppingListComponent shoppingList={item}></ShoppingListComponent>
       </ListItem.Content>
       <ListItem.Chevron />
-    </ListItem>
+    </ListItem.Swipeable>
   );
 
   const updateSearch = (search) => {

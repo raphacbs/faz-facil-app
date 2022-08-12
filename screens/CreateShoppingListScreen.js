@@ -5,10 +5,13 @@ import { Input, Button, Dialog, Text } from "@rneui/themed";
 
 export default function CreateShoppingListScreen({ route, navigation }) {
   const inputSupermarket = useRef();
+  // const [method, setMethod] = useState("");
   const { id, description, supermarket } = route.params;
-  id == null
-    ? navigation.setOptions({ title: "Cria lista" })
-    : navigation.setOptions({ title: "Edita lista" });
+  if (id == null) {
+    navigation.setOptions({ title: "Cria lista" });
+  } else {
+    navigation.setOptions({ title: "Edita lista" });
+  }
   const [shoppingList, setShoppingList] = useState({
     id,
     description,
@@ -47,7 +50,7 @@ export default function CreateShoppingListScreen({ route, navigation }) {
     try {
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
       const response = await fetch(url, {
-        method: "POST",
+        method: id == null ? "POST" : "PUT",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
