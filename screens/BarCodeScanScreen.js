@@ -110,6 +110,8 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
               }}
               value={ean}
               onChangeText={(text) => setEan(text)}
+              autoFocus={true}
+              keyboardType="numeric"
               InputLeftElement={
                 <Icon
                   as={<FontAwesome name="barcode" />}

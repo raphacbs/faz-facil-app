@@ -21,6 +21,7 @@ import {
 } from "@expo/vector-icons";
 import { Masks, useMaskedInputProps } from "react-native-mask-input";
 import { SimpleStepper } from "react-native-simple-stepper";
+import NumericInput from "react-native-numeric-input";
 
 const ProductComponent = (props) => {
   const [product, setProduct] = useState({ ...props.product });
@@ -180,7 +181,12 @@ const ProductComponent = (props) => {
             />
           </View>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
-            <SimpleStepper
+            <NumericInput
+              value={amountOfProduct}
+              onChange={handleSubtotal}
+              rounded
+            />
+            {/* <SimpleStepper
               valueChanged={handleSubtotal}
               initialValue={amountOfProduct}
               minimumValue={1}
@@ -208,7 +214,7 @@ const ProductComponent = (props) => {
               }}
               incrementImageStyle={{ height: 20, width: 20 }}
               decrementImageStyle={{ height: 20, width: 20 }}
-            ></SimpleStepper>
+            ></SimpleStepper> */}
           </View>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

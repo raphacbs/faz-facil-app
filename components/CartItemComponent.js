@@ -130,30 +130,6 @@ const CartItem = (props) => {
               }}
               rounded
             />
-            {/* <SimpleStepper
-              valueChanged={(amountOfProduct) => {
-                update(amountOfProduct);
-              }}
-              initialValue={cartItem.amountOfProduct}
-              minimumValue={1}
-              maximumValue={100}
-              showText={true}
-              value={cartItem.amountOfProduct}
-              containerStyle={{
-                backgroundColor: "transparent",
-                flexDirection: "row",
-                borderWidth: 1,
-                borderRadius: 8,
-                overflow: "hidden",
-                alignItems: "center",
-                borderColor: "green",
-              }}
-              separatorStyle={{
-                width: StyleSheet.hairlineWidth,
-                backgroundColor: "green",
-                height: "100%",
-              }}
-            ></SimpleStepper> */}
           </HStack>
         </VStack>
       </Box>
