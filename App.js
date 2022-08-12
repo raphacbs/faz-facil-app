@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createNavigationContainerRef } from "@react-navigation/native";
-import ListShoppingScreen from "./screens/ListShoppingScreen";
+import ShoppingListScreen from "./screens/ShoppingListScreen";
 import ShoppingCartScreen from "./screens/ShoppingCartScreen";
 import HelloWorldScreen from "./screens/HelloWorldScreen";
 import { ThemeProvider, createTheme, Button, Icon } from "@rneui/themed";
@@ -45,15 +45,15 @@ function App() {
   return (
     <NativeBaseProvider theme={theme}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="ListShopping">
+        <Stack.Navigator initialRouteName="ShoppingList">
           <Stack.Screen
             name="HelloWorld"
             component={HelloWorldScreen}
             options={{ title: "Hello World!" }}
           />
           <Stack.Screen
-            name="ListShopping"
-            component={ListShoppingScreen}
+            name="ShoppingList"
+            component={ShoppingListScreen}
             options={({ navigation }) => ({
               title: "Listas de Compras",
               headerRight: () => (

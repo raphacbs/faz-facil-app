@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator, Text, Modal } from "react-native";
+import { View, FlatList, ActivityIndicator } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
 import { ListItem, Dialog } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
@@ -27,7 +27,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   const getItems = async () => {
     try {
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/products`;
+      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
       const response = await fetch(url);
       const json = await response.json();
       setData(json);
@@ -45,7 +45,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const edit = async (cartItem) => {
     try {
       setUpdating(true);
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/products`;
+      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
       const response = await fetch(url, {
         method: "PUT",
         headers: {

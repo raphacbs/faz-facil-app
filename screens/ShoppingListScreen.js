@@ -3,11 +3,10 @@ import { View, FlatList, ActivityIndicator } from "react-native";
 import { ListItem, Button } from "@rneui/themed";
 import ShoppingListComponent from "../components/ShoppingListComponent";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
-import TouchableScale from "react-native-touchable-scale";
 import { SearchBar } from "@rneui/base";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function ListShoppingScreen({ navigation }) {
+export default function ShoppingListScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -77,10 +76,6 @@ export default function ListShoppingScreen({ navigation }) {
   const renderItem = ({ item }) => (
     <ListItem.Swipeable
       bottomDivider
-      Component={TouchableScale}
-      friction={90} //
-      tension={100} // These props are passed to the parent component (here TouchableScale)
-      activeScale={0.95}
       onPress={() => {
         navigation.navigate("ShoppingCart", {
           id: item.id,
@@ -168,19 +163,6 @@ export default function ListShoppingScreen({ navigation }) {
           onRefresh={onRefresh}
         />
       )}
-      {/* <FAB
-        style={{
-          flex: 1,
-          alignItems: "flex-end",
-          justifyContent: "flex-end",
-          paddingVertical: 50,
-          paddingRight: 50,
-          flexGrow: 1,
-        }}
-        visible={true}
-        icon={{ name: "add", color: "white" }}
-        color="green"
-      /> */}
     </View>
   );
 }

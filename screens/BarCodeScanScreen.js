@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, TouchableOpacity, Dimensions, Text } from "react-native";
-import { BarCodeScanner, BarCodeScannerResult } from "expo-barcode-scanner";
+import { BarCodeScanner } from "expo-barcode-scanner";
 import BarcodeMask from "react-native-barcode-mask";
-import {
-  Entypo,
-  FontAwesome,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { View, Button, AlertDialog, Input, Icon } from "native-base";
 
 export default function BarCodeScanScreen({ route, navigation }, props) {
@@ -49,8 +44,6 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         y <= viewMinY + finderHeight / 2
       ) {
         setScanned(true);
-        // navigation.goBack();
-        // route.params.onGoBack(data);
         setEan(data);
         sendEan();
       }

@@ -8,7 +8,7 @@ const ShoppingListComponent = (props) => {
     <View style={styles.container}>
       <View style={styles.viewDescriptionAndAmount}>
         <Text style={styles.description}>{shoppingList.description}</Text>
-        <Text style={styles.amount}>R$ {shoppingList.amount}</Text>
+        <Text style={styles.amount}>{shoppingList.amount}</Text>
       </View>
       <View style={styles.body}>
         <View>

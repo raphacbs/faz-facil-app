@@ -51,7 +51,7 @@ export default function ProductScreen({ route, navigation }) {
       if (!isFound) {
         product.id = await registeProduct(product);
       }
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${idShoppingCart}/products`;
+      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${idShoppingCart}/cart-item`;
       const body = {
         productId: product.id,
         unitValue: product.unitValue,

@@ -5,7 +5,6 @@ import { Input, Button, Dialog, Text } from "@rneui/themed";
 
 export default function CreateShoppingListScreen({ route, navigation }) {
   const inputSupermarket = useRef();
-  // const [method, setMethod] = useState("");
   const { id, description, supermarket } = route.params;
   if (id == null) {
     navigation.setOptions({ title: "Cria lista" });
