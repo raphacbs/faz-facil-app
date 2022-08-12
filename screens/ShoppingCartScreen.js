@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
-import { ListItem, Dialog } from "@rneui/themed";
+import { ListItem, Dialog, Button } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
+import { Toast } from "native-base";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
@@ -15,12 +16,13 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const [cartItems, setCartItems] = useState([]);
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [showProductComponent, setShowProductComponent] = useState(false);
 
-  const onRefresh = () => {
-    setIsFetching(true);
-    getItems();
+  const onRefresh = async () => {
+    // setIsFetching(true);
+    setLoading(true);
+    await getItems();
     setIsFetching(false);
+    // setLoading(false);
   };
 
   const keyExtractor = (item) => item.id;
@@ -55,7 +57,31 @@ export default function ShoppingCartScreen({ route, navigation }) {
         body: JSON.stringify(cartItem),
       });
       const json = await response.json();
-      getItems();
+      await getItems();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdating(false);
+
+      Toast.show({
+        title: "Valores atualizados",
+      });
+    }
+  };
+
+  const removerCartItem = async (cartItem) => {
+    try {
+      setUpdating(true);
+      const url = `${BASE_URL_DEV}/api/v1/cart-items/${cartItem.id}`;
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      await getItems();
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,9 +98,30 @@ export default function ShoppingCartScreen({ route, navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <ListItem bottomDivider>
+    <ListItem.Swipeable
+      onPress={() => {
+        navigation.navigate("ShoppingCart", {
+          id: item.id,
+          name: item.description,
+        });
+      }}
+      rightContent={(reset) => (
+        <Button
+          title="Remover"
+          onPress={() => {
+            removerCartItem(item);
+            reset();
+          }}
+          icon={{ name: "delete", color: "white" }}
+          buttonStyle={{ minHeight: "100%", backgroundColor: "red" }}
+        />
+      )}
+    >
       <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
-    </ListItem>
+    </ListItem.Swipeable>
+    // <ListItem>
+    //   <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
+    // </ListItem>
   );
 
   useEffect(() => {
