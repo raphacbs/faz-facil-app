@@ -25,6 +25,7 @@
     "react-native": "0.68.2",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-camera": "^4.2.1",
+    "react-native-loading-spinner-overlay": "^3.0.1",
     "react-native-mask-input": "^1.2.0",
     "react-native-numeric-input": "^1.9.1",
     "react-native-paper": "^4.12.4",

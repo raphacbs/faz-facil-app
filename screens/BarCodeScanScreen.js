@@ -28,7 +28,9 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
     getBarCodeScannerPermissions();
   }, []);
 
-  const sendEan = () => {
+  const sendEan = (ean) => {
+    console.log("ean", ean);
+    setEan(ean);
     navigation.goBack();
     route.params.onGoBack(ean);
   };
@@ -44,8 +46,8 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         y <= viewMinY + finderHeight / 2
       ) {
         setScanned(true);
-        setEan(data);
-        sendEan();
+
+        sendEan(data);
       }
     }
   };
@@ -133,7 +135,12 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
               >
                 Cancelar
               </Button>
-              <Button colorScheme="green" onPress={sendEan}>
+              <Button
+                colorScheme="green"
+                onPress={() => {
+                  sendEan(ean);
+                }}
+              >
                 Pesquisar
               </Button>
             </Button.Group>

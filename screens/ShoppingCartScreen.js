@@ -4,7 +4,8 @@ import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
 import { ListItem, Dialog, Button } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
-import { Toast } from "native-base";
+import { Toast, VStack, Center } from "native-base";
+import LoadingComponent from "../components/LoadingComponent";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
@@ -21,8 +22,8 @@ export default function ShoppingCartScreen({ route, navigation }) {
     // setIsFetching(true);
     setLoading(true);
     await getItems();
-    setIsFetching(false);
-    // setLoading(false);
+    // setIsFetching(false);
+    setLoading(false);
   };
 
   const keyExtractor = (item) => item.id;
@@ -46,7 +47,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   const edit = async (cartItem) => {
     try {
-      setUpdating(true);
+      setLoading(true);
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
       const response = await fetch(url, {
         method: "PUT",
@@ -61,7 +62,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
     } catch (error) {
       console.error(error);
     } finally {
-      setUpdating(false);
+      setLoading(false);
 
       Toast.show({
         title: "Valores atualizados",
@@ -119,9 +120,6 @@ export default function ShoppingCartScreen({ route, navigation }) {
     >
       <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
     </ListItem.Swipeable>
-    // <ListItem>
-    //   <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
-    // </ListItem>
   );
 
   useEffect(() => {
@@ -141,35 +139,22 @@ export default function ShoppingCartScreen({ route, navigation }) {
           flex: 11,
         }}
       >
-        {isLoading ? (
-          <ActivityIndicator
-            style={{
-              justifyContent: "center",
-              flexDirection: "column",
-              alignSelf: "center",
-            }}
-            size={100}
-          />
-        ) : (
-          <FlatList
-            keyExtractor={keyExtractor}
-            data={cartItems.sort((a, b) => a.id - b.id)}
-            renderItem={renderItem}
-            refreshing={isFetching}
-            onRefresh={onRefresh}
-          />
-        )}
+        <LoadingComponent visible={isLoading}></LoadingComponent>
+        <FlatList
+          keyExtractor={keyExtractor}
+          data={cartItems.sort((a, b) => a.id - b.id)}
+          renderItem={renderItem}
+          refreshing={false}
+          onRefresh={onRefresh}
+        />
       </View>
       <SummaryBarComponent
-        backgroundColor="green"
+        backgroundColor="#0099e6"
         amount={amountItems}
         totalProducts={totalProducts}
         totalCartItems={totalCartItems}
         onPressAddItem={readItemCodeBar}
       ></SummaryBarComponent>
-      <Dialog style={{ backgroundColor: "transparent" }} isVisible={updating}>
-        <Dialog.Loading />
-      </Dialog>
     </View>
   );
 }
