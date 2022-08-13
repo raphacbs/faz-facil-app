@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View } from "react-native";
 import { ListItem, Button } from "@rneui/themed";
 import ShoppingListComponent from "../components/ShoppingListComponent";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
 import { SearchBar } from "@rneui/base";
 import { useFocusEffect } from "@react-navigation/native";
+import LoadingComponent from "../components/LoadingComponent";
+import {
+  FlatList,
+  VStack,
+  Center,
+  Flex,
+  Box,
+  Stack,
+  HStack,
+  Icon,
+  Fab,
+} from "native-base";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ShoppingListScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
@@ -13,14 +26,13 @@ export default function ShoppingListScreen({ navigation }) {
   const [search, setSearch] = useState("");
   const [fullData, setFullData] = useState([]);
 
-  const onRefresh = () => {
-    setIsFetching(true);
-    getShoppingList();
-    setIsFetching(false);
+  const onRefresh = async () => {
+    await getShoppingList();
   };
 
   const getShoppingList = async () => {
     try {
+      setLoading(true);
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts?isArchived=false`;
       const response = await fetch(url);
       const json = await response.json();
@@ -75,7 +87,6 @@ export default function ShoppingListScreen({ navigation }) {
 
   const renderItem = ({ item }) => (
     <ListItem.Swipeable
-      bottomDivider
       onPress={() => {
         navigation.navigate("ShoppingCart", {
           id: item.id,
@@ -105,10 +116,7 @@ export default function ShoppingListScreen({ navigation }) {
         />
       )}
     >
-      <ListItem.Content>
-        <ShoppingListComponent shoppingList={item}></ShoppingListComponent>
-      </ListItem.Content>
-      <ListItem.Chevron />
+      <ShoppingListComponent shoppingList={item}></ShoppingListComponent>
     </ListItem.Swipeable>
   );
 
@@ -123,12 +131,8 @@ export default function ShoppingListScreen({ navigation }) {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        flexGrow: 1,
-      }}
-    >
+    <Stack flex={1}>
+      <LoadingComponent visible={isLoading}></LoadingComponent>
       <SearchBar
         platform="android"
         containerStyle={{}}
@@ -145,24 +149,28 @@ export default function ShoppingListScreen({ navigation }) {
         cancelButtonProps={{}}
         value={search}
       />
-      {isLoading ? (
-        <ActivityIndicator
-          style={{
-            justifyContent: "center",
-            flexDirection: "column",
-            alignSelf: "center",
-          }}
-          size={100}
-        />
-      ) : (
-        <FlatList
-          keyExtractor={keyExtractor}
-          data={data}
-          renderItem={renderItem}
-          refreshing={isFetching}
-          onRefresh={onRefresh}
-        />
-      )}
-    </View>
+      <FlatList
+        flex={1}
+        keyExtractor={keyExtractor}
+        data={data}
+        renderItem={renderItem}
+        refreshing={isFetching}
+        onRefresh={onRefresh}
+        ListFooterComponent={() => {
+          return (
+            <Box alignSelf={"flex-end"} bgColor="blue">
+              <Fab
+                renderInPortal={false}
+                shadow={2}
+                size="sm"
+                icon={
+                  <Icon color="white" as={AntDesign} name="plus" size="sm" />
+                }
+              />
+            </Box>
+          );
+        }}
+      />
+    </Stack>
   );
 }

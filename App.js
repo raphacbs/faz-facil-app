@@ -1,16 +1,15 @@
 import * as React from "react";
-import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createNavigationContainerRef } from "@react-navigation/native";
 import ShoppingListScreen from "./screens/ShoppingListScreen";
 import ShoppingCartScreen from "./screens/ShoppingCartScreen";
 import HelloWorldScreen from "./screens/HelloWorldScreen";
-import { ThemeProvider, createTheme, Button, Icon } from "@rneui/themed";
 import CreateShoppingListScreen from "./screens/CreateShoppingListScreen";
 import BarCodeScanScreen from "./screens/BarCodeScanScreen";
 import ProductScreen from "./screens/ProductScreen";
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme, IconButton, Icon } from "native-base";
+import { FontAwesome, MaterialIcons, Zocial } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 const navigationRef = createNavigationContainerRef();
@@ -35,10 +34,13 @@ function App() {
       amber: {
         400: "#d97706",
       },
+      theme: {
+        principal: "#0099e6",
+      },
     },
     config: {
       // Changing initialColorMode to 'dark'
-      initialColorMode: "dark",
+      initialColorMode: "light",
     },
   });
 
@@ -49,7 +51,13 @@ function App() {
           <Stack.Screen
             name="HelloWorld"
             component={HelloWorldScreen}
-            options={{ title: "Hello World!" }}
+            options={{
+              title: "Hello World!",
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
           />
           <Stack.Screen
             name="ShoppingList"
@@ -57,14 +65,14 @@ function App() {
             options={({ navigation }) => ({
               title: "Listas de Compras",
               headerRight: () => (
-                <Button
-                  type="clear"
-                  color="white"
-                  buttonStyle={{
-                    backgroundColor: "green",
-                    borderWidth: 2,
-                    borderColor: "white",
-                    borderRadius: 30,
+                <IconButton
+                  size={"sm"}
+                  variant="ghost"
+                  _icon={{
+                    as: MaterialIcons,
+                    name: "add-circle-outline",
+                    size: 10,
+                    color: "white",
                   }}
                   onPress={() => {
                     navigation.navigate("CreateShoppingList", {
@@ -73,10 +81,12 @@ function App() {
                       supermarket: "",
                     });
                   }}
-                >
-                  <Icon name="plus" type="font-awesome" color="white" />
-                </Button>
+                />
               ),
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
             })}
           />
           <Stack.Screen
@@ -84,6 +94,10 @@ function App() {
             component={ShoppingCartScreen}
             options={({ route }) => ({
               title: route.params.name,
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
             })}
           />
           <Stack.Screen
@@ -91,6 +105,10 @@ function App() {
             component={CreateShoppingListScreen}
             options={{
               title: "Criar lista",
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
             }}
           />
           <Stack.Screen
@@ -98,6 +116,10 @@ function App() {
             component={BarCodeScanScreen}
             options={{
               title: "Lê produto",
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
             }}
           />
           <Stack.Screen
@@ -105,6 +127,10 @@ function App() {
             component={ProductScreen}
             options={{
               title: "Produto",
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
             }}
           />
         </Stack.Navigator>
