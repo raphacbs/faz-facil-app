@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
 import { ListItem, Dialog, Button } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
-import { Toast, VStack, Center } from "native-base";
+import { Toast, VStack, Center, FlatList } from "native-base";
 import LoadingComponent from "../components/LoadingComponent";
+import SwipeableItem from "../components/Swipeable";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
@@ -72,7 +73,8 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   const removerCartItem = async (cartItem) => {
     try {
-      setUpdating(true);
+      console.log("entrou");
+      setLoading(true);
       const url = `${BASE_URL_DEV}/api/v1/cart-items/${cartItem.id}`;
       const response = await fetch(url, {
         method: "DELETE",
@@ -82,11 +84,12 @@ export default function ShoppingCartScreen({ route, navigation }) {
         },
       });
       const json = await response.json();
+      console.log(json);
       await getItems();
     } catch (error) {
       console.error(error);
     } finally {
-      setUpdating(false);
+      setLoading(false);
     }
   };
 
@@ -99,27 +102,14 @@ export default function ShoppingCartScreen({ route, navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <ListItem.Swipeable
-      onPress={() => {
-        navigation.navigate("ShoppingCart", {
-          id: item.id,
-          name: item.description,
-        });
+    <SwipeableItem
+      rightTitleButton="Remover"
+      onPressRightButton={() => {
+        removerCartItem(item);
       }}
-      rightContent={(reset) => (
-        <Button
-          title="Remover"
-          onPress={() => {
-            removerCartItem(item);
-            reset();
-          }}
-          icon={{ name: "delete", color: "white" }}
-          buttonStyle={{ minHeight: "100%", backgroundColor: "red" }}
-        />
-      )}
     >
       <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
-    </ListItem.Swipeable>
+    </SwipeableItem>
   );
 
   useEffect(() => {
@@ -141,6 +131,8 @@ export default function ShoppingCartScreen({ route, navigation }) {
       >
         <LoadingComponent visible={isLoading}></LoadingComponent>
         <FlatList
+          flex={1}
+          backgroundColor="theme.principal"
           keyExtractor={keyExtractor}
           data={cartItems.sort((a, b) => a.id - b.id)}
           renderItem={renderItem}

@@ -33,6 +33,7 @@
     "react-native-screens": "^3.15.0",
     "react-native-simple-stepper": "^3.0.3",
     "react-native-svg": "12.3.0",
+    "react-native-swipeable": "^0.6.0",
     "react-native-touchable-scale": "^2.1.2",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "0.17.7"

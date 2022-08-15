@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { ListItem } from "@rneui/themed";
 import { VStack, HStack, Badge, Icon, Text, Box, Avatar } from "native-base";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import NumericInput from "react-native-numeric-input";
-import MenuDotComponent from "./MenuDotComponent";
 
 const CartItem = (props) => {
   const { cartItem, increment, decrement } = props;
@@ -11,7 +9,6 @@ const CartItem = (props) => {
     cartItem.amountOfProduct
   );
   const [subtotal, setSubtotal] = useState(cartItem.subtotal);
-
   const update = (value) => {
     const item = {
       id: cartItem.id,
@@ -22,118 +19,104 @@ const CartItem = (props) => {
     increment(item);
   };
 
+  const onBlur = (value) => {
+    update(amountOfProduct);
+    console.log(value);
+  };
+
   return (
-    <ListItem.Content>
-      <Box
-        flex="1"
-        safeAreaRight
-        width="100%"
-        borderWidth="1"
-        borderColor="coolGray.300"
-        shadow="3"
-        bg="coolGray.100"
-        p="3"
-        rounded="8"
-      >
-        <VStack space="2.5" mt="2" px="0.5">
-          <HStack space={1} width="100%" justifyContent="space-between">
-            <VStack>
-              <Avatar
-                alignSelf="flex-start"
-                size="md"
-                source={{
-                  uri: cartItem.product.image,
-                }}
-              >
-                AJ
-              </Avatar>
-            </VStack>
-            <VStack>
-              <HStack>
-                <Text
-                  color="coolGray.800"
-                  mt="3"
-                  fontWeight="medium"
-                  fontSize="md"
-                  width={250}
-                  height="100%"
-                  marginTop={-1}
-                >
-                  {cartItem.product.description}
-                </Text>
-              </HStack>
-              <Text color="black">{cartItem.product.ean}</Text>
-            </VStack>
-            {/* <Icon
-              as={SimpleLineIcons}
-              name="options-vertical"
-              color="black"
-              _dark={{
-                color: "black",
+    <Box
+      flex="1"
+      safeAreaRight
+      width="95%"
+      borderWidth="1"
+      borderColor="primary.300"
+      shadow="5"
+      bg="primary.300"
+      p="3"
+      rounded="8"
+      margin={3}
+    >
+      <VStack space="2.5" mt="2" px="0.5">
+        <HStack space={1} width="100%" justifyContent="space-between">
+          <VStack>
+            <Avatar
+              alignSelf="flex-start"
+              size="md"
+              source={{
+                uri: cartItem.product.image,
               }}
-            /> */}
-            {/* <MenuDotComponent></MenuDotComponent> */}
-          </HStack>
-          <HStack space={4}>
-            <VStack>
-              <Badge
-                rounded="lg"
-                _text={{
-                  fontSize: 20,
-                }}
-                colorScheme="info"
-                alignSelf="center"
-                variant="solid"
-                startIcon={
-                  <Icon
-                    as={Ionicons}
-                    name="pricetag"
-                    color="coolGray.800"
-                    _dark={{
-                      color: "warmGray.50",
-                    }}
-                  />
-                }
+            >
+              AJ
+            </Avatar>
+          </VStack>
+          <VStack>
+            <HStack>
+              <Text
+                color="coolGray.900"
+                mt="3"
+                fontWeight="medium"
+                fontSize="md"
+                width={250}
+                height="100%"
+                marginTop={-1}
               >
-                {cartItem.unitValue}
-              </Badge>
-            </VStack>
-          </HStack>
-          <HStack justifyContent="space-between">
-            <VStack>
-              <Badge
-                rounded="lg"
-                _text={{
-                  fontSize: 25,
-                }}
-                alignSelf="center"
-                variant="solid"
-                startIcon={
-                  <Icon
-                    as={Ionicons}
-                    name="calculator"
-                    size={25}
-                    color="gray.800"
-                    _dark={{
-                      color: "warmGray.50",
-                    }}
-                  />
-                }
-              >
-                {cartItem.subtotal}
-              </Badge>
-            </VStack>
-            <NumericInput
-              value={amountOfProduct}
-              onChange={(value) => {
-                update(value);
+                {cartItem.product.description}
+              </Text>
+            </HStack>
+            <Text color="coolGray.500">{cartItem.product.ean}</Text>
+          </VStack>
+        </HStack>
+        <HStack space={4}>
+          <VStack>
+            <Badge
+              rounded="lg"
+              _text={{
+                fontSize: 20,
               }}
-              rounded
-            />
-          </HStack>
-        </VStack>
-      </Box>
-    </ListItem.Content>
+              colorScheme="info"
+              alignSelf="center"
+              variant="solid"
+              startIcon={<Icon as={Ionicons} name="pricetag" color="white" />}
+            >
+              {cartItem.unitValue}
+            </Badge>
+          </VStack>
+        </HStack>
+        <HStack justifyContent="space-between">
+          <VStack>
+            <Badge
+              rounded="lg"
+              _text={{
+                fontSize: 25,
+              }}
+              alignSelf="center"
+              variant="solid"
+              colorScheme="warning"
+              startIcon={
+                <Icon as={Ionicons} name="calculator" size={25} color="white" />
+              }
+            >
+              {cartItem.subtotal}
+            </Badge>
+          </VStack>
+          <NumericInput
+            value={amountOfProduct}
+            onChange={(value) => {
+              setAmountOfProduct(value);
+            }}
+            rounded
+            rightButtonBackgroundColor="white"
+            leftButtonBackgroundColor="white"
+            borderColor="black"
+            inputStyle={{ backgroundColor: "white", borderColor: "black" }}
+            editable={true}
+            onBlur={onBlur}
+            selectTextOnFocus={true}
+          />
+        </HStack>
+      </VStack>
+    </Box>
   );
 };
 

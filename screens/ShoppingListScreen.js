@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ListItem, Button } from "@rneui/themed";
 import ShoppingListComponent from "../components/ShoppingListComponent";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
-import { SearchBar } from "@rneui/base";
-import { useFocusEffect } from "@react-navigation/native";
+import SwipeableItem from "../components/Swipeable";
+
 import LoadingComponent from "../components/LoadingComponent";
-import {
-  FlatList,
-  VStack,
-  Center,
-  Flex,
-  Box,
-  Stack,
-  HStack,
-  Icon,
-  Fab,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { FlatList, Stack, Input, VStack, Icon } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ShoppingListScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
@@ -46,6 +35,7 @@ export default function ShoppingListScreen({ navigation }) {
 
   const archive = async (item) => {
     try {
+      setLoading(true);
       item.isArchived = true;
       const body = {
         id: item.id,
@@ -64,11 +54,11 @@ export default function ShoppingListScreen({ navigation }) {
         body: JSON.stringify(body),
       });
       const json = await response.json();
-      console.log(json);
+      await onRefresh();
     } catch (error) {
       console.error(error);
     } finally {
-      onRefresh();
+      setLoading(false);
     }
   };
 
@@ -83,38 +73,26 @@ export default function ShoppingListScreen({ navigation }) {
   const keyExtractor = (item) => item.id;
 
   const renderItem = ({ item }) => (
-    <ListItem.Swipeable
-      onPress={() => {
-        navigation.navigate("ShoppingCart", {
-          id: item.id,
-          name: item.description,
-        });
+    <SwipeableItem
+      leftTitleButton="Editar"
+      onPressLeftButton={() => {
+        navigation.navigate("CreateShoppingList", item);
       }}
-      leftContent={(reset) => (
-        <Button
-          title="Editar"
-          onPress={() => {
-            navigation.navigate("CreateShoppingList", item);
-            reset();
-          }}
-          icon={{ name: "edit", color: "white" }}
-          buttonStyle={{ minHeight: "100%" }}
-        />
-      )}
-      rightContent={(reset) => (
-        <Button
-          title="Arquivar"
-          onPress={() => {
-            archive(item);
-            reset();
-          }}
-          icon={{ name: "delete", color: "white" }}
-          buttonStyle={{ minHeight: "100%", backgroundColor: "red" }}
-        />
-      )}
+      rightTitleButton="Arquivar"
+      onPressRightButton={() => {
+        archive(item);
+      }}
     >
-      <ShoppingListComponent shoppingList={item}></ShoppingListComponent>
-    </ListItem.Swipeable>
+      <ShoppingListComponent
+        onPress={() => {
+          navigation.navigate("ShoppingCart", {
+            id: item.id,
+            name: item.description,
+          });
+        }}
+        shoppingList={item}
+      ></ShoppingListComponent>
+    </SwipeableItem>
   );
 
   const updateSearch = (search) => {
@@ -130,43 +108,36 @@ export default function ShoppingListScreen({ navigation }) {
   return (
     <Stack flex={1}>
       <LoadingComponent visible={isLoading}></LoadingComponent>
-      <SearchBar
-        platform="android"
-        containerStyle={{}}
-        inputContainerStyle={{}}
-        inputStyle={{}}
-        leftIconContainerStyle={{}}
-        rightIconContainerStyle={{}}
-        loadingProps={{}}
-        onChangeText={updateSearch}
-        onClearText={() => console.log(onClearText())}
-        placeholder="pesquisar"
-        placeholderTextColor="#888"
-        cancelButtonTitle="Cancelar"
-        cancelButtonProps={{}}
-        value={search}
-      />
+      <VStack w="100%" space={5} alignSelf="center">
+        <Input
+          placeholder="Pesquise pelas listas"
+          placeholderTextColor={"white"}
+          width="100%"
+          py="3"
+          px="1"
+          fontSize="14"
+          value={search}
+          onChangeText={updateSearch}
+          backgroundColor="primary.300"
+          borderColor="primary.300"
+          InputLeftElement={
+            <Icon
+              as={<MaterialIcons name="search" />}
+              size={5}
+              ml="2"
+              color="white"
+            />
+          }
+        />
+      </VStack>
       <FlatList
         flex={1}
+        backgroundColor="theme.principal"
         keyExtractor={keyExtractor}
         data={data}
         renderItem={renderItem}
         refreshing={isFetching}
         onRefresh={onRefresh}
-        ListFooterComponent={() => {
-          return (
-            <Box alignSelf={"flex-end"} bgColor="blue">
-              <Fab
-                renderInPortal={false}
-                shadow={2}
-                size="sm"
-                icon={
-                  <Icon color="white" as={AntDesign} name="plus" size="sm" />
-                }
-              />
-            </Box>
-          );
-        }}
       />
     </Stack>
   );
