@@ -5,7 +5,7 @@ const LoadingComponent = (props) => {
   return (
     <Spinner
       visible={props.visible}
-      textContent={"Loading..."}
+      textContent={"Carregando..."}
       textStyle={{ color: "#FFF" }}
     />
   );

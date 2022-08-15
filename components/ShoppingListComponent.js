@@ -45,7 +45,7 @@ const ShoppingListComponent = (props) => {
                 <Icon
                   as={MaterialIcons}
                   name="place"
-                  color="coolGray.800"
+                  color="white"
                   _dark={{
                     color: "warmGray.50",
                   }}
@@ -84,7 +84,7 @@ const ShoppingListComponent = (props) => {
                 <Icon
                   as={FontAwesome}
                   name="calendar"
-                  color="coolGray.800"
+                  color="white"
                   _dark={{
                     color: "warmGray.50",
                   }}
@@ -107,7 +107,7 @@ const ShoppingListComponent = (props) => {
                 <Icon
                   as={Zocial}
                   name="cart"
-                  color="coolGray.800"
+                  color="white"
                   _dark={{
                     color: "warmGray.50",
                   }}

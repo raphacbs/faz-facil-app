@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
 import { ListItem, Button } from "@rneui/themed";
 import ShoppingListComponent from "../components/ShoppingListComponent";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
@@ -73,15 +72,13 @@ export default function ShoppingListScreen({ navigation }) {
     }
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      getShoppingList();
-    }, [])
-  );
-
   useEffect(() => {
     getShoppingList();
-  }, []);
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      getShoppingList();
+    });
+    return willFocusSubscription;
+  }, [navigation]);
 
   const keyExtractor = (item) => item.id;
 

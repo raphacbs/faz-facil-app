@@ -1,72 +1,58 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
-import { Dialog } from "@rneui/themed";
 import {
   Input,
   Icon,
   VStack,
   Box,
-  Stack,
   Center,
-  NativeBaseProvider,
-  Image,
-  ScrollView,
-  Text,
-  View,
   Heading,
   Button,
-  AlertDialog,
-  Spacer,
-  AspectRatio,
-  HStack,
+  FormControl,
+  WarningOutlineIcon,
 } from "native-base";
-import {
-  Entypo,
-  FontAwesome,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { FontAwesome5, Entypo } from "@expo/vector-icons";
 import LoadingComponent from "../components/LoadingComponent";
 
 export default function CreateShoppingListScreen({ route, navigation }) {
   const inputSupermarket = useRef();
 
-  if (route.params.id == null) {
-    navigation.setOptions({ title: "Cria lista" });
-  } else {
-    navigation.setOptions({ title: "Edita lista" });
-  }
-  const [shoppingList, setShoppingList] = useState(route.params);
-  const [loading, setLoading] = useState(false);
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [show, setShow] = React.useState(false);
+  useEffect(() => {
+    if (route.params.id == null) {
+      navigation.setOptions({ title: "Cria lista" });
+    } else {
+      navigation.setOptions({ title: "Edita lista" });
+    }
+  }, []);
 
-  const [textRequiredDescription, setTextRequiredDescription] = useState("");
-  const [textRequiredSupermarket, setTextRequiredSupermarket] = useState("");
+  const [shoppingList, setShoppingList] = useState({ ...route.params });
+  const [loading, setLoading] = useState(false);
+
+  const [inputDescriptionIsInvalid, setInputDescriptionIsInvalid] =
+    useState(false);
+
+  const [inputSupermarketIsInvalid, setInputSupermarketIsInvalid] =
+    useState(false);
 
   const onChangeDescription = (value) => {
-    setTextRequiredDescription("");
-    console.log(shoppingList);
     setShoppingList({ ...shoppingList, ["description"]: value });
+    setInputDescriptionIsInvalid(shoppingList.description.trim() == "");
   };
 
   const onChangeSupermarket = (value) => {
-    setTextRequiredSupermarket("");
     setShoppingList({ ...shoppingList, ["supermarket"]: value });
+    setInputSupermarketIsInvalid(shoppingList.supermarket.trim() == "");
   };
 
   const save = async () => {
     if (shoppingList.description.trim() == "") {
-      setTextRequiredDescription(
-        "Ops! Vc esqueceu de informa o nome da lista."
-      );
+      setInputDescriptionIsInvalid(true);
       return;
     }
     if (shoppingList.supermarket.trim() == "") {
-      setTextRequiredSupermarket("Ops! Vc esqueceu de informa o supermercado.");
+      setInputSupermarketIsInvalid(true);
       return;
     }
-    console.log(JSON.stringify(shoppingList));
     setLoading(true);
     try {
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
@@ -85,10 +71,9 @@ export default function CreateShoppingListScreen({ route, navigation }) {
         body: JSON.stringify(shoppingListToSave),
       });
       const json = await response.json();
-      console.log(json);
-      setDialogVisible(true);
+      setLoading(false);
+      navigation.goBack();
     } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -104,152 +89,101 @@ export default function CreateShoppingListScreen({ route, navigation }) {
       <Box
         width="90%"
         rounded="lg"
-        overflow="hidden"
+        overflow="scroll"
         borderColor="coolGray.200"
         borderWidth="1"
         bgColor={"white"}
-        shadow="6"
+        shadow={6}
       >
-        <VStack p="5" space={5} width="100%" height={"60%"}>
-          <Heading color={"black"}>Crie sua lista de compras</Heading>
-          <Input
-            autoFocus={true}
-            selectionColor={"gray"}
-            variant="underlined"
-            size={"2xl"}
-            borderColor="black"
-            bgColor="white"
-            color={"black"}
-            isFocused={true}
-            isRequired={true}
-            onChangeText={onChangeDescription}
-            value={shoppingList.description}
-            InputLeftElement={
-              <Icon
-                as={<MaterialIcons name="description" />}
-                size={5}
-                ml="2"
-                color="black"
+        <VStack p="3" space={10} width="100%" height={"70%"}>
+          <Center>
+            <Heading color={"black"}>Lista de compras</Heading>
+          </Center>
+          <VStack>
+            <FormControl isRequired isInvalid={inputDescriptionIsInvalid}>
+              <Input
+                autoFocus={true}
+                selectionColor={"gray"}
+                variant="underlined"
+                size={"2xl"}
+                borderColor="black"
+                bgColor="white"
+                color={"black"}
+                isFocused={true}
+                isRequired={true}
+                onChangeText={onChangeDescription}
+                value={shoppingList.description}
+                marginRight={1}
+                InputLeftElement={
+                  <Icon
+                    as={<Entypo name="text" />}
+                    size={5}
+                    ml="2"
+                    color="black"
+                  />
+                }
+                placeholder="Descrição"
+                onSubmitEditing={() => inputSupermarket.current.focus()}
               />
-            }
-            placeholder="Descrição"
-            onSubmitEditing={() => inputSupermarket.current.focus()}
-          />
-          <Input
-            selectionColor={"gray"}
-            variant="underlined"
-            size={"2xl"}
-            borderColor="black"
-            bgColor="white"
-            color={"black"}
-            isFocused={false}
-            isRequired={true}
-            onChangeText={onChangeSupermarket}
-            value={shoppingList.supermarket}
-            InputLeftElement={
-              <Icon
-                as={<MaterialCommunityIcons name="factory" />}
-                size={6}
-                ml="2"
-                color="black"
+              <FormControl.HelperText>
+                Informe o nome da lista.
+              </FormControl.HelperText>
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Ops! Descrição inválida.
+              </FormControl.ErrorMessage>
+            </FormControl>
+            <FormControl isRequired isInvalid={inputSupermarketIsInvalid}>
+              <Input
+                selectionColor={"gray"}
+                variant="underlined"
+                size={"2xl"}
+                borderColor="black"
+                bgColor="white"
+                color={"black"}
+                isFocused={false}
+                isRequired={true}
+                onChangeText={onChangeSupermarket}
+                value={shoppingList.supermarket}
+                InputLeftElement={
+                  <Icon
+                    as={<FontAwesome5 name="shopping-cart" />}
+                    size={6}
+                    ml="2"
+                    marginRight={1}
+                    color="black"
+                  />
+                }
+                ref={inputSupermarket}
+                placeholder="Supermercado"
               />
-            }
-            ref={inputSupermarket}
-            placeholder="Fabricante"
-          />
-          <Spacer />
-          <Spacer />
-          <Button rounded={4} onPress={save}>
-            Criar
-          </Button>
+              <FormControl.HelperText>
+                Informe o nome do supermercado.
+              </FormControl.HelperText>
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                Ops! nome do supermercado inválido.
+              </FormControl.ErrorMessage>
+            </FormControl>
+            <VStack marginTop={20} justifyItems={"flex-end"}>
+              <Button
+                rounded={20}
+                onPress={save}
+                size="sm"
+                testID="saveShoppingListBtn"
+                _text={{
+                  color: "white",
+                  fontSize: 25,
+                }}
+              >
+                Salvar
+              </Button>
+            </VStack>
+          </VStack>
         </VStack>
       </Box>
     </VStack>
-    // <Center flex={1} bgColor={"theme.principal"} space={10} w="100%">
-    //   <Box rounded={10} bgColor={"gray.100"}>
-    //     <Input
-    //       w={{
-    //         base: "75%",
-    //         md: "25%",
-    //       }}
-    //       borderColor="white"
-    //       bgColor="white"
-    //       InputLeftElement={
-    //         <Icon
-    //           as={<MaterialIcons name="description" />}
-    //           size={5}
-    //           ml="2"
-    //           color="black"
-    //         />
-    //       }
-    //       placeholder="Descrição"
-    //     />
-    //     <Input
-    //       w={{
-    //         base: "75%",
-    //         md: "25%",
-    //       }}
-    //       borderColor="white"
-    //       bgColor="white"
-    //       InputLeftElement={
-    //         <Icon
-    //           as={<MaterialCommunityIcons name="factory" />}
-    //           size={5}
-    //           ml="2"
-    //           color="black"
-    //         />
-    //       }
-    //       placeholder="Fabricante"
-    //     />
-    //   </Box>
-    // </Center>
-
-    // <View style={{ flex: 1 }}>
-
-    //   <Input
-    //     style={{ marginTop: 20, fontSize: 25 }}
-    //     placeholder="Nome da lista"
-    //     autoFocus={true}
-    //     onChangeText={onChangeDescription}
-    //     value={shoppingList.description}
-    //     returnKeyType="next"
-    //     errorMessage={textRequiredDescription}
-    //     onSubmitEditing={() => inputSupermarket.current.focus()}
-    //   />
-    //   <Input
-    //     style={{ marginTop: 20, fontSize: 25 }}
-    //     placeholder="Nome do supermercado"
-    //     onChangeText={onChangeSupermarket}
-    //     errorMessage={textRequiredSupermarket}
-    //     value={shoppingList.supermarket}
-    //     ref={inputSupermarket}
-    //   />
-
-    //   <Button
-    //     title="Salvar"
-    //     loading={loading}
-    //     loadingProps={{ size: "small", color: "white" }}
-    //     buttonStyle={{
-    //       backgroundColor: "green",
-    //       borderRadius: 5,
-    //     }}
-    //     titleStyle={{ fontWeight: "bold", fontSize: 23 }}
-    //     containerStyle={{
-    //       marginHorizontal: 50,
-    //       marginVertical: 10,
-    //     }}
-    //     onPress={save}
-    //   />
-    //   <Dialog isVisible={dialogVisible}>
-    //     <Dialog.Title title="Sucesso" />
-    //     <Text>A lista foi cadastrada com sucesso!</Text>
-    //     <Dialog.Actions>
-    //       <Dialog.Button
-    //         title="Ta certo!"
-    //         onPress={() => navigation.navigate("ListShopping")}
-    //       />
-    //     </Dialog.Actions>
-    //   </Dialog>
-    // </View>
   );
 }
