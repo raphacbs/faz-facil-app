@@ -1,29 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View } from "react-native";
 import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
-import { ListItem, Dialog, Button } from "@rneui/themed";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
-import { Toast, VStack, Center, FlatList } from "native-base";
+import { Toast, FlatList } from "native-base";
 import LoadingComponent from "../components/LoadingComponent";
 import SwipeableItem from "../components/Swipeable";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
   const [isLoading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
   const [amountItems, setAmountItems] = useState("0");
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCartItems, setTotalCartItems] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const [data, setData] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
 
   const onRefresh = async () => {
-    // setIsFetching(true);
     setLoading(true);
     await getItems();
-    // setIsFetching(false);
     setLoading(false);
   };
 

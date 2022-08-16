@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
 import {
   Input,
   Icon,
   Stack,
-  Center,
-  NativeBaseProvider,
   Image,
   ScrollView,
   View,
-  Text,
   Heading,
   Button,
 } from "native-base";
@@ -20,7 +16,6 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { Masks, useMaskedInputProps } from "react-native-mask-input";
-import { SimpleStepper } from "react-native-simple-stepper";
 import NumericInput from "react-native-numeric-input";
 
 const ProductComponent = (props) => {
@@ -186,35 +181,6 @@ const ProductComponent = (props) => {
               onChange={handleSubtotal}
               rounded
             />
-            {/* <SimpleStepper
-              valueChanged={handleSubtotal}
-              initialValue={amountOfProduct}
-              minimumValue={1}
-              maximumValue={100}
-              showText={true}
-              containerStyle={{
-                backgroundColor: "transparent",
-                flexDirection: "row",
-                borderWidth: 1,
-                borderRadius: 8,
-                overflow: "hidden",
-                alignItems: "center",
-                borderColor: "gray",
-              }}
-              separatorStyle={{
-                width: StyleSheet.hairlineWidth,
-                backgroundColor: "gray",
-                height: "100%",
-              }}
-              textStyle={{
-                padding: 8,
-                fontSize: 20,
-                fontWeight: "bold",
-                color: "blue",
-              }}
-              incrementImageStyle={{ height: 20, width: 20 }}
-              decrementImageStyle={{ height: 20, width: 20 }}
-            ></SimpleStepper> */}
           </View>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { VStack, HStack, Badge, Icon, Text, Box, Avatar } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import NumericInput from "react-native-numeric-input";
+import { useEffect } from "react";
 
 const CartItem = (props) => {
-  const { cartItem, increment, decrement } = props;
-  const [amountOfProduct, setAmountOfProduct] = useState(
-    cartItem.amountOfProduct
-  );
-  const [subtotal, setSubtotal] = useState(cartItem.subtotal);
+  const { increment, decrement } = props;
+  const [cartItem, setCartItem] = useState({ ...props.cartItem });
+
+  useEffect(() => {
+    setCartItem(props.cartItem);
+  }, [props.cartItem]);
+
   const update = (value) => {
     const item = {
       id: cartItem.id,
@@ -101,9 +104,11 @@ const CartItem = (props) => {
             </Badge>
           </VStack>
           <NumericInput
-            value={amountOfProduct}
+            value={cartItem.amountOfProduct}
+            initValue={cartItem.amountOfProduct}
             onChange={(value) => {
-              setAmountOfProduct(value);
+              setCartItem({ ...cartItem, ["amountOfProduct"]: value });
+              update(value);
             }}
             rounded
             rightButtonBackgroundColor="white"
