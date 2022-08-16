@@ -4,6 +4,7 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import BarcodeMask from "react-native-barcode-mask";
 import { FontAwesome } from "@expo/vector-icons";
 import { View, Button, AlertDialog, Input, Icon } from "native-base";
+import { Audio } from "expo-av";
 
 export default function BarCodeScanScreen({ route, navigation }, props) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -35,6 +36,13 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
     route.params.onGoBack(ean);
   };
 
+  const playBeep = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../assets/beep.mp3")
+    );
+    await sound.playAsync();
+  };
+
   const handleBarCodeScanned = (scanningResult) => {
     if (!scanned) {
       const { type, data, bounds: { origin } = {} } = scanningResult;
@@ -46,7 +54,7 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         y <= viewMinY + finderHeight / 2
       ) {
         setScanned(true);
-
+        playBeep();
         sendEan(data);
       }
     }
