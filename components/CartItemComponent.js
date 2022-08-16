@@ -66,6 +66,7 @@ const CartItem = (props) => {
                 {cartItem.product.description}
               </Text>
             </HStack>
+            <Text color="coolGray.500">{cartItem.product.manufacturer}</Text>
             <Text color="coolGray.500">{cartItem.product.ean}</Text>
           </VStack>
         </HStack>
