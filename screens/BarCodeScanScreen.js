@@ -53,8 +53,8 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         x <= viewMinX + finderWidth / 2 &&
         y <= viewMinY + finderHeight / 2
       ) {
-        setScanned(true);
         playBeep();
+        setScanned(true);
         sendEan(data);
       }
     }

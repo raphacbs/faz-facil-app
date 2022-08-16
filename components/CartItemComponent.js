@@ -23,8 +23,7 @@ const CartItem = (props) => {
   };
 
   const onBlur = (value) => {
-    update(amountOfProduct);
-    console.log(value);
+    update(value);
   };
 
   return (
@@ -104,7 +103,6 @@ const CartItem = (props) => {
             </Badge>
           </VStack>
           <NumericInput
-            value={cartItem.amountOfProduct}
             initValue={cartItem.amountOfProduct}
             onChange={(value) => {
               setCartItem({ ...cartItem, ["amountOfProduct"]: value });
