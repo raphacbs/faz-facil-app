@@ -26,6 +26,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   const getItems = async () => {
     try {
+      setLoading(true);
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
       const response = await fetch(url);
       const json = await response.json();
@@ -109,7 +110,11 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   useEffect(() => {
     getItems();
-  }, []);
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      getItems();
+    });
+    return willFocusSubscription;
+  }, [navigation]);
 
   return (
     <View

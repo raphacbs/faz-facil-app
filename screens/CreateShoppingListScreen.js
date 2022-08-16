@@ -10,6 +10,7 @@ import {
   Button,
   FormControl,
   WarningOutlineIcon,
+  ScrollView,
 } from "native-base";
 import { FontAwesome5, Entypo } from "@expo/vector-icons";
 import LoadingComponent from "../components/LoadingComponent";
@@ -95,94 +96,105 @@ export default function CreateShoppingListScreen({ route, navigation }) {
         bgColor={"white"}
         shadow={6}
       >
-        <VStack p="3" space={10} width="100%" height={"70%"}>
-          <Center>
-            <Heading color={"black"}>Lista de compras</Heading>
-          </Center>
-          <VStack>
-            <FormControl isRequired isInvalid={inputDescriptionIsInvalid}>
-              <Input
-                autoFocus={true}
-                selectionColor={"gray"}
-                variant="underlined"
-                size={"2xl"}
-                borderColor="black"
-                bgColor="white"
-                color={"black"}
-                isFocused={true}
-                isRequired={true}
-                onChangeText={onChangeDescription}
-                value={shoppingList.description}
-                marginRight={1}
-                InputLeftElement={
-                  <Icon
-                    as={<Entypo name="text" />}
-                    size={5}
-                    ml="2"
-                    color="black"
-                  />
-                }
-                placeholder="Descrição"
-                onSubmitEditing={() => inputSupermarket.current.focus()}
-              />
-              <FormControl.HelperText>
-                Informe o nome da lista.
-              </FormControl.HelperText>
-              <FormControl.ErrorMessage
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Ops! Descrição inválida.
-              </FormControl.ErrorMessage>
-            </FormControl>
-            <FormControl isRequired isInvalid={inputSupermarketIsInvalid}>
-              <Input
-                selectionColor={"gray"}
-                variant="underlined"
-                size={"2xl"}
-                borderColor="black"
-                bgColor="white"
-                color={"black"}
-                isFocused={false}
-                isRequired={true}
-                onChangeText={onChangeSupermarket}
-                value={shoppingList.supermarket}
-                InputLeftElement={
-                  <Icon
-                    as={<FontAwesome5 name="shopping-cart" />}
-                    size={6}
-                    ml="2"
-                    marginRight={1}
-                    color="black"
-                  />
-                }
-                ref={inputSupermarket}
-                placeholder="Supermercado"
-              />
-              <FormControl.HelperText>
-                Informe o nome do supermercado.
-              </FormControl.HelperText>
-              <FormControl.ErrorMessage
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                Ops! nome do supermercado inválido.
-              </FormControl.ErrorMessage>
-            </FormControl>
-            <VStack marginTop={20} justifyItems={"flex-end"}>
-              <Button
-                rounded={20}
-                onPress={save}
-                size="sm"
-                testID="saveShoppingListBtn"
-                _text={{
-                  color: "white",
-                  fontSize: 25,
-                }}
-              >
-                Salvar
-              </Button>
+        <ScrollView
+          maxW="full"
+          w="100%"
+          h="80%"
+          _contentContainerStyle={{
+            px: "3px",
+            mb: "4",
+            minW: "50",
+          }}
+        >
+          <VStack p="3" space={10} width="100%" height={"70%"}>
+            <Center>
+              <Heading color={"black"}>Lista de compras</Heading>
+            </Center>
+            <VStack>
+              <FormControl isRequired isInvalid={inputDescriptionIsInvalid}>
+                <Input
+                  autoFocus={true}
+                  selectionColor={"gray"}
+                  variant="underlined"
+                  size={"2xl"}
+                  borderColor="black"
+                  bgColor="white"
+                  color={"black"}
+                  isFocused={true}
+                  isRequired={true}
+                  onChangeText={onChangeDescription}
+                  value={shoppingList.description}
+                  marginRight={1}
+                  InputLeftElement={
+                    <Icon
+                      as={<Entypo name="text" />}
+                      size={5}
+                      ml="2"
+                      color="black"
+                    />
+                  }
+                  placeholder="Descrição"
+                  onSubmitEditing={() => inputSupermarket.current.focus()}
+                />
+                <FormControl.HelperText>
+                  Informe o nome da lista.
+                </FormControl.HelperText>
+                <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Ops! Descrição inválida.
+                </FormControl.ErrorMessage>
+              </FormControl>
+              <FormControl isRequired isInvalid={inputSupermarketIsInvalid}>
+                <Input
+                  selectionColor={"gray"}
+                  variant="underlined"
+                  size={"2xl"}
+                  borderColor="black"
+                  bgColor="white"
+                  color={"black"}
+                  isFocused={false}
+                  isRequired={true}
+                  onChangeText={onChangeSupermarket}
+                  value={shoppingList.supermarket}
+                  InputLeftElement={
+                    <Icon
+                      as={<FontAwesome5 name="shopping-cart" />}
+                      size={6}
+                      ml="2"
+                      marginRight={1}
+                      color="black"
+                    />
+                  }
+                  ref={inputSupermarket}
+                  placeholder="Supermercado"
+                />
+                <FormControl.HelperText>
+                  Informe o nome do supermercado.
+                </FormControl.HelperText>
+                <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  Ops! nome do supermercado inválido.
+                </FormControl.ErrorMessage>
+              </FormControl>
+              <VStack marginTop={20} justifyItems={"flex-end"}>
+                <Button
+                  rounded={20}
+                  onPress={save}
+                  size="sm"
+                  testID="saveShoppingListBtn"
+                  _text={{
+                    color: "white",
+                    fontSize: 25,
+                  }}
+                >
+                  Salvar
+                </Button>
+              </VStack>
             </VStack>
           </VStack>
-        </VStack>
+        </ScrollView>
       </Box>
     </VStack>
   );

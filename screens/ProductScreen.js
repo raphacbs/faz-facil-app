@@ -130,14 +130,10 @@ export default function ProductScreen({ route, navigation }) {
   };
 
   return (
-    <NativeBaseProvider>
-      <Center flex={1} px="3" py="10">
-        <ProductComponent
-          isEditing={isFound}
-          product={product}
-          onInsert={insertProduct}
-        ></ProductComponent>
-      </Center>
-    </NativeBaseProvider>
+    <ProductComponent
+      isEditing={isFound}
+      product={product}
+      onInsert={insertProduct}
+    ></ProductComponent>
   );
 }
