@@ -9,7 +9,7 @@ import {
   Icon,
 } from "native-base";
 import React from "react";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { Zocial, MaterialIcons } from "@expo/vector-icons";
 
 const SummaryBarComponent = (props) => {
   const {
@@ -23,14 +23,14 @@ const SummaryBarComponent = (props) => {
   return (
     <VStack
       justifyContent={"center"}
-      flex={2}
+      flex={1}
       bgColor={"theme.principal"}
       borderColor="white"
     >
       <Center>
         <HStack
           w="95%"
-          h="75%"
+          h="85%"
           bgColor={"primary.300"}
           rounded={30}
           justifyContent="space-between"
@@ -52,20 +52,16 @@ const SummaryBarComponent = (props) => {
                 >
                   {totalProducts}
                 </Badge>
-                <Icon
-                  as={FontAwesome5}
-                  name="shopping-basket"
-                  color="white"
-                  size={9}
-                />
+                <Icon as={Zocial} name="cart" color="black" size={9} />
               </VStack>
             </Box>
           </Center>
           <Center h="100%" w="30%">
             <IconButton
+              marginBottom={5}
               onPress={onPressAddItem}
               rounded={30}
-              shadow={10}
+              shadow={20}
               size={"lg"}
               alignSelf={"center"}
               colorScheme="indigo"
@@ -79,9 +75,11 @@ const SummaryBarComponent = (props) => {
             />
           </Center>
           <Center h="100%" w="30%">
-            <Text fontWeight={"black"} fontSize="xl">
-              {amount}
-            </Text>
+            <Box alignItems="center">
+              <Text fontWeight={"black"} fontSize="xl">
+                {amount}
+              </Text>
+            </Box>
           </Center>
         </HStack>
       </Center>

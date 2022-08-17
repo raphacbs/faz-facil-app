@@ -6,20 +6,20 @@ import { useEffect } from "react";
 
 const CartItem = (props) => {
   const { increment, decrement } = props;
-  const [cartItem, setCartItem] = useState({ ...props.cartItem });
+  // const [cartItem, setCartItem] = useState({ ...props.cartItem });
 
   useEffect(() => {
-    setCartItem(props.cartItem);
+    // setCartItem(props.cartItem);
   }, [props.cartItem]);
 
   const update = (value) => {
-    const item = {
-      id: cartItem.id,
-      unitValue: cartItem.unitValue,
+    const cartItem = {
+      id: props.cartItem.id,
       amountOfProduct: value,
+      unitValue: props.cartItem.unitValue,
     };
-    console.log(item);
-    increment(item);
+    // setCartItem(item);
+    increment(cartItem);
   };
 
   const onBlur = (value) => {
@@ -46,7 +46,7 @@ const CartItem = (props) => {
               alignSelf="flex-start"
               size="md"
               source={{
-                uri: cartItem.product.image,
+                uri: props.cartItem.product.image,
               }}
             >
               AJ
@@ -63,11 +63,13 @@ const CartItem = (props) => {
                 height="100%"
                 marginTop={-1}
               >
-                {cartItem.product.description}
+                {props.cartItem.product.description}
               </Text>
             </HStack>
-            <Text color="coolGray.500">{cartItem.product.manufacturer}</Text>
-            <Text color="coolGray.500">{cartItem.product.ean}</Text>
+            <Text color="coolGray.500">
+              {props.cartItem.product.manufacturer}
+            </Text>
+            <Text color="coolGray.500">{props.cartItem.product.ean}</Text>
           </VStack>
         </HStack>
         <HStack space={4}>
@@ -82,7 +84,7 @@ const CartItem = (props) => {
               variant="solid"
               startIcon={<Icon as={Ionicons} name="pricetag" color="white" />}
             >
-              {cartItem.unitValue}
+              {props.cartItem.unitValue}
             </Badge>
           </VStack>
         </HStack>
@@ -100,13 +102,13 @@ const CartItem = (props) => {
                 <Icon as={Ionicons} name="calculator" size={25} color="white" />
               }
             >
-              {cartItem.subtotal}
+              {props.cartItem.subtotal}
             </Badge>
           </VStack>
           <NumericInput
-            initValue={cartItem.amountOfProduct}
+            value={props.cartItem.amountOfProduct}
+            initValue={props.cartItem.amountOfProduct}
             onChange={(value) => {
-              setCartItem({ ...cartItem, ["amountOfProduct"]: value });
               update(value);
             }}
             rounded
@@ -114,7 +116,7 @@ const CartItem = (props) => {
             leftButtonBackgroundColor="white"
             borderColor="black"
             inputStyle={{ backgroundColor: "white", borderColor: "black" }}
-            editable={true}
+            editable={false}
             onBlur={onBlur}
             selectTextOnFocus={true}
           />

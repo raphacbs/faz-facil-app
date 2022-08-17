@@ -16,6 +16,14 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const [cartItems, setCartItems] = useState([]);
   const [data, setData] = useState([]);
 
+  useEffect(() => {
+    getItems();
+    const willFocusSubscription = navigation.addListener("focus", () => {
+      getItems();
+    });
+    return willFocusSubscription;
+  }, [navigation]);
+
   const onRefresh = async () => {
     setLoading(true);
     await getItems();
@@ -107,14 +115,6 @@ export default function ShoppingCartScreen({ route, navigation }) {
       <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
     </SwipeableItem>
   );
-
-  useEffect(() => {
-    getItems();
-    const willFocusSubscription = navigation.addListener("focus", () => {
-      getItems();
-    });
-    return willFocusSubscription;
-  }, [navigation]);
 
   return (
     <View
