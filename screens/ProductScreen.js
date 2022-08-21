@@ -203,7 +203,7 @@ export default function ProductScreen({ route, navigation }) {
       };
 
       console.log("formData", formData);
-      const url = `http://192.168.1.13:8081/api/v1/products`;
+      const url = `${BASE_URL_DEV}/api/v1/products`;
       console.log("url", url);
       const response = await fetch(url, options);
       console.log("url", response);
