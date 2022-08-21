@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
-import { Center, NativeBaseProvider, Toast } from "native-base";
+import { Center, NativeBaseProvider, VStack, Toast, Icon } from "native-base";
 import ProductComponent from "../components/ProductComponent";
+import LoadingComponent from "../components/LoadingComponent";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function ProductScreen({ route, navigation }) {
+  const [isLoading, setLoading] = useState(false);
   const [ean, setEan] = useState(route.params.ean);
   const [isFound, setIsFound] = useState(false);
+  const [isEdit, setEdit] = useState(false);
   const [idShoppingCart, setIdShoppingCart] = useState(
     route.params.idShoppingCart
   );
@@ -31,13 +35,14 @@ export default function ProductScreen({ route, navigation }) {
         setIsFound(true);
         const json = await response.json();
         setProduct(json);
+        setEdit(false);
         console.log(product);
       } else {
         setProduct({ ...product, ["ean"]: ean });
-
+        setEdit(true);
         Toast.show({
-          title: "Produto não cadastrado na base! Insira os dados!",
-          backgroundColor: "yellow.500",
+          title: "Produto não cadastrado na base. Insira os dados!",
+          backgroundColor: "blue.500",
         });
       }
     } catch (error) {
@@ -46,11 +51,23 @@ export default function ProductScreen({ route, navigation }) {
     }
   };
 
-  const insertProduct = async (product) => {
+  const insertProduct = async (product, isEditing) => {
     try {
+      setLoading(true);
       if (!isFound) {
         product.id = await registeProduct(product);
+        if (product.id == 0) {
+          return;
+        }
       }
+
+      if (isEditing) {
+        let isUpdated = await updateProduct(product);
+        if (!isUpdated) {
+          return;
+        }
+      }
+
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${idShoppingCart}/cart-item`;
       const body = {
         productId: product.id,
@@ -75,6 +92,69 @@ export default function ProductScreen({ route, navigation }) {
         console.log("Produto não inserido!");
       }
     } catch (error) {
+      console.error("ocorreu um erro");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateProduct = async (product) => {
+    try {
+      const body = {
+        description: product.description.toUpperCase(),
+        manufacturer: product.manufacturer.toUpperCase(),
+        image: product.image,
+        ean: product.ean,
+        id: product.id,
+        createAt: null,
+        updateAt: null,
+      };
+
+      const formData = new FormData();
+      if (product.image == undefined || product.image.includes("http")) {
+        Toast.show({
+          title: "Selecione, capture uma imagem ou desabilite o modo edição",
+          backgroundColor: "blue.500",
+        });
+        return 0;
+      }
+      let uriParts = product.image.split(".");
+      let fileType = uriParts[uriParts.length - 1];
+
+      formData.append("photo", {
+        uri: product.image,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      formData.append("product", JSON.stringify(body));
+
+      let options = {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      console.log("formData", formData);
+      const url = `http://192.168.1.13:8081/api/v1/products`;
+      console.log("url", url);
+      const response = await fetch(url, options);
+      console.log("url", response);
+      if (response.status == 201) {
+        const productSaved = await response.json();
+        console.log("salvou", JSON.stringify(productSaved));
+        return productSaved.id;
+      } else {
+        console.log(JSON.stringify(response));
+        console.log("Produto não registrado!");
+        return 0;
+      }
+    } catch (error) {
+      console.log("erro", JSON.stringify(error));
       console.error(error);
     } finally {
     }
@@ -82,33 +162,62 @@ export default function ProductScreen({ route, navigation }) {
 
   const registeProduct = async (product) => {
     try {
-      console.log("entrou", JSON.stringify(product));
-      const url = `${BASE_URL_DEV}/api/v1/products`;
       const body = {
         description: product.description.toUpperCase(),
         manufacturer: product.manufacturer.toUpperCase(),
-        image:
-          "https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4",
+        image: product.image,
         ean: product.ean,
       };
-      console.log("body", JSON.stringify(body));
-      const response = await fetch(url, {
+
+      const formData = new FormData();
+      if (
+        product.image == undefined ||
+        (!product.image.includes(".jpeg") &&
+          !product.image.includes(".jpg") &&
+          !product.image.includes(".png"))
+      ) {
+        Toast.show({
+          title: "Selecione ou capture uma imagem! ",
+          backgroundColor: "blue.500",
+        });
+        return 0;
+      }
+      let uriParts = product.image.split(".");
+      let fileType = uriParts[uriParts.length - 1];
+
+      formData.append("photo", {
+        uri: product.image,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      formData.append("data", JSON.stringify(product));
+
+      let options = {
         method: "POST",
+        body: formData,
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
-        body: JSON.stringify(body),
-      });
-      if (response.status == 200) {
+      };
+
+      console.log("formData", formData);
+      const url = `http://192.168.1.13:8081/api/v1/products`;
+      console.log("url", url);
+      const response = await fetch(url, options);
+      console.log("url", response);
+      if (response.status == 201) {
         const productSaved = await response.json();
         console.log("salvou", JSON.stringify(productSaved));
         return productSaved.id;
       } else {
         console.log(JSON.stringify(response));
         console.log("Produto não registrado!");
+        return 0;
       }
     } catch (error) {
+      console.log("erro", JSON.stringify(error));
       console.error(error);
     } finally {
     }
@@ -130,10 +239,12 @@ export default function ProductScreen({ route, navigation }) {
   };
 
   return (
-    <ProductComponent
-      isEditing={isFound}
-      product={product}
-      onInsert={insertProduct}
-    ></ProductComponent>
+    <LoadingComponent visible={isLoading}>
+      <ProductComponent
+        isEditing={isEdit}
+        product={product}
+        onInsert={insertProduct}
+      ></ProductComponent>
+    </LoadingComponent>
   );
 }

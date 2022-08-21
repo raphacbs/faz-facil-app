@@ -1,13 +1,17 @@
+import { Stack } from "native-base";
 import React from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 
 const LoadingComponent = (props) => {
   return (
-    <Spinner
-      visible={props.visible}
-      textContent={"Carregando..."}
-      textStyle={{ color: "#FFF" }}
-    />
+    <Stack flex={1}>
+      <Spinner
+        visible={props.visible}
+        textContent={"Carregando..."}
+        textStyle={{ color: "#FFF" }}
+      />
+      {props.children}
+    </Stack>
   );
 };
 
