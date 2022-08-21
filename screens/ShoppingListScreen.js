@@ -107,38 +107,39 @@ export default function ShoppingListScreen({ navigation }) {
 
   return (
     <Stack flex={1}>
-      <LoadingComponent visible={isLoading}></LoadingComponent>
-      <VStack w="100%" space={5} alignSelf="center">
-        <Input
-          placeholder="Pesquise pelas listas"
-          placeholderTextColor={"white"}
-          width="100%"
-          py="3"
-          px="1"
-          fontSize="14"
-          value={search}
-          onChangeText={updateSearch}
-          backgroundColor="primary.300"
-          borderColor="primary.300"
-          InputLeftElement={
-            <Icon
-              as={<MaterialIcons name="search" />}
-              size={5}
-              ml="2"
-              color="white"
-            />
-          }
+      <LoadingComponent visible={isLoading}>
+        <VStack w="100%" space={5} alignSelf="center">
+          <Input
+            placeholder="Pesquise pelas listas"
+            placeholderTextColor={"white"}
+            width="100%"
+            py="3"
+            px="1"
+            fontSize="14"
+            value={search}
+            onChangeText={updateSearch}
+            backgroundColor="primary.300"
+            borderColor="primary.300"
+            InputLeftElement={
+              <Icon
+                as={<MaterialIcons name="search" />}
+                size={5}
+                ml="2"
+                color="white"
+              />
+            }
+          />
+        </VStack>
+        <FlatList
+          flex={1}
+          backgroundColor="theme.principal"
+          keyExtractor={keyExtractor}
+          data={data}
+          renderItem={renderItem}
+          refreshing={isFetching}
+          onRefresh={onRefresh}
         />
-      </VStack>
-      <FlatList
-        flex={1}
-        backgroundColor="theme.principal"
-        keyExtractor={keyExtractor}
-        data={data}
-        renderItem={renderItem}
-        refreshing={isFetching}
-        onRefresh={onRefresh}
-      />
+      </LoadingComponent>
     </Stack>
   );
 }

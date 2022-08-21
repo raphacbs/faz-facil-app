@@ -54,6 +54,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
     try {
       setLoading(true);
       const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
+
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -124,29 +125,30 @@ export default function ShoppingCartScreen({ route, navigation }) {
         flexDirection: "column",
       }}
     >
-      <View
-        style={{
-          flex: 11,
-        }}
-      >
-        <LoadingComponent visible={isLoading}></LoadingComponent>
-        <FlatList
-          flex={1}
-          backgroundColor="theme.principal"
-          keyExtractor={keyExtractor}
-          data={cartItems.sort((a, b) => a.id - b.id)}
-          renderItem={renderItem}
-          refreshing={false}
-          onRefresh={onRefresh}
-        />
-      </View>
-      <SummaryBarComponent
-        backgroundColor="#0099e6"
-        amount={amountItems}
-        totalProducts={totalProducts}
-        totalCartItems={totalCartItems}
-        onPressAddItem={readItemCodeBar}
-      ></SummaryBarComponent>
+      <LoadingComponent visible={isLoading}>
+        <View
+          style={{
+            flex: 11,
+          }}
+        >
+          <FlatList
+            flex={1}
+            backgroundColor="theme.principal"
+            keyExtractor={keyExtractor}
+            data={cartItems.sort((a, b) => a.id - b.id)}
+            renderItem={renderItem}
+            refreshing={false}
+            onRefresh={onRefresh}
+          />
+        </View>
+        <SummaryBarComponent
+          backgroundColor="#0099e6"
+          amount={amountItems}
+          totalProducts={totalProducts}
+          totalCartItems={totalCartItems}
+          onPressAddItem={readItemCodeBar}
+        ></SummaryBarComponent>
+      </LoadingComponent>
     </View>
   );
 }

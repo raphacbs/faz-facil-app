@@ -11,6 +11,8 @@ import {
   Heading,
   Button,
   HStack,
+  Toast,
+  Center,
 } from "native-base";
 import {
   Entypo,
@@ -20,15 +22,24 @@ import {
 } from "@expo/vector-icons";
 import { Masks, useMaskedInputProps } from "react-native-mask-input";
 import NumericInput from "react-native-numeric-input";
+import CameraComponent from "./CameraComponent";
 
 const ProductComponent = (props) => {
   const [product, setProduct] = useState({ ...props.product });
   const [isEditing, setIsEditing] = useState(props.isEditing);
   const [amountOfProduct, setAmountOfProduct] = useState(1);
+  const [colorEditBtn, setColorEditBtn] = useState(
+    isEditing ? "blue.500" : "muted.400"
+  );
   const [subtotal, setSubtotal] = useState("");
   useEffect(() => {
-    setProduct(props.product);
-  }, [props.product, props.isEditing]);
+    setProduct({ ...props.product });
+  }, [props.product]);
+
+  useEffect(() => {
+    setIsEditing(props.isEditing);
+    setColorEditBtn(props.isEditing ? "blue.500" : "muted.400");
+  }, [props.isEditing]);
 
   const subTotalMaskedInputProps = useMaskedInputProps({
     value: subtotal,
@@ -59,18 +70,23 @@ const ProductComponent = (props) => {
     mask: Masks.BRL_CURRENCY,
   });
 
+  const insertImage = (path) => {
+    setProduct({ ...product, ["image"]: path });
+    console.log(product);
+  };
+
   const insert = () => {
     let item = {
       id: product.id,
       unitValue: product.unitValue.replace("R$", "").trim(),
       amountOfProduct: amountOfProduct,
-      image: "",
+      image: product.image,
       description: product.description,
       manufacturer: product.manufacturer,
       ean: product.ean,
     };
 
-    props.onInsert(item);
+    props.onInsert(item, isEditing);
   };
 
   return (
@@ -101,16 +117,30 @@ const ProductComponent = (props) => {
             minW: "50",
           }}
         >
+          <Icon
+            as={<FontAwesome name="edit" />}
+            size={8}
+            ml="3"
+            color={colorEditBtn}
+            alignSelf="flex-end"
+            marginTop={2}
+            marginRight={2}
+            onPress={() => {
+              setIsEditing(!isEditing);
+              setColorEditBtn(!isEditing ? "blue.500" : "muted.400");
+              Toast.show({
+                title: !isEditing ? "Edição habilitada" : "Edição bloqueada",
+                backgroundColor: "blue.500",
+              });
+            }}
+          />
           <VStack space={4} w="100%" h="90%" alignItems="center">
-            <Image
-              size={150}
-              resizeMode={"contain"}
-              borderRadius={100}
-              source={{
-                uri: product.image,
-              }}
-              alt="Alternate Text"
-            />
+            <CameraComponent
+              onCaptureImage={insertImage}
+              onSelectImage={insertImage}
+              pickedImagePath={product.image}
+              disabled={!isEditing}
+            ></CameraComponent>
             <Input
               size="full"
               w={{
@@ -135,7 +165,7 @@ const ProductComponent = (props) => {
                 base: "100%",
                 md: "25%",
               }}
-              isReadOnly={isEditing}
+              isReadOnly={!isEditing}
               value={product.description}
               onChangeText={(text) =>
                 setProduct({ ...product, ["description"]: text })
@@ -156,7 +186,7 @@ const ProductComponent = (props) => {
                 base: "100%",
                 md: "25%",
               }}
-              isReadOnly={isEditing}
+              isReadOnly={!isEditing}
               value={product.manufacturer}
               onChangeText={(text) =>
                 setProduct({ ...product, ["manufacturer"]: text })
@@ -211,11 +241,9 @@ const ProductComponent = (props) => {
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              <View style={{ flex: 7, justifyContent: "center" }}>
-                <Heading>Valor total:</Heading>
-              </View>
-              <View style={{ flex: 6 }}>
+              <Center flex={1}>
                 <Input
+                  borderColor={"white"}
                   {...subTotalMaskedInputProps}
                   size="2xl"
                   w={{
@@ -233,7 +261,7 @@ const ProductComponent = (props) => {
                   }
                   placeholder="0,00"
                 />
-              </View>
+              </Center>
             </View>
             <View style={{ alignItems: "stretch" }}>
               <Button
