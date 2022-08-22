@@ -27,8 +27,6 @@ export default function ProductScreen({ route, navigation }) {
 
   const handleProduct = async () => {
     try {
-      console.log("ean= " + ean);
-      console.log("route.params.ean= ", route.params.ean);
       const url = `${BASE_URL_DEV}/api/v1/products?ean=${ean}`;
       const response = await fetch(url);
       if (response.status == 200) {
@@ -36,7 +34,6 @@ export default function ProductScreen({ route, navigation }) {
         const json = await response.json();
         setProduct(json);
         setEdit(false);
-        console.log(product);
       } else {
         setProduct({ ...product, ["ean"]: ean });
         setEdit(true);
@@ -86,7 +83,6 @@ export default function ProductScreen({ route, navigation }) {
       });
       if (response.status == 200) {
         const json = await response.json();
-        console.log(json);
         navigation.goBack();
       } else {
         console.log("Produto não inserido!");
@@ -139,14 +135,10 @@ export default function ProductScreen({ route, navigation }) {
         },
       };
 
-      console.log("formData", formData);
       const url = `${BASE_URL_DEV}/api/v1/products`;
-      console.log("url", url);
       const response = await fetch(url, options);
-      console.log("url", response);
       if (response.status == 201) {
         const productSaved = await response.json();
-        console.log("salvou", JSON.stringify(productSaved));
         return productSaved.id;
       } else {
         console.log(JSON.stringify(response));
@@ -202,18 +194,12 @@ export default function ProductScreen({ route, navigation }) {
         },
       };
 
-      console.log("formData", formData);
       const url = `${BASE_URL_DEV}/api/v1/products`;
-      console.log("url", url);
       const response = await fetch(url, options);
-      console.log("url", response);
       if (response.status == 201) {
         const productSaved = await response.json();
-        console.log("salvou", JSON.stringify(productSaved));
         return productSaved.id;
       } else {
-        console.log(JSON.stringify(response));
-        console.log("Produto não registrado!");
         return 0;
       }
     } catch (error) {
@@ -224,7 +210,6 @@ export default function ProductScreen({ route, navigation }) {
   };
 
   const handleChange = (evt, t) => {
-    console.log(t);
     const value = evt.target.value;
     setProduct({
       ...product,
@@ -234,7 +219,6 @@ export default function ProductScreen({ route, navigation }) {
 
   const calculateSubtotal = (number) => {
     setAmountOfProduct(number);
-    console.log(number, product.unitValue);
     setSubtotal((number * product.unitValue).toFixed(2).replace(".", ","));
   };
 

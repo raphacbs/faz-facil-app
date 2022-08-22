@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { VStack, Avatar, Text, Center, Icon, HStack } from "native-base";
 import { TouchableOpacity } from "react-native";
@@ -6,7 +6,10 @@ import { Ionicons, Entypo } from "@expo/vector-icons";
 
 const CameraComponent = (props) => {
   const [pickedImagePath, setPickedImagePath] = useState(props.pickedImagePath);
-  console.log(pickedImagePath);
+
+  useEffect(() => {
+    setPickedImagePath(props.pickedImagePath);
+  }, [props.pickedImagePath]);
 
   const showImagePicker = async () => {
     const permissionResult =
@@ -16,11 +19,10 @@ const CameraComponent = (props) => {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync();
-    console.log(result);
+
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
       props.onSelectImage(result.uri);
-      console.log(result.uri);
     }
   };
 
@@ -31,11 +33,10 @@ const CameraComponent = (props) => {
       return;
     }
     const result = await ImagePicker.launchCameraAsync();
-    console.log(result);
+
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
       props.onCaptureImage(result.uri);
-      console.log(result.uri);
     }
   };
 

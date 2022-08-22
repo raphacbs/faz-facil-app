@@ -30,7 +30,7 @@ const SummaryBarComponent = (props) => {
       <Center>
         <HStack
           w="95%"
-          h="85%"
+          h="92%"
           bgColor={"primary.300"}
           rounded={30}
           justifyContent="space-between"
@@ -58,10 +58,10 @@ const SummaryBarComponent = (props) => {
           </Center>
           <Center h="100%" w="30%">
             <IconButton
-              marginBottom={5}
+              marginBottom={7}
               onPress={onPressAddItem}
               rounded={30}
-              shadow={20}
+              shadow={4}
               size={"lg"}
               alignSelf={"center"}
               colorScheme="indigo"

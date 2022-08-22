@@ -3,12 +3,9 @@ import {
   Input,
   Icon,
   Box,
-  Stack,
   VStack,
-  Image,
   ScrollView,
   View,
-  Heading,
   Button,
   HStack,
   Toast,
@@ -32,6 +29,7 @@ const ProductComponent = (props) => {
     isEditing ? "blue.500" : "muted.400"
   );
   const [subtotal, setSubtotal] = useState("");
+
   useEffect(() => {
     setProduct({ ...props.product });
   }, [props.product]);
@@ -72,7 +70,6 @@ const ProductComponent = (props) => {
 
   const insertImage = (path) => {
     setProduct({ ...product, ["image"]: path });
-    console.log(product);
   };
 
   const insert = () => {
