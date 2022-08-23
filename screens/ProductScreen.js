@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
-import { Center, NativeBaseProvider, VStack, Toast, Icon } from "native-base";
+import { BASE_URL } from "@env";
+import { Toast } from "native-base";
 import ProductComponent from "../components/ProductComponent";
 import LoadingComponent from "../components/LoadingComponent";
-import { FontAwesome } from "@expo/vector-icons";
 
 export default function ProductScreen({ route, navigation }) {
   const [isLoading, setLoading] = useState(false);
@@ -27,8 +26,15 @@ export default function ProductScreen({ route, navigation }) {
 
   const handleProduct = async () => {
     try {
-      const url = `${BASE_URL_DEV}/api/v1/products?ean=${ean}`;
-      const response = await fetch(url);
+      const url = `${BASE_URL}/api/v1/products?ean=${ean}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
+        },
+      });
       if (response.status == 200) {
         setIsFound(true);
         const json = await response.json();
@@ -65,7 +71,7 @@ export default function ProductScreen({ route, navigation }) {
         }
       }
 
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${idShoppingCart}/cart-item`;
+      const url = `${BASE_URL}/api/v1/shopping-carts/${idShoppingCart}/cart-item`;
       const body = {
         productId: product.id,
         unitValue: product.unitValue,
@@ -78,6 +84,7 @@ export default function ProductScreen({ route, navigation }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
         },
         body: JSON.stringify(body),
       });
@@ -132,10 +139,11 @@ export default function ProductScreen({ route, navigation }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "multipart/form-data",
+          "X-API-KEY": X_API_KEY,
         },
       };
 
-      const url = `${BASE_URL_DEV}/api/v1/products`;
+      const url = `${BASE_URL}/api/v1/products`;
       const response = await fetch(url, options);
       if (response.status == 201) {
         const productSaved = await response.json();
@@ -191,10 +199,11 @@ export default function ProductScreen({ route, navigation }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "multipart/form-data",
+          "X-API-KEY": X_API_KEY,
         },
       };
 
-      const url = `${BASE_URL_DEV}/api/v1/products`;
+      const url = `${BASE_URL}/api/v1/products`;
       const response = await fetch(url, options);
       if (response.status == 201) {
         const productSaved = await response.json();

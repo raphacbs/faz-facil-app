@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ShoppingListComponent from "../components/ShoppingListComponent";
-import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
+import { BASE_URL, X_API_KEY } from "@env";
 import SwipeableItem from "../components/Swipeable";
 
 import LoadingComponent from "../components/LoadingComponent";
@@ -21,8 +21,15 @@ export default function ShoppingListScreen({ navigation }) {
   const getShoppingList = async () => {
     try {
       setLoading(true);
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts?isArchived=false`;
-      const response = await fetch(url);
+      const url = `${BASE_URL}/api/v1/shopping-carts?isArchived=false`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
+        },
+      });
       const json = await response.json();
       setData(json);
       setFullData(json);
@@ -44,12 +51,13 @@ export default function ShoppingListScreen({ navigation }) {
         archived: true,
       };
 
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
+      const url = `${BASE_URL}/api/v1/shopping-carts`;
       const response = await fetch(url, {
         method: "PUT",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
         },
         body: JSON.stringify(body),
       });
@@ -68,7 +76,7 @@ export default function ShoppingListScreen({ navigation }) {
       getShoppingList();
     });
     return willFocusSubscription;
-  }, [navigation]);
+  }, []);
 
   const keyExtractor = (item) => item.id;
 
@@ -108,18 +116,27 @@ export default function ShoppingListScreen({ navigation }) {
   return (
     <Stack flex={1}>
       <LoadingComponent visible={isLoading}>
-        <VStack w="100%" space={5} alignSelf="center">
+        <VStack
+          w="100%"
+          space={5}
+          alignSelf="center"
+          bgColor={"theme.principal"}
+          p={2}
+        >
           <Input
             placeholder="Pesquise pelas listas"
+            marginTop={2}
             placeholderTextColor={"white"}
             width="100%"
             py="3"
             px="1"
+            color={"white"}
             fontSize="14"
             value={search}
             onChangeText={updateSearch}
             backgroundColor="primary.300"
             borderColor="primary.300"
+            rounded={30}
             InputLeftElement={
               <Icon
                 as={<MaterialIcons name="search" />}

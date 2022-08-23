@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View } from "react-native";
-import { BASE_URL_DEV, BASE_URL_PRD, BASE_URL_LOCAL } from "@env";
+import { BASE_URL, X_API_KEY } from "@env";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
-import { Toast, FlatList } from "native-base";
+import { Toast, FlatList, Input, Icon, VStack, Stack } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 import LoadingComponent from "../components/LoadingComponent";
 import SwipeableItem from "../components/Swipeable";
 
@@ -14,7 +15,8 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCartItems, setTotalCartItems] = useState(0);
   const [cartItems, setCartItems] = useState([]);
-  const [data, setData] = useState([]);
+  const [fullCartItems, setFullCartItems] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     getItems();
@@ -35,10 +37,17 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const getItems = async () => {
     try {
       setLoading(true);
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
-      const response = await fetch(url);
+      const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
+        },
+      });
       const json = await response.json();
-      setData(json);
+      setFullCartItems(json.cartItems);
       setAmountItems(json.amountItems);
       setCartItems(json.cartItems);
       setTotalCartItems(json.totalCartItems);
@@ -53,13 +62,14 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const edit = async (cartItem) => {
     try {
       setLoading(true);
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts/${id}/cart-item`;
+      const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
 
       const response = await fetch(url, {
         method: "PUT",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
         },
         body: JSON.stringify(cartItem),
       });
@@ -80,12 +90,13 @@ export default function ShoppingCartScreen({ route, navigation }) {
     try {
       console.log("entrou");
       setLoading(true);
-      const url = `${BASE_URL_DEV}/api/v1/cart-items/${cartItem.id}`;
+      const url = `${BASE_URL}/api/v1/cart-items/${cartItem.id}`;
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
         },
       });
       const json = await response.json();
@@ -117,6 +128,17 @@ export default function ShoppingCartScreen({ route, navigation }) {
     </SwipeableItem>
   );
 
+  const updateSearch = (search) => {
+    setSearch(search);
+    const filteredData = fullCartItems.filter(
+      (x) =>
+        x.product.description.toLowerCase().includes(search.toLowerCase()) ||
+        x.product.manufacturer.toLowerCase().includes(search.toLowerCase()) ||
+        x.product.ean.toLowerCase().includes(search.toLowerCase())
+    );
+    setCartItems(search == "" ? fullCartItems : filteredData);
+  };
+
   return (
     <View
       style={{
@@ -131,14 +153,62 @@ export default function ShoppingCartScreen({ route, navigation }) {
             flex: 11,
           }}
         >
+          <VStack
+            w="100%"
+            space={5}
+            alignSelf="center"
+            bgColor={"theme.principal"}
+            p={2}
+          >
+            <Input
+              placeholder="Pesquise por nome, fab e cód de produtos"
+              marginTop={2}
+              placeholderTextColor={"white"}
+              width="100%"
+              py="3"
+              px="1"
+              color={"white"}
+              fontSize="14"
+              value={search}
+              onChangeText={updateSearch}
+              backgroundColor="primary.300"
+              borderColor="primary.300"
+              rounded={30}
+              InputLeftElement={
+                <Icon
+                  as={<MaterialIcons name="search" />}
+                  size={5}
+                  ml="2"
+                  color="white"
+                />
+              }
+              InputRightElement={
+                search != "" ? (
+                  <Icon
+                    as={<MaterialIcons name="close" />}
+                    size={6}
+                    ml="2"
+                    marginRight={5}
+                    color="white"
+                    onPress={() => {
+                      updateSearch("");
+                    }}
+                  />
+                ) : (
+                  ""
+                )
+              }
+            />
+          </VStack>
           <FlatList
             flex={1}
             backgroundColor="theme.principal"
             keyExtractor={keyExtractor}
-            data={cartItems.sort((a, b) => a.id - b.id)}
+            data={cartItems}
             renderItem={renderItem}
             refreshing={false}
             onRefresh={onRefresh}
+            // initialNumToRender={10}
           />
         </View>
         <SummaryBarComponent

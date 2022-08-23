@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { BASE_URL_DEV, BASE_URL_PRD } from "@env";
+import { BASE_URL } from "@env";
 import {
   Input,
   Icon,
@@ -56,7 +56,7 @@ export default function CreateShoppingListScreen({ route, navigation }) {
     }
     setLoading(true);
     try {
-      const url = `${BASE_URL_DEV}/api/v1/shopping-carts`;
+      const url = `${BASE_URL}/api/v1/shopping-carts`;
       const shoppingListToSave = {
         id: shoppingList.id,
         description: shoppingList.description,
@@ -68,6 +68,7 @@ export default function CreateShoppingListScreen({ route, navigation }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
         },
         body: JSON.stringify(shoppingListToSave),
       });
