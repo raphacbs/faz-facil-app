@@ -4,7 +4,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 const LoadingComponent = (props) => {
   return (
-    <Stack flex={1}>
+    <Stack {...props} flex={1}>
       <Spinner
         visible={props.visible}
         textContent={"Carregando..."}

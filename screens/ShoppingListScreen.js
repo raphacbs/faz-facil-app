@@ -86,7 +86,7 @@ export default function ShoppingListScreen({ navigation }) {
       onPressLeftButton={() => {
         navigation.navigate("CreateShoppingList", item);
       }}
-      rightTitleButton="Arquivar"
+      rightTitleButton="Excluir"
       onPressRightButton={() => {
         archive(item);
       }}

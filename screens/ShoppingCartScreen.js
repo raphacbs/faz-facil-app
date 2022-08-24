@@ -63,7 +63,6 @@ export default function ShoppingCartScreen({ route, navigation }) {
     try {
       setLoading(true);
       const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
-
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -88,7 +87,6 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   const removerCartItem = async (cartItem) => {
     try {
-      console.log("entrou");
       setLoading(true);
       const url = `${BASE_URL}/api/v1/cart-items/${cartItem.id}`;
       const response = await fetch(url, {
