@@ -79,7 +79,7 @@ const ProductComponent = (props) => {
       amountOfProduct: amountOfProduct,
       image: product.image,
       description: product.description,
-      manufacturer: product.manufacturer,
+      brand: product.brand,
       ean: product.ean,
     };
 
@@ -184,9 +184,9 @@ const ProductComponent = (props) => {
                 md: "25%",
               }}
               isReadOnly={!isEditing}
-              value={product.manufacturer}
+              value={product.brand}
               onChangeText={(text) =>
-                setProduct({ ...product, ["manufacturer"]: text })
+                setProduct({ ...product, ["brand"]: text })
               }
               InputLeftElement={
                 <Icon

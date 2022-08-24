@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "@env";
+import { BASE_URL, X_API_KEY } from "@env";
 import { Toast } from "native-base";
 import ProductComponent from "../components/ProductComponent";
 import LoadingComponent from "../components/LoadingComponent";
@@ -106,7 +106,7 @@ export default function ProductScreen({ route, navigation }) {
     try {
       const body = {
         description: product.description.toUpperCase(),
-        manufacturer: product.manufacturer.toUpperCase(),
+        brand: product.brand.toUpperCase(),
         image: product.image,
         ean: product.ean,
         id: product.id,
@@ -164,7 +164,7 @@ export default function ProductScreen({ route, navigation }) {
     try {
       const body = {
         description: product.description.toUpperCase(),
-        manufacturer: product.manufacturer.toUpperCase(),
+        brand: product.brand.toUpperCase(),
         image: product.image,
         ean: product.ean,
       };

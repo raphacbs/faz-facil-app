@@ -133,7 +133,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
     const filteredData = fullCartItems.filter(
       (x) =>
         x.product.description.toLowerCase().includes(search.toLowerCase()) ||
-        x.product.manufacturer.toLowerCase().includes(search.toLowerCase()) ||
+        x.product.brand.toLowerCase().includes(search.toLowerCase()) ||
         x.product.ean.toLowerCase().includes(search.toLowerCase())
     );
     setCartItems(search == "" ? fullCartItems : filteredData);
