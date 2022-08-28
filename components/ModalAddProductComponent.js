@@ -15,6 +15,7 @@ const ModalAddProductComponent = (props) => {
   const [price, setPrice] = useState("");
   const [amountOfProduct, setAmountOfProduct] = useState(1);
   const [isLoading, setLoading] = useState(false);
+  console.log(BASE_URL);
 
   useEffect(() => {
     handleSubtotal(amountOfProduct);
