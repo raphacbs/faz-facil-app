@@ -6,7 +6,6 @@ import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
 import { Toast, FlatList, Input, Icon, VStack, Stack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import LoadingComponent from "../components/LoadingComponent";
-import SwipeableItem from "../components/Swipeable";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
@@ -53,7 +52,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
       setCartItems(json.cartItems);
       setTotalCartItems(json.totalCartItems);
       setTotalProducts(json.totalProducts);
-      navigation.setOptions({ title: "Cria lista" });
+      // navigation.setOptions({ title: "Cria lista" });
     } catch (error) {
       console.error(error);
     } finally {
@@ -123,14 +122,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <SwipeableItem
-      rightTitleButton="Remover"
-      onPressRightButton={() => {
-        removerCartItem(item);
-      }}
-    >
-      <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
-    </SwipeableItem>
+    <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
   );
 
   const updateSearch = (search) => {

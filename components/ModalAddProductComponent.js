@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { BASE_URL, X_API_KEY } from "@env";
-import { Input, AlertDialog, Button, Text, Center, Heading } from "native-base";
+import {
+  Input,
+  AlertDialog,
+  Button,
+  Text,
+  Center,
+  Heading,
+  Toast,
+} from "native-base";
 
 import { Masks, useMaskedInputProps } from "react-native-mask-input";
 import NumericInput from "react-native-numeric-input";
@@ -15,7 +23,13 @@ const ModalAddProductComponent = (props) => {
   const [price, setPrice] = useState("");
   const [amountOfProduct, setAmountOfProduct] = useState(1);
   const [isLoading, setLoading] = useState(false);
+  const [isFocused, setFocused] = useState(false);
+
   console.log(BASE_URL);
+
+  useEffect(() => {
+    setFocused(true);
+  }, []);
 
   useEffect(() => {
     handleSubtotal(amountOfProduct);
@@ -57,12 +71,20 @@ const ModalAddProductComponent = (props) => {
   };
 
   const onPressAdd = async () => {
+    const _price = price.replace("R$ ", "");
+    if (_price == "" || _price == "0") {
+      Toast.show({
+        title: "Insira o preço do produto!",
+        backgroundColor: "blue.500",
+      });
+      return;
+    }
     try {
       setLoading(true);
       const url = `${BASE_URL}/api/v1/shopping-carts/${shoppingCartId}/cart-item`;
       const body = {
         productId: product.id,
-        unitValue: price.replace("R$ ", ""),
+        unitValue: _price,
         amountOfProduct: amountOfProduct,
         image: product.image,
       };
@@ -126,7 +148,7 @@ const ModalAddProductComponent = (props) => {
                 rounded
               />
               <Input
-                autoFocus={true}
+                autoFocus={isFocused}
                 fontSize={"2xl"}
                 ref={initialRef}
                 size="2xl"
@@ -146,10 +168,10 @@ const ModalAddProductComponent = (props) => {
                 Total: {subtotal}
               </Heading>
               <Text alignSelf={"flex-start"} italic>
-                <Text bold>Último preço: </Text> R$ 200,00
+                <Text bold>Último preço: </Text> R$ xxx,xx
               </Text>
               <Text alignSelf={"flex-start"} italic>
-                <Text bold>Média 3 meses: </Text> R$ 200,00
+                <Text bold>Média 3 meses: </Text> R$ xxx,xx
               </Text>
             </Center>
           </AlertDialog.Body>

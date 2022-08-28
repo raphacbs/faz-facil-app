@@ -9,7 +9,7 @@ import {
   Icon,
 } from "native-base";
 import React from "react";
-import { Zocial, MaterialIcons } from "@expo/vector-icons";
+import { Zocial, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const SummaryBarComponent = (props) => {
   const {
@@ -69,8 +69,8 @@ const SummaryBarComponent = (props) => {
               alignContent={"center"}
               _icon={{
                 size: 35,
-                as: MaterialIcons,
-                name: "add-shopping-cart",
+                as: MaterialCommunityIcons,
+                name: "cart-arrow-down",
               }}
             />
           </Center>

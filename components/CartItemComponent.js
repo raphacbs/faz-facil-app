@@ -1,25 +1,40 @@
 import React, { useState } from "react";
-import { VStack, HStack, Badge, Icon, Text, Box, Avatar } from "native-base";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  VStack,
+  HStack,
+  Badge,
+  Icon,
+  Text,
+  Box,
+  Center,
+  Image,
+  Button,
+  IconButton,
+  Divider,
+  Flex,
+  Input,
+  Heading,
+} from "native-base";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import NumericInput from "react-native-numeric-input";
 import { useEffect } from "react";
 
 const CartItem = (props) => {
   const { increment, decrement } = props;
-  // const [cartItem, setCartItem] = useState({ ...props.cartItem });
+  const { cartItem } = props;
 
-  useEffect(() => {
-    // setCartItem(props.cartItem);
-  }, [props.cartItem]);
+  // useEffect(() => {
+  //   // setCartItem(props.cartItem);
+  // }, [props.cartItem]);
 
   const update = (value) => {
-    const cartItem = {
-      id: props.cartItem.id,
+    const _cartItem = {
+      id: cartItem.id,
       amountOfProduct: value,
-      unitValue: props.cartItem.unitValue,
+      unitValue: cartItem.unitValue,
     };
     // setCartItem(item);
-    increment(cartItem);
+    increment(_cartItem);
   };
 
   const onBlur = (value) => {
@@ -39,7 +54,94 @@ const CartItem = (props) => {
       rounded="8"
       margin={3}
     >
-      <VStack space="2.5" mt="2" px="0.5">
+      <HStack space={2}>
+        <VStack flex={1}>
+          <Center>
+            <Image
+              source={{
+                uri: cartItem.product.image,
+              }}
+              fallbackSource={{
+                uri: "https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4",
+              }}
+              alt="Product Image"
+              size="xl"
+            />
+          </Center>
+        </VStack>
+        <VStack flex={3}>
+          <Heading size="xs">{cartItem.product.description}</Heading>
+          <Text fontSize="sm">{cartItem.product.brand}</Text>
+          <Text fontSize="sm">{cartItem.product.ean}</Text>
+          <HStack space={3}>
+            <VStack>
+              <Text fontSize="sm">Preço</Text>
+              <Text fontWeight={"bold"} fontSize="sm">
+                {cartItem.unitValue}
+              </Text>
+            </VStack>
+            <VStack>
+              <Text fontSize="sm">Total</Text>
+              <Text fontWeight={"bold"} fontSize="sm">
+                {cartItem.subtotal}
+              </Text>
+            </VStack>
+
+            <VStack>
+              <Text fontSize="sm">QTD</Text>
+              <Text fontWeight={"bold"} fontSize="sm">
+                {cartItem.amountOfProduct}
+              </Text>
+            </VStack>
+          </HStack>
+        </VStack>
+        <VStack flex={1} justifyContent="space-between">
+          <HStack justifyContent="flex-end">
+            <IconButton
+              colorScheme="danger"
+              variant={"ghost"}
+              _icon={{
+                as: MaterialCommunityIcons,
+                name: "cart-arrow-up",
+              }}
+              onPress={() => {
+                if (props.onRemove != undefined) {
+                  props.onRemove();
+                }
+              }}
+            />
+          </HStack>
+          <HStack justifyContent={"flex-end"}>
+            <IconButton
+              size={"sm"}
+              colorScheme="success"
+              variant={"solid"}
+              _icon={{
+                as: MaterialCommunityIcons,
+                name: "minus-thick",
+              }}
+              onPress={() => {
+                let amount = cartItem.amountOfProduct - 1;
+                update(amount);
+              }}
+            />
+            <IconButton
+              size={"sm"}
+              colorScheme="success"
+              variant={"solid"}
+              _icon={{
+                as: MaterialCommunityIcons,
+                name: "plus-thick",
+              }}
+              onPress={() => {
+                let amount = cartItem.amountOfProduct + 1;
+                update(amount);
+              }}
+            />
+          </HStack>
+        </VStack>
+      </HStack>
+      {/* <VStack space="2.5" mt="2" px="0.5">
         <HStack space={1} width="100%" justifyContent="space-between">
           <VStack>
             <Avatar
@@ -119,7 +221,7 @@ const CartItem = (props) => {
             selectTextOnFocus={true}
           />
         </HStack>
-      </VStack>
+      </VStack> */}
     </Box>
   );
 };
