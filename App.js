@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createNavigationContainerRef } from "@react-navigation/native";
@@ -9,12 +9,26 @@ import CreateShoppingListScreen from "./screens/CreateShoppingListScreen";
 import BarCodeScanScreen from "./screens/BarCodeScanScreen";
 import ProductScreen from "./screens/ProductScreen";
 import { NativeBaseProvider, extendTheme, IconButton, Icon } from "native-base";
-import { FontAwesome, MaterialIcons, Zocial } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as SplashScreen from "expo-splash-screen";
+import SearchProduct from "./screens/SearchProductScreen";
 
 const Stack = createNativeStackNavigator();
 const navigationRef = createNavigationContainerRef();
 
 function App() {
+  // SplashScreen.preventAutoHideAsync()
+  //   .then((result) =>
+  //     console.log(`SplashScreen.preventAutoHideAsync() succeeded: ${result}`)
+  //   )
+  //   .catch(console.warn);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      await SplashScreen.hideAsync();
+    }, 5000);
+  }, []);
+
   const theme = extendTheme({
     colors: {
       // Add new color
@@ -93,7 +107,7 @@ function App() {
             name="ShoppingCart"
             component={ShoppingCartScreen}
             options={({ route }) => ({
-              title: route.params.name,
+              title: "Itens",
               headerStyle: {
                 backgroundColor: "#0099e6",
               },
@@ -127,6 +141,17 @@ function App() {
             component={ProductScreen}
             options={{
               title: "Produto",
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="SearchProduct"
+            component={SearchProduct}
+            options={{
+              title: "Buscar produto",
               headerStyle: {
                 backgroundColor: "#0099e6",
               },

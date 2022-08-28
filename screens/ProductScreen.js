@@ -3,6 +3,7 @@ import { BASE_URL, X_API_KEY } from "@env";
 import { Toast } from "native-base";
 import ProductComponent from "../components/ProductComponent";
 import LoadingComponent from "../components/LoadingComponent";
+import { CommonActions } from "@react-navigation/native";
 
 export default function ProductScreen({ route, navigation }) {
   const [isLoading, setLoading] = useState(false);
@@ -20,6 +21,14 @@ export default function ProductScreen({ route, navigation }) {
   });
   const [amountOfProduct, setAmountOfProduct] = useState(1);
 
+  navigation.dispatch((state) => {
+    const routes = state.routes.filter((r) => r.name !== "ReadBarCode");
+    return CommonActions.reset({
+      ...state,
+      routes,
+      index: routes.length - 1,
+    });
+  });
   useEffect(() => {
     handleProduct();
   }, [route.params.ean]);
@@ -38,7 +47,8 @@ export default function ProductScreen({ route, navigation }) {
       if (response.status == 200) {
         setIsFound(true);
         const json = await response.json();
-        setProduct(json);
+        console.log(JSON.stringify(json));
+        setProduct(json.products[0]);
         setEdit(false);
       } else {
         setProduct({ ...product, ["ean"]: ean });
@@ -90,7 +100,7 @@ export default function ProductScreen({ route, navigation }) {
       });
       if (response.status == 200) {
         const json = await response.json();
-        navigation.goBack();
+        navigation.pop(2);
       } else {
         console.log("Produto não inserido!");
       }

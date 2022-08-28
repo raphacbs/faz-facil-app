@@ -1,25 +1,37 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, TouchableOpacity, Dimensions, Text } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import BarcodeMask from "react-native-barcode-mask";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, Button, AlertDialog, Input, Icon } from "native-base";
+import {
+  View,
+  Button,
+  AlertDialog,
+  Input,
+  Icon,
+  VStack,
+  HStack,
+} from "native-base";
 import { Audio } from "expo-av";
 
 export default function BarCodeScanScreen({ route, navigation }, props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [showDialog, setShowDialog] = useState(
+    route.params.scannerAgain == undefined ? false : true
+  );
+  const cancelRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [ean, setEan] = useState("");
+
   const finderWidth = 280;
   const finderHeight = 230;
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
   const viewMinX = (width - finderWidth) / 2;
   const viewMinY = (height - finderHeight) / 2;
-  const onClose = () => setIsOpen(false);
 
-  const cancelRef = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [ean, setEan] = useState("");
+  const onClose = () => setShowDialog(false);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -30,10 +42,14 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
   }, []);
 
   const sendEan = (ean) => {
-    console.log("ean", ean);
+    console.log("route.params", route.params);
     setEan(ean);
-    navigation.goBack();
-    route.params.onGoBack(ean);
+    navigation.navigate("Product", {
+      idShoppingCart: route.params.idShoppingCart,
+      ean,
+    });
+    // navigation.goBack();
+    // route.params.onGoBack(ean);
   };
 
   const playBeep = async () => {
@@ -44,6 +60,8 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
   };
 
   const handleBarCodeScanned = (scanningResult) => {
+    console.log("Entrou: " + scanningResult);
+    console.log("scanned: " + scanned);
     if (!scanned) {
       const { type, data, bounds: { origin } = {} } = scanningResult;
       const { x, y } = origin;
@@ -68,94 +86,48 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
   }
 
   return (
-    <View style={styles.container}>
+    <VStack flex={1}>
       <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarCodeScanned={handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      <View
+      <TouchableOpacity
         style={{
           flex: 1,
-          backgroundColor: "transparent",
-          flexDirection: "row",
+          alignItems: "flex-end",
         }}
-      >
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            alignItems: "flex-end",
-          }}
-          onPress={() => {
-            setType(
-              type === BarCodeScanner.Constants.Type.back
-                ? BarCodeScanner.Constants.Type.front
-                : BarCodeScanner.Constants.Type.back
-            );
-          }}
-        ></TouchableOpacity>
-      </View>
+        onPress={() => {
+          setType(
+            type === BarCodeScanner.Constants.Type.back
+              ? BarCodeScanner.Constants.Type.front
+              : BarCodeScanner.Constants.Type.back
+          );
+        }}
+      ></TouchableOpacity>
+
       <BarcodeMask
         width={300}
         height={100}
         edgeColor={"#62B1F6"}
         showAnimatedLine
       />
-      <Button colorScheme="blue" onPress={() => setIsOpen(!isOpen)}>
-        Digitar código
-      </Button>
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>Informe o Código de Barra</AlertDialog.Header>
-          <AlertDialog.Body>
-            <Input
-              size="full"
-              w={{
-                base: "100%",
-                md: "25%",
-              }}
-              value={ean}
-              onChangeText={(text) => setEan(text)}
-              autoFocus={true}
-              keyboardType="numeric"
-              InputLeftElement={
-                <Icon
-                  as={<FontAwesome name="barcode" />}
-                  size={6}
-                  ml="3"
-                  color="muted.400"
-                />
-              }
-              placeholder="código de barras"
-            />
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={onClose}
-                ref={cancelRef}
-              >
-                Cancelar
-              </Button>
-              <Button
-                colorScheme="green"
-                onPress={() => {
-                  sendEan(ean);
-                }}
-              >
-                Pesquisar
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
-    </View>
+      <HStack justifyContent={"center"}>
+        <Button
+          rounded={20}
+          colorScheme="blue"
+          onPress={() => {
+            navigation.navigate("SearchProduct", {
+              shoppingCartId: route.params.idShoppingCart,
+            });
+            // playBeep();
+            // setScanned(true);
+            // sendEan("7896012300916");
+          }}
+        >
+          Buscar por nome
+        </Button>
+      </HStack>
+    </VStack>
   );
 }
 

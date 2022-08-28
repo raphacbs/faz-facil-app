@@ -52,6 +52,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
       setCartItems(json.cartItems);
       setTotalCartItems(json.totalCartItems);
       setTotalProducts(json.totalProducts);
+      navigation.setOptions({ title: "Cria lista" });
     } catch (error) {
       console.error(error);
     } finally {
@@ -109,10 +110,15 @@ export default function ShoppingCartScreen({ route, navigation }) {
 
   const readItemCodeBar = () => {
     navigation.navigate("ReadBarCode", {
-      onGoBack: (ean) => {
-        navigation.navigate("Product", { ean, idShoppingCart: id });
-      },
+      idShoppingCart: id,
+      scannerAgain: false,
     });
+
+    // navigation.navigate("ReadBarCode", {
+    //   onGoBack: (ean) => {
+    //     navigation.navigate("Product", { ean, idShoppingCart: id });
+    //   },
+    // });
   };
 
   const renderItem = ({ item }) => (

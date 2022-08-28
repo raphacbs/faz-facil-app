@@ -126,7 +126,9 @@ const ProductComponent = (props) => {
               setIsEditing(!isEditing);
               setColorEditBtn(!isEditing ? "blue.500" : "muted.400");
               Toast.show({
-                title: !isEditing ? "Edição habilitada" : "Edição bloqueada",
+                title: !isEditing
+                  ? "Modo edição habilitado"
+                  : "Modo edição bloqueado",
                 backgroundColor: "blue.500",
               });
             }}
