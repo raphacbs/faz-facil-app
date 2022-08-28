@@ -17,6 +17,7 @@ import LoadingComponent from "../components/LoadingComponent";
 
 export default function CreateShoppingListScreen({ route, navigation }) {
   const inputSupermarket = useRef();
+  console.log(BASE_URL);
 
   useEffect(() => {
     if (route.params.id == null) {

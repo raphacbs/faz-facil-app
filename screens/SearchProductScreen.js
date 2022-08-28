@@ -12,6 +12,7 @@ const SearchProduct = ({ route, navigation }, props) => {
   const [product, setProduct] = useState({});
   const [showModalAdd, setShowModalAdd] = useState(false);
   const { shoppingCartId } = route.params;
+  console.log(BASE_URL);
 
   useEffect(() => {
     onRefresh();

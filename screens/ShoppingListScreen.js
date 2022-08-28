@@ -14,6 +14,8 @@ export default function ShoppingListScreen({ navigation }) {
   const [search, setSearch] = useState("");
   const [fullData, setFullData] = useState([]);
 
+  console.log(BASE_URL);
+
   const onRefresh = async () => {
     await getShoppingList();
   };

@@ -13,6 +13,7 @@ export default function ProductScreen({ route, navigation }) {
   const [idShoppingCart, setIdShoppingCart] = useState(
     route.params.idShoppingCart
   );
+  console.log(BASE_URL);
 
   const [product, setProduct] = useState({
     ean: "",

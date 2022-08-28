@@ -17,6 +17,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const [cartItems, setCartItems] = useState([]);
   const [fullCartItems, setFullCartItems] = useState([]);
   const [search, setSearch] = useState("");
+  console.log(BASE_URL);
 
   useEffect(() => {
     getItems();
