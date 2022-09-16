@@ -147,7 +147,8 @@ export default function ShoppingListScreen({ navigation, route }) {
   );
 
   const goToCreateShoppingListScreen = useCallback(
-    (item) => {
+    (event) => {
+      console.log("You clicked ", event.currentTarget);
       navigation.navigate("CreateShoppingList", {
         item,
       });

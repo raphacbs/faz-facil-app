@@ -4,6 +4,7 @@ import { Toast } from "native-base";
 import ProductComponent from "../components/ProductComponent";
 import LoadingComponent from "../components/LoadingComponent";
 import { CommonActions } from "@react-navigation/native";
+import { Asset } from "expo-asset";
 
 export default function ProductScreen({ route, navigation }) {
   const [isLoading, setLoading] = useState(false);
@@ -13,7 +14,6 @@ export default function ProductScreen({ route, navigation }) {
   const [idShoppingCart, setIdShoppingCart] = useState(
     route.params.idShoppingCart
   );
-  console.log(BASE_URL);
 
   const [product, setProduct] = useState({
     ean: "",
@@ -24,6 +24,7 @@ export default function ProductScreen({ route, navigation }) {
 
   navigation.dispatch((state) => {
     const routes = state.routes.filter((r) => r.name !== "ReadBarCode");
+    console.log(routes);
     return CommonActions.reset({
       ...state,
       routes,
@@ -52,7 +53,10 @@ export default function ProductScreen({ route, navigation }) {
         setProduct(json.products[0]);
         setEdit(false);
       } else {
-        setProduct({ ...product, ["ean"]: ean });
+        setProduct({
+          ...product,
+          ["ean"]: ean,
+        });
         setEdit(true);
         Toast.show({
           title: "Produto não cadastrado na base. Insira os dados!",
@@ -68,16 +72,17 @@ export default function ProductScreen({ route, navigation }) {
   const insertProduct = async (product, isEditing) => {
     try {
       setLoading(true);
-      if (!isFound) {
-        product.id = await registeProduct(product);
-        if (product.id == 0) {
+
+      if (isEditing && product.id != undefined) {
+        let isUpdated = await updateProduct(product);
+        if (!isUpdated) {
           return;
         }
       }
 
-      if (isEditing) {
-        let isUpdated = await updateProduct(product);
-        if (!isUpdated) {
+      if (product.id == undefined) {
+        product.id = await registeProduct(product);
+        if (product.id == 0) {
           return;
         }
       }
@@ -101,7 +106,7 @@ export default function ProductScreen({ route, navigation }) {
       });
       if (response.status == 200) {
         const json = await response.json();
-        navigation.pop(2);
+        navigation.goBack();
       } else {
         console.log("Produto não inserido!");
       }
@@ -126,21 +131,17 @@ export default function ProductScreen({ route, navigation }) {
       };
 
       const formData = new FormData();
-      if (product.image == undefined || product.image.includes("http")) {
-        Toast.show({
-          title: "Selecione, capture uma imagem ou desabilite o modo edição",
-          backgroundColor: "blue.500",
-        });
-        return 0;
-      }
-      let uriParts = product.image.split(".");
-      let fileType = uriParts[uriParts.length - 1];
+      console.log(product);
 
-      formData.append("photo", {
-        uri: product.image,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
+      if (product.image != undefined && product.image.includes("file")) {
+        let uriParts = product.image.split(".");
+        let fileType = uriParts[uriParts.length - 1];
+        formData.append("photo", {
+          uri: product.image,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      }
 
       formData.append("product", JSON.stringify(body));
 
@@ -160,7 +161,6 @@ export default function ProductScreen({ route, navigation }) {
         const productSaved = await response.json();
         return productSaved.id;
       } else {
-        console.log(JSON.stringify(response));
         console.log("Produto não registrado!");
         return 0;
       }
@@ -181,26 +181,28 @@ export default function ProductScreen({ route, navigation }) {
       };
 
       const formData = new FormData();
-      if (
-        product.image == undefined ||
-        (!product.image.includes(".jpeg") &&
-          !product.image.includes(".jpg") &&
-          !product.image.includes(".png"))
-      ) {
-        Toast.show({
-          title: "Selecione ou capture uma imagem! ",
-          backgroundColor: "blue.500",
-        });
-        return 0;
-      }
-      let uriParts = product.image.split(".");
-      let fileType = uriParts[uriParts.length - 1];
+      // if (
+      //   product.image == undefined ||
+      //   (!product.image.includes(".jpeg") &&
+      //     !product.image.includes(".jpg") &&
+      //     !product.image.includes(".png"))
+      // ) {
+      //   Toast.show({
+      //     title: "Selecione ou capture uma imagem! ",
+      //     backgroundColor: "blue.500",
+      //   });
+      //   return 0;
+      // }
+      // let uriParts = product.image.split(".");
+      // let fileType = uriParts[uriParts.length - 1];
 
-      formData.append("photo", {
-        uri: product.image,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
+      if (product.image != undefined && product.image.includes("file")) {
+        formData.append("photo", {
+          uri: product.image,
+          name: `photo.png`,
+          type: `image/png`,
+        });
+      }
 
       formData.append("data", JSON.stringify(product));
 

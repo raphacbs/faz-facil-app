@@ -12,9 +12,9 @@ const ShoppingListComponent = (props) => {
         safeAreaRight
         width="95%"
         borderWidth="1"
-        borderColor="primary.300"
+        //borderColor="primary.300"
         shadow="4"
-        bg="primary.300"
+        //bg="primary.300"
         p="3"
         rounded="8"
         margin={3}

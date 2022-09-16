@@ -3,13 +3,33 @@ import * as ImagePicker from "expo-image-picker";
 import { VStack, Avatar, Text, Center, Icon, HStack } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Asset } from "expo-asset";
+import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
 
 const CameraComponent = (props) => {
   const [pickedImagePath, setPickedImagePath] = useState(props.pickedImagePath);
 
+  // useEffect(() => {
+  //   setPickedImagePath(props.pickedImagePath);
+  // }, [props.pickedImagePath]);
+
   useEffect(() => {
-    setPickedImagePath(props.pickedImagePath);
-  }, [props.pickedImagePath]);
+    if (pickedImagePath == undefined) {
+      (async () => {
+        const image = Asset.fromModule(require("../assets/icon.png"));
+        await image.downloadAsync();
+
+        const manipResult = await manipulateAsync(
+          image.localUri,
+          [{ resize: { width: 230, height: 230 } }],
+          { compress: 0.2, format: SaveFormat.PNG }
+        );
+        console.log("image", manipResult);
+        setPickedImagePath(manipResult.uri);
+        props.onSelectImage(manipResult.uri);
+      })();
+    }
+  }, []);
 
   const showImagePicker = async () => {
     const permissionResult =
@@ -18,25 +38,42 @@ const CameraComponent = (props) => {
       alert("You've refused to allow this appp to access your photos!");
       return;
     }
-    const result = await ImagePicker.launchImageLibraryAsync();
+    const image = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+    });
 
-    if (!result.cancelled) {
-      setPickedImagePath(result.uri);
-      props.onSelectImage(result.uri);
+    if (!image.cancelled) {
+      const manipResult = await manipulateAsync(
+        image.uri,
+        [{ resize: { width: 230, height: 230 } }],
+        { compress: 0.2, format: SaveFormat.PNG }
+      );
+      setPickedImagePath(manipResult.uri);
+      props.onSelectImage(manipResult.uri);
     }
   };
 
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+      alert("You've refused to allow this app to access your camera!");
       return;
     }
-    const result = await ImagePicker.launchCameraAsync();
+    const image = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+    });
 
-    if (!result.cancelled) {
-      setPickedImagePath(result.uri);
-      props.onCaptureImage(result.uri);
+    if (!image.cancelled) {
+      if (image.hasOwnProperty("uri")) {
+        const manipResult = await manipulateAsync(
+          image.uri,
+          [{ resize: { width: 230, height: 230 } }],
+          { compress: 0.2, format: SaveFormat.PNG }
+        );
+        console.log(manipResult.uri);
+        setPickedImagePath(manipResult.uri);
+        props.onCaptureImage(manipResult.uri);
+      }
     }
   };
 
@@ -46,10 +83,7 @@ const CameraComponent = (props) => {
         <Avatar
           bg="green.500"
           source={{
-            uri:
-              pickedImagePath !== undefined
-                ? pickedImagePath
-                : "https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4",
+            uri: pickedImagePath,
           }}
           size="2xl"
         ></Avatar>

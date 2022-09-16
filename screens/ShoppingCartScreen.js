@@ -3,27 +3,38 @@ import { View } from "react-native";
 import { BASE_URL, X_API_KEY } from "@env";
 import CartItem from "../components/CartItemComponent";
 import SummaryBarComponent from "../components/SummaryBarCartItemComponent";
-import { Toast, FlatList, Input, Icon, VStack, Stack } from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Toast,
+  FlatList,
+  Input,
+  Icon,
+  VStack,
+  Stack,
+  Fab,
+  Box,
+} from "native-base";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import LoadingComponent from "../components/LoadingComponent";
 
 export default function ShoppingCartScreen({ route, navigation }) {
   const { id } = route.params;
-  const [isLoading, setLoading] = useState(true);
-  const [amountItems, setAmountItems] = useState("0");
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [totalCartItems, setTotalCartItems] = useState(0);
-  const [cartItems, setCartItems] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  const [shoppingCart, setShoppingCart] = useState({
+    cartItems: [],
+    totalCartItems: 0,
+    totalProducts: 0,
+    amountItems: "R$ 0,00",
+  });
   const [fullCartItems, setFullCartItems] = useState([]);
-  const [search, setSearch] = useState("");
-  console.log(BASE_URL);
+  const [cartItemIsLoaded, setCartItemIsLoaded] = useState(true);
+  console.log("20", BASE_URL);
 
   useEffect(() => {
     getItems();
-    const willFocusSubscription = navigation.addListener("focus", () => {
-      getItems();
-    });
-    return willFocusSubscription;
+    // const willFocusSubscription = navigation.addListener("focus", () => {
+    //   getItems();
+    // });
+    // return willFocusSubscription;
   }, [navigation]);
 
   const onRefresh = async () => {
@@ -35,6 +46,7 @@ export default function ShoppingCartScreen({ route, navigation }) {
   const keyExtractor = (item) => item.id;
 
   const getItems = async () => {
+    console.log("getItems");
     try {
       setLoading(true);
       const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
@@ -47,12 +59,8 @@ export default function ShoppingCartScreen({ route, navigation }) {
         },
       });
       const json = await response.json();
+      setShoppingCart(json);
       setFullCartItems(json.cartItems);
-      setAmountItems(json.amountItems);
-      setCartItems(json.cartItems);
-      setTotalCartItems(json.totalCartItems);
-      setTotalProducts(json.totalProducts);
-      // navigation.setOptions({ title: "Cria lista" });
     } catch (error) {
       console.error(error);
     } finally {
@@ -60,9 +68,29 @@ export default function ShoppingCartScreen({ route, navigation }) {
     }
   };
 
+  const refreshingSummary = async (data) => {
+    try {
+      const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
+        },
+      });
+      const json = await response.json();
+      setShoppingCart(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
+
   const edit = async (cartItem) => {
     try {
-      setLoading(true);
+      // setLoading(true);
+      setCartItemIsLoaded(false);
       const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
       const response = await fetch(url, {
         method: "PUT",
@@ -74,11 +102,14 @@ export default function ShoppingCartScreen({ route, navigation }) {
         body: JSON.stringify(cartItem),
       });
       const json = await response.json();
-      await getItems();
+      setShoppingCart(json);
+      setFullCartItems(json.cartItems);
+      //await getItems();
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      setCartItemIsLoaded(true);
 
       Toast.show({
         title: "Valores atualizados",
@@ -86,8 +117,39 @@ export default function ShoppingCartScreen({ route, navigation }) {
     }
   };
 
+  const addCartItem = async (cartItem) => {
+    try {
+      // setLoading(true);
+      setCartItemIsLoaded(false);
+      const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
+        },
+        body: JSON.stringify(cartItem),
+      });
+      const json = await response.json();
+      setShoppingCart(json);
+      setFullCartItems(json.cartItems);
+      //await getItems();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setLoading(false);
+      setCartItemIsLoaded(true);
+
+      Toast.show({
+        title: "Produto adicionado!",
+      });
+    }
+  };
+
   const removerCartItem = async (cartItem) => {
     try {
+      console.log("removerCartItem");
       setLoading(true);
       const url = `${BASE_URL}/api/v1/cart-items/${cartItem.id}`;
       const response = await fetch(url, {
@@ -108,6 +170,28 @@ export default function ShoppingCartScreen({ route, navigation }) {
     }
   };
 
+  const updateCartItem = async (cartItem) => {
+    console.log("update");
+    try {
+      const url = `${BASE_URL}/api/v1/shopping-carts/${id}/cart-item`;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-API-KEY": X_API_KEY,
+        },
+        body: JSON.stringify(cartItem),
+      });
+      const json = await response.json();
+
+      setShoppingCart(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
+
   const readItemCodeBar = () => {
     navigation.navigate("ReadBarCode", {
       idShoppingCart: id,
@@ -121,8 +205,16 @@ export default function ShoppingCartScreen({ route, navigation }) {
     // });
   };
 
-  const renderItem = ({ item }) => (
-    <CartItem increment={edit} decrement={edit} cartItem={item}></CartItem>
+  const renderItem = ({ item, index }) => (
+    <CartItem
+      index={index + 1}
+      isLoaded={cartItemIsLoaded}
+      cartItem={item}
+      shoppingCartId={id}
+      // afterRefreshingAmount={refreshingSummary}
+      update={setShoppingCart}
+      onRemove={removerCartItem}
+    ></CartItem>
   );
 
   const updateSearch = (search) => {
@@ -136,86 +228,39 @@ export default function ShoppingCartScreen({ route, navigation }) {
     setCartItems(search == "" ? fullCartItems : filteredData);
   };
 
+  const lastItem = () => <Box marginBottom={70}></Box>;
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexGrow: 1,
-        flexDirection: "column",
-      }}
-    >
-      <LoadingComponent visible={isLoading}>
-        <View
-          style={{
-            flex: 11,
-          }}
-        >
-          <VStack
-            w="100%"
-            space={5}
-            alignSelf="center"
-            bgColor={"theme.principal"}
-            p={2}
-          >
-            <Input
-              placeholder="Pesquise por nome, fab e cód de produtos"
-              marginTop={2}
-              placeholderTextColor={"white"}
-              width="100%"
-              py="3"
-              px="1"
-              color={"white"}
-              fontSize="14"
-              value={search}
-              onChangeText={updateSearch}
-              backgroundColor="primary.300"
-              borderColor="primary.300"
-              rounded={30}
-              InputLeftElement={
-                <Icon
-                  as={<MaterialIcons name="search" />}
-                  size={5}
-                  ml="2"
-                  color="white"
-                />
-              }
-              InputRightElement={
-                search != "" ? (
-                  <Icon
-                    as={<MaterialIcons name="close" />}
-                    size={6}
-                    ml="2"
-                    marginRight={5}
-                    color="white"
-                    onPress={() => {
-                      updateSearch("");
-                    }}
-                  />
-                ) : (
-                  ""
-                )
-              }
-            />
-          </VStack>
-          <FlatList
-            flex={1}
-            backgroundColor="theme.principal"
-            keyExtractor={keyExtractor}
-            data={cartItems}
-            renderItem={renderItem}
-            refreshing={false}
-            onRefresh={onRefresh}
-            // initialNumToRender={10}
-          />
-        </View>
-        <SummaryBarComponent
-          backgroundColor="#0099e6"
-          amount={amountItems}
-          totalProducts={totalProducts}
-          totalCartItems={totalCartItems}
-          onPressAddItem={readItemCodeBar}
-        ></SummaryBarComponent>
-      </LoadingComponent>
-    </View>
+    <Stack flex={1}>
+      <FlatList
+        flex={1}
+        keyExtractor={keyExtractor}
+        data={shoppingCart.cartItems}
+        renderItem={renderItem}
+        refreshing={isLoading}
+        onRefresh={onRefresh}
+        ListFooterComponent={lastItem}
+      />
+
+      {shoppingCart.cartItems != null && shoppingCart.cartItems.length > 0 ? (
+        <Fab
+          renderInPortal={false}
+          shadow={2}
+          onPress={readItemCodeBar}
+          size="md"
+          icon={<Icon color="white" as={AntDesign} name="plus" size="md" />}
+        />
+      ) : (
+        <Stack />
+      )}
+
+      {/* <SummaryBarComponent
+        backgroundColor="#0099e6"
+        amount={shoppingCart.amountItems}
+        totalProducts={shoppingCart.totalProducts}
+        totalCartItems={shoppingCart.totalCartItems}
+        onPressAddItem={readItemCodeBar}
+      ></SummaryBarComponent> */}
+    </Stack>
   );
 }

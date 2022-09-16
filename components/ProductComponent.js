@@ -159,6 +159,7 @@ const ProductComponent = (props) => {
               placeholder="barCode"
             />
             <Input
+              autoCapitalize="characters"
               size="full"
               w={{
                 base: "100%",
@@ -185,6 +186,7 @@ const ProductComponent = (props) => {
                 base: "100%",
                 md: "25%",
               }}
+              autoCapitalize="characters"
               isReadOnly={!isEditing}
               value={product.brand}
               onChangeText={(text) =>

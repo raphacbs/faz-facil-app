@@ -32,6 +32,7 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
   const viewMinX = (width - finderWidth) / 2;
   const viewMinY = (height - finderHeight) / 2;
   const [isAlertOpen, setAlertIsOpen] = useState(false);
+  const [isCodeBarAlertOpen, setCodeBarAlertIsOpen] = useState(false);
 
   const cancelRef = useRef(null);
 
@@ -39,6 +40,10 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
   const onCloseAlert = () => {
     setAlertIsOpen(false);
     setScanned(false);
+  };
+
+  const onCloseCodeBarAlert = () => {
+    setCodeBarAlertIsOpen(false);
   };
 
   useEffect(() => {
@@ -142,27 +147,16 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         edgeColor={"#62B1F6"}
         showAnimatedLine
       />
-      {/* <TouchableOpacity
-        style={{
-          flex: 1,
-          alignItems: "flex-end",
-        }}
-        onPress={() => {
-          setType(
-            type === BarCodeScanner.Constants.Type.back
-              ? BarCodeScanner.Constants.Type.front
-              : BarCodeScanner.Constants.Type.back
-          );
-        }}
-      ></TouchableOpacity> */}
-
-      {/* <BarcodeMask
-        width={300}
-        height={100}
-        edgeColor={"#62B1F6"}
-        showAnimatedLine
-      /> */}
-      <VStack justifyContent={"center"}>
+      <HStack p={5} justifyContent={"space-evenly"}>
+        <Button
+          rounded={20}
+          colorScheme="blue"
+          onPress={() => {
+            setCodeBarAlertIsOpen(true);
+          }}
+        >
+          Digitar código
+        </Button>
         <Button
           rounded={20}
           colorScheme="blue"
@@ -177,7 +171,7 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
         >
           Buscar por nome
         </Button>
-      </VStack>
+      </HStack>
       <VStack>
         <ModalAddProductComponent
           onClose={onCloseModal}
@@ -212,6 +206,46 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
                 </Button>
                 <Button colorScheme="success" onPress={goProductScreen}>
                   Cadastrar
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={isCodeBarAlertOpen}
+          onClose={onCloseCodeBarAlert}
+        >
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Digite o código</AlertDialog.Header>
+            <AlertDialog.Body>
+              <Input
+                onChangeText={(value) => {
+                  setEan(value);
+                }}
+                variant={"underlined"}
+                autoFocus={true}
+                keyboardType="numeric"
+              ></Input>
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={isCodeBarAlertOpen}
+                  ref={cancelRef}
+                >
+                  Não
+                </Button>
+                <Button
+                  colorScheme="success"
+                  onPress={() => {
+                    handleProduct(ean);
+                  }}
+                >
+                  Buscar
                 </Button>
               </Button.Group>
             </AlertDialog.Footer>

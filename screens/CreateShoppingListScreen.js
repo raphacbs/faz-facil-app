@@ -20,14 +20,14 @@ export default function CreateShoppingListScreen({ route, navigation }) {
   console.log(BASE_URL);
 
   useEffect(() => {
-    if (route.params.id == null) {
+    if (route.params.item == null) {
       navigation.setOptions({ title: "Cria lista" });
     } else {
       navigation.setOptions({ title: "Edita lista" });
     }
   }, []);
 
-  const [shoppingList, setShoppingList] = useState({ ...route.params });
+  const [shoppingList, setShoppingList] = useState({ ...route.params.item });
   const [loading, setLoading] = useState(false);
 
   const [inputDescriptionIsInvalid, setInputDescriptionIsInvalid] =
@@ -38,12 +38,12 @@ export default function CreateShoppingListScreen({ route, navigation }) {
 
   const onChangeDescription = (value) => {
     setShoppingList({ ...shoppingList, ["description"]: value });
-    setInputDescriptionIsInvalid(shoppingList.description.trim() == "");
+    setInputDescriptionIsInvalid(shoppingList.description == "");
   };
 
   const onChangeSupermarket = (value) => {
     setShoppingList({ ...shoppingList, ["supermarket"]: value });
-    setInputSupermarketIsInvalid(shoppingList.supermarket.trim() == "");
+    setInputSupermarketIsInvalid(shoppingList.supermarket == "");
   };
 
   const save = async () => {
