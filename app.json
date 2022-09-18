@@ -1,41 +1,31 @@
 {
   "expo": {
-    "name": "Feira Fácil",
+    "name": "feira-facil-app",
     "slug": "feira-facil",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
-    "owner": "raphacbs",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0099e6"
+      "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.raphacbs.feirafacil"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.raphacbs.feirafacil"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "sdkVersion": "45.0.0",
-    "extra": {
-      "eas": {
-        "projectId": "b101da6f-1274-4d05-8536-3cb04c6fab18"
-      }
     }
-  },
-  "name": "feira-facil-app"
+  }
 }

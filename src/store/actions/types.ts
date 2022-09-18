@@ -1,0 +1,4 @@
+export const GET_SHOPPING_LISTS = 'GET_SHOPPING_LISTS';
+export const DEFAULT_LOADING = 'DEFAULT_LOADING';
+export const ERROR = 'ERROR';
+export const SHOW_ALERT = 'SHOW_ALERT';
