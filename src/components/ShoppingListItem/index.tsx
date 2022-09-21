@@ -21,13 +21,37 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { ShoppingList } from "../../types";
+import { connect } from "react-redux";
+import {
+  getAll,
+  putShoppingList,
+} from "../../store/actions/shoppingListAction";
 
 interface Props {
   item: ShoppingList;
   index: number;
+  onEdit?: (item: ShoppingList) => void;
+  onPress?: (item: ShoppingList) => void;
+  onUpdate?: (item: ShoppingList) => void;
 }
 
-const ShoppingListItem: React.FC<Props> = ({ item }) => {
+const ShoppingListItem: React.FC<Props> = (props) => {
+  const [openActionSheet, setOpenActionSheet] = React.useState(false);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const cancelRef = React.useRef(null);
+
+  const onCloseActionSheet = () => {
+    setOpenActionSheet(false);
+  };
+  const onCloseAlert = () => {
+    setShowAlert(false);
+  };
+
+  const calculateProgress = (partialValue: number, totalValue: number) => {
+    let percentile: string = ((partialValue / totalValue) * 100).toFixed();
+    return parseInt(percentile);
+  };
+
   return (
     <Pressable
       rounded={8}
@@ -38,7 +62,9 @@ const ShoppingListItem: React.FC<Props> = ({ item }) => {
       margin={2}
       borderWidth="1"
       borderColor="gray.200"
-      //onPress={props.onPress}
+      onPress={() => {
+        props.onPress && props.onPress(props.item);
+      }}
     >
       <HStack>
         <Box
@@ -47,21 +73,23 @@ const ShoppingListItem: React.FC<Props> = ({ item }) => {
           marginTop={-2}
           marginRight={2}
           roundedLeft={8}
-          bgColor={item.archived ? "gray.400" : "green.800"}
+          bgColor={props.item.archived ? "gray.400" : "green.800"}
           w={1}
         ></Box>
         <VStack width="100%">
           <HStack space={2} justifyContent="space-between">
             <Center>
               <Heading color={"black"} size={"sm"}>
-                {item.description}
+                {props.item.description}
               </Heading>
             </Center>
             <IconButton
               size={"md"}
               variant="ghost"
               alignSelf={"flex-end"}
-              onPress={() => {}}
+              onPress={() => {
+                setOpenActionSheet(true);
+              }}
               _icon={{
                 as: MaterialCommunityIcons,
                 name: "dots-vertical",
@@ -77,10 +105,10 @@ const ShoppingListItem: React.FC<Props> = ({ item }) => {
                 name="place"
                 color="amber.600"
               />
-              <Text>{item.supermarket}</Text>
+              <Text>{props.item.supermarket}</Text>
             </HStack>
             <Heading marginRight={2} color={"blue.800"} size={"sm"}>
-              {item.amount}
+              {props.item.amount}
             </Heading>
           </HStack>
           <HStack space={2} justifyContent="space-between">
@@ -91,7 +119,7 @@ const ShoppingListItem: React.FC<Props> = ({ item }) => {
                 name="calendar"
                 color="gray.500"
               />
-              <Text>{item.createAt}</Text>
+              <Text>{props.item.createAt}</Text>
             </HStack>
             <HStack>
               <Icon
@@ -101,7 +129,7 @@ const ShoppingListItem: React.FC<Props> = ({ item }) => {
                 color="gray.500"
                 size={"md"}
               />
-              <Text marginRight={2}>{item.amountProducts}</Text>
+              <Text marginRight={2}>{props.item.amountProducts}</Text>
             </HStack>
           </HStack>
 
@@ -111,14 +139,101 @@ const ShoppingListItem: React.FC<Props> = ({ item }) => {
               _filledTrack={{
                 bg: "lime.500",
               }}
-              value={50}
+              value={calculateProgress(
+                props.item.amountCheckedProducts,
+                props.item.amountProducts
+              )}
               size="sm"
             />
           </Box>
         </VStack>
       </HStack>
+      <Center>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={showAlert}
+          onClose={onCloseAlert}
+        >
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Finalizar lista</AlertDialog.Header>
+            <AlertDialog.Body>
+              <Text>
+                Deseja finalizar a lista
+                <Heading size={"sm"}> {props.item.description}</Heading>?
+              </Text>
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={onCloseAlert}
+                  ref={cancelRef}
+                >
+                  Não
+                </Button>
+                <Button
+                  colorScheme="danger"
+                  onPress={() => {
+                    let shoppingList = { ...props.item };
+                    shoppingList.archived = true;
+                    props.onUpdate && props.onUpdate(shoppingList);
+                  }}
+                >
+                  Sim
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+      </Center>
+      <Center>
+        <Actionsheet isOpen={openActionSheet} onClose={onCloseActionSheet}>
+          <Actionsheet.Content>
+            <Actionsheet.Item
+              onPress={() => {
+                props.onEdit && props.onEdit(props.item);
+              }}
+              // isDisabled={shoppingList.archived}
+            >
+              Editar
+            </Actionsheet.Item>
+            <Actionsheet.Item
+              onPress={() => {
+                onCloseActionSheet();
+                setShowAlert(true);
+              }}
+            >
+              Finalizar
+            </Actionsheet.Item>
+            <Actionsheet.Item onPress={() => {}} isDisabled>
+              Comparar
+            </Actionsheet.Item>
+            <Actionsheet.Item onPress={onCloseActionSheet}>
+              Cancelar
+            </Actionsheet.Item>
+          </Actionsheet.Content>
+        </Actionsheet>
+      </Center>
     </Pressable>
   );
 };
 
-export default ShoppingListItem;
+// const mapStateToProps = (store) => ({
+//   isLoading: store.shoppingListReducer.loading,
+// });
+
+// const mapDispatchToProps = (dispatch) =>
+//   bindActionCreators({ setOpenActionSheet }, dispatch);
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    onUpdate: (shoppingList: ShoppingList) => {
+      dispatch(putShoppingList(shoppingList));
+      dispatch(getAll(false));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(ShoppingListItem);

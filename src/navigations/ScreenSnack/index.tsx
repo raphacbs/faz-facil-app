@@ -1,7 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../../screens/Home";
+import ShoppingListScreen from "../../screens/ShoppingList";
 import DrawerNavigator from "../DrawerNavigator";
+import ShoppingCartScreen from "../../screens/ShoppingCart";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +14,27 @@ const ScreenSnack = () => {
         component={DrawerNavigator}
         options={{
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ShoppingList"
+        component={ShoppingListScreen}
+        options={{
+          title: "Criar lista",
+          headerStyle: {
+            backgroundColor: "#0099e6",
+          },
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name="ShoppingCart"
+        component={ShoppingCartScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: "#0099e6",
+          },
+          headerTintColor: "#fff",
         }}
       />
     </Stack.Navigator>

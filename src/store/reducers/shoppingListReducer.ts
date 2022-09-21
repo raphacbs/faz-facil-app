@@ -1,5 +1,5 @@
 import { ModelsInitialState } from '../../services/models';
-import { DEFAULT_LOADING, ERROR, GET_SHOPPING_LISTS } from '../actions/types';
+import { DEFAULT_LOADING, ERROR, GET_SHOPPING_LISTS, OFF_LOADING, POST_SHOPPING_LIST, PUT_SHOPPING_LIST, SET_SHOPPING_LIST } from '../actions/types';
 const initialState = {
     shoppingLists: [],
     shoppingList: {
@@ -14,18 +14,20 @@ const initialState = {
     },
     error: '',
     loading: true,
-    showAlert: false,
+    showAlert: false
 }
 
 const shoppingListReducer = (state: ModelsInitialState = initialState, action: any) => {
-    const { shoppingLists } = action;
     switch (action.type) {
         case GET_SHOPPING_LISTS:
-            return { ...state, shoppingLists, loading: false };
-        case ERROR:
-            return { ...state, error: action.error, loading: false, showAlert: true };
-        case DEFAULT_LOADING:
-            return { ...state, loading: true };
+            return { ...state, shoppingLists: action.shoppingLists, loading: false };
+        case PUT_SHOPPING_LIST:
+            return { ...state, shoppingList: action.shoppingList, loading: false };
+        case POST_SHOPPING_LIST:
+            return { ...state, shoppingList: action.shoppingList, loading: false };
+        case SET_SHOPPING_LIST:
+            return { ...state, shoppingList: action.shoppingList, loading: false };
+
         default:
             return state;
     }

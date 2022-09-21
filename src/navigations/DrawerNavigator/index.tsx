@@ -9,7 +9,7 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator drawerContent={(props) => <SidebarMenu {...props} />}>
       <Drawer.Screen
-        name="ShoppingList"
+        name="Home"
         component={HomeScreen}
         initialParams={{ isArchived: false }}
         options={({ navigation }) => ({

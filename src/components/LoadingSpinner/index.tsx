@@ -7,9 +7,10 @@ const Loading = (props: any) => {
   return (
     <Center {...props} h="100%">
       <LottieView
-        source={require("../../../assets/loading_animation.json")}
+        source={require("../../../assets/default_loading.json")}
         style={animation}
         autoPlay
+        autoSize
       />
     </Center>
   );

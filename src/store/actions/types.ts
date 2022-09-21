@@ -1,4 +1,13 @@
 export const GET_SHOPPING_LISTS = 'GET_SHOPPING_LISTS';
+export const PUT_SHOPPING_LIST = 'PUT_SHOPPING_LIST';
+export const POST_SHOPPING_LIST = 'PUT_SHOPPING_LIST';
+export const SET_SHOPPING_LIST = 'SET_SHOPPING_LIST';
+export const GET_SHOPPING_CART = 'GET_SHOPPING_CART';
+
+
+export const SET_LOADING = 'SET_LOADING';
 export const DEFAULT_LOADING = 'DEFAULT_LOADING';
+export const OFF_LOADING = 'OFF_LOADING';
+export const ON_LOADING = 'ON_LOADING';
 export const ERROR = 'ERROR';
 export const SHOW_ALERT = 'SHOW_ALERT';

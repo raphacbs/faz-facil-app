@@ -1,14 +1,15 @@
-import { GET_SHOPPING_LISTS, DEFAULT_LOADING, ERROR, SHOW_ALERT } from "./types";
+import { GET_SHOPPING_LISTS, DEFAULT_LOADING, ERROR, SHOW_ALERT, PUT_SHOPPING_LIST, OFF_LOADING, SET_SHOPPING_LIST, GET_SHOPPING_CART, POST_SHOPPING_LIST } from "./types";
 import { api } from '../../services/api';
 import { Alert } from "../../services/models";
+import { ShoppingList } from "../../types";
 
 const endPoint = '/api/v1/shopping-carts';
 
-export const getAll = (isArchived: boolean) => {
+export const getAll: any = (isArchived: boolean) => {
     return async (dispatch: any) => {
         try {
+            dispatch({ type: DEFAULT_LOADING })
             const response = await api.get(`${endPoint}?isArchived=${isArchived}`);
-            dispatch({ type: DEFAULT_LOADING, shoppingLists: [] })
             dispatch({ type: GET_SHOPPING_LISTS, shoppingLists: response.data })
         } catch (error) {
             dispatch({ type: ERROR, error });
@@ -16,3 +17,65 @@ export const getAll = (isArchived: boolean) => {
         }
     }
 }
+
+export const putShoppingList: any = (shoppingList: ShoppingList) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch({ type: DEFAULT_LOADING })
+            let body = {
+                id: shoppingList.id,
+                description: shoppingList.description,
+                amountProducts: shoppingList.amountProducts,
+                amountCheckedProducts: shoppingList.amountCheckedProducts,
+                archived: shoppingList.archived,
+                supermarket: shoppingList.supermarket
+            }
+            const response = await api.put(endPoint, body);
+            dispatch({ type: PUT_SHOPPING_LIST, shoppingList: response.data })
+        } catch (error) {
+            console.error(error)
+            dispatch({ type: ERROR, error });
+            dispatch({ type: GET_SHOPPING_LISTS })
+        }
+    }
+}
+
+export const postShoppingList: any = (shoppingList: ShoppingList) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch({ type: DEFAULT_LOADING })
+            let body = {
+                description: shoppingList.description,
+                supermarket: shoppingList.supermarket,
+                archived: shoppingList.archived
+            }
+            const response = await api.post(endPoint, body);
+            dispatch({ type: POST_SHOPPING_LIST, shoppingList: response.data })
+        }
+        catch (error) { }
+    }
+}
+
+
+export const setShoppingList: any = (shoppingList: ShoppingList) => {
+    return async (dispatch: any) => {
+        dispatch({ type: SET_SHOPPING_LIST, shoppingList });
+    }
+}
+
+export const getShoppingCart: any = (shoppingListId: string) => {
+    return async (dispatch: any) => {
+        try {
+            dispatch({ type: DEFAULT_LOADING })
+            const url = `${endPoint}/${shoppingListId}/cart-item`
+            const response = await api.get(url);
+            dispatch({ type: GET_SHOPPING_CART, shoppingCart: response.data });
+            dispatch({ type: OFF_LOADING });
+        } catch (error) {
+            dispatch({ type: ERROR, error });
+            dispatch({ type: GET_SHOPPING_LISTS, shoppingCart: {} })
+        }
+    }
+}
+
+

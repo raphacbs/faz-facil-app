@@ -1,3 +1,4 @@
+import { CartItem, ShoppingCart } from "../types"
 export interface ModelsInitialState {
     shoppingLists: Array<object>,
     shoppingList: {
@@ -12,7 +13,12 @@ export interface ModelsInitialState {
     }
     error: any,
     loading: boolean,
-    showAlert: boolean
+    showAlert: boolean,
+}
+
+export interface ShoppingCartModel {
+    shoppingCart: ShoppingCart,
+    cartItem: CartItem
 }
 
 export interface ToastInterface {
