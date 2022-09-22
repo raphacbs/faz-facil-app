@@ -16,22 +16,30 @@ import {
   Icon,
   Pressable,
   Actionsheet,
+  Toast,
+  useToast,
 } from "native-base";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { CartItem } from "../../types";
 import { useDispatch } from "react-redux";
-import { putCartItem } from "../../store/actions/shoppingCartAction";
-
+import {
+  deleteCartItem,
+  putCartItem,
+} from "../../store/actions/shoppingCartAction";
+import { connect } from "react-redux";
+import Modal from "../Modal";
 interface Props {
   cartItem: CartItem;
   index: number;
 }
 
 const CartItemComponent = (props: Props) => {
+  const toast = useToast();
   const dispatch = useDispatch();
   const { cartItem, index } = props;
   const [openActionSheet, setOpenActionSheet] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const cancelRef = React.useRef(null);
 
   const onCloseActionSheet = () => setOpenActionSheet(false);
@@ -39,6 +47,21 @@ const CartItemComponent = (props: Props) => {
 
   const onUpdateCartItem = (cartItem: CartItem) => {
     dispatch(putCartItem(cartItem));
+  };
+
+  const onDeleteCartItem = async () => {
+    setOpenAlert(false);
+    setOpenActionSheet(false);
+    dispatch(deleteCartItem(cartItem));
+    toast.show({
+      render: () => {
+        return (
+          <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+            Item removido com sucesso!
+          </Box>
+        );
+      },
+    });
   };
 
   return (
@@ -150,7 +173,10 @@ const CartItemComponent = (props: Props) => {
                       if (value <= 0) {
                         return;
                       }
-                      onUpdateCartItem({ ...cartItem, amountOfProduct: value });
+                      onUpdateCartItem({
+                        ...cartItem,
+                        amountOfProduct: value,
+                      });
                     }}
                   />
                   <Heading alignSelf={"center"} size="xs">
@@ -166,7 +192,10 @@ const CartItemComponent = (props: Props) => {
                     }}
                     onPress={() => {
                       let value = cartItem.amountOfProduct + 1;
-                      onUpdateCartItem({ ...cartItem, amountOfProduct: value });
+                      onUpdateCartItem({
+                        ...cartItem,
+                        amountOfProduct: value,
+                      });
                     }}
                   />
                 </HStack>
@@ -175,7 +204,7 @@ const CartItemComponent = (props: Props) => {
 
             <Actionsheet.Item
               onPress={() => {
-                onCloseActionSheet();
+                setOpenAlert(true);
               }}
             >
               Remover
@@ -190,41 +219,38 @@ const CartItemComponent = (props: Props) => {
           </Actionsheet.Content>
         </Actionsheet>
       </Center>
-      <AlertDialog
-        isOpen={openAlert}
-        onClose={onCloseAlert}
-        leastDestructiveRef={cancelRef}
-      >
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>Retirar produto</AlertDialog.Header>
-          <AlertDialog.Body>
+      <Modal
+        title="Remover Produto"
+        body={
+          <Text>
             Deseja remover o produto{" "}
             <Text bold>{cartItem.product.description}</Text> do carrinho?
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={onCloseAlert}
-              >
-                Não
-              </Button>
-              <Button
-                colorScheme="danger"
-                onPress={() => {
-                  console.log("onPress");
-                }}
-              >
-                Sim
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
+          </Text>
+        }
+        isOpen={openAlert}
+        buttonLeft={{
+          label: "Sim",
+          onPress: () => {
+            onDeleteCartItem();
+          },
+          colorScheme: "danger",
+        }}
+        buttonRight={{
+          label: "Não",
+          onPress: () => {
+            setOpenAlert(false);
+          },
+          colorScheme: "gray",
+        }}
+      />
     </Pressable>
   );
 };
 
-export default CartItemComponent;
+// const mapStateToProps = (store: any) => {
+//   return {
+//     loading: store.shoppingCartReducer.loading,
+//   };
+// };
+
+export default connect()(CartItemComponent);

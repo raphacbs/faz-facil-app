@@ -29,6 +29,7 @@ const SummaryShoppingCart = (props: Props) => {
         _filledTrack={{
           bg: "lime.500",
         }}
+        rounded="0"
         value={calculateProgress(
           shoppingCart.totalProductsChecked,
           shoppingCart.totalProducts
@@ -38,7 +39,7 @@ const SummaryShoppingCart = (props: Props) => {
       <HStack space={3} p={2} justifyContent={"space-around"}>
         <VStack space={1} justifyContent={"center"}>
           <Center>
-            <Text color={"white"}>Qtd Produtos</Text>
+            <Text color={"white"}>Produtos</Text>
             <Heading color={"white"} size={"md"}>
               {shoppingCart.totalProductsChecked}/{shoppingCart.totalProducts}
             </Heading>

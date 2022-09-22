@@ -1,0 +1,1 @@
+export const LOADING_SPINNER = 'loading-spinner.json';

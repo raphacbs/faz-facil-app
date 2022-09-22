@@ -19,6 +19,7 @@ export interface ShoppingCartModel {
     shoppingCart: ShoppingCartType,
     cartItem: CartItem,
     products: Array<ProductItemType>
+    loading: boolean,
 }
 
 export interface ToastInterface {

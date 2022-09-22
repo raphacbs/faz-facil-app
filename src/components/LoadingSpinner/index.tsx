@@ -2,18 +2,29 @@ import React from "react";
 import LottieView from "lottie-react-native";
 import { Center, HStack, VStack } from "native-base";
 import { animation } from "./style";
+import { connect } from "react-redux";
 
-const Loading = (props: any) => {
+interface Props {
+  loading: boolean;
+  children: any;
+}
+
+const Loading = (props: Props) => {
+  const { loading, children } = props;
   return (
-    <Center {...props} h="100%">
-      <LottieView
-        source={require("../../../assets/default_loading.json")}
-        style={animation}
-        autoPlay
-        autoSize
-      />
+    <Center>
+      {loading ? (
+        <LottieView
+          source={require("../../../assets/loading-spinner.json")}
+          style={animation}
+          autoPlay
+          autoSize
+        />
+      ) : (
+        children
+      )}
     </Center>
   );
 };
 
-export default Loading;
+export default connect()(Loading);

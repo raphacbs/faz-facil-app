@@ -8,8 +8,10 @@ import {
   Stack,
   Fab,
   Box,
+  Text,
+  Center,
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+
 import { connect } from "react-redux";
 import { ShoppingCartType, ShoppingList } from "../../types";
 import CartItem from "../../components/CartItem";
@@ -54,9 +56,9 @@ const ShoppingCartScreen = (props: Props) => {
   return (
     <Stack flex={1}>
       <Container refreshControl={false} onRefresh={onRefresh}>
-        <SummaryShoppingCart />
         {shoppingCart.cartItems != null && shoppingCart.cartItems.length > 0 ? (
-          <Stack flex={1}>
+          <Stack w={"100%"} flex={1}>
+            <SummaryShoppingCart />
             <FlatList
               flex={1}
               keyExtractor={keyExtractor}
@@ -93,7 +95,10 @@ const ShoppingCartScreen = (props: Props) => {
             />
           </Stack>
         ) : (
-          <EmptyListContainer showAddButton type="CartItem" />
+          <Stack w={"100%"} flex={1}>
+            <SummaryShoppingCart />
+            <EmptyListContainer showAddButton type="CartItem" />
+          </Stack>
         )}
       </Container>
     </Stack>

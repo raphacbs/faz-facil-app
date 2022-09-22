@@ -9,7 +9,7 @@ import {
   VStack,
   Stack,
 } from "native-base";
-import { animation } from "./style";
+import { animation, errorAnimation } from "./style";
 import { connect } from "react-redux";
 import { RefreshControl } from "react-native";
 
@@ -83,7 +83,7 @@ const Container = (props: Props) => {
             <Center>
               <LottieView
                 source={require("../../../assets/error_animation.json")}
-                style={animation}
+                style={errorAnimation}
                 autoPlay
               />
               <Heading size={"sm"}>Ops! Ocorreu um erro.</Heading>
@@ -95,7 +95,7 @@ const Container = (props: Props) => {
           ) : loading ? (
             <Center>
               <LottieView
-                source={require("../../../assets/loading_animation.json")}
+                source={require("../../../assets/loading_cart.json")}
                 style={animation}
                 autoPlay
               />

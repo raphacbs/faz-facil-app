@@ -96,7 +96,10 @@ const HomeScreen = (props: any) => {
             renderInPortal={false}
             shadow={2}
             icon={<Icon color="white" as={AntDesign} name="plus" size="md" />}
-            onPress={goToShoppingListScreen}
+            onPress={() => {
+              console.log("onPress");
+              goToShoppingListScreen();
+            }}
           />
         </Stack>
       ) : (
