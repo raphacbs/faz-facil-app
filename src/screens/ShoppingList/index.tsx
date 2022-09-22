@@ -23,12 +23,12 @@ import {
   putShoppingList,
   setShoppingList,
 } from "../../store/actions/shoppingListAction";
-import Loading from "../../components/Loading";
+import Container from "../../components/Container";
 import { setLoading } from "../../store/actions/commonAction";
 
 const ShoppingListScreen = (props: any) => {
   const { shoppingList, navigation, loading } = props;
-  const inputSupermarket = React.useRef();
+  const inputSupermarket: any = React.useRef();
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -63,9 +63,7 @@ const ShoppingListScreen = (props: any) => {
       alignItems="center"
       justifyContent={"center"}
     >
-      {loading ? (
-        <Loading />
-      ) : (
+      <Container refreshControl={false} onRefresh={onSubmit} with="90%">
         <Box
           width="100%"
           rounded="lg"
@@ -185,7 +183,7 @@ const ShoppingListScreen = (props: any) => {
             </Button>
           </VStack>
         </Box>
-      )}
+      </Container>
     </VStack>
   );
 };

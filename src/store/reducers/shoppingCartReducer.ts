@@ -1,6 +1,5 @@
-import { Action } from "@reduxjs/toolkit";
 import { ShoppingCartModel } from "../../services/models";
-import { GET_SHOPPING_CART, ERROR } from "../actions/types";
+import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM } from "../actions/types";
 
 const initialState: ShoppingCartModel = {
     shoppingCart: {
@@ -27,7 +26,8 @@ const initialState: ShoppingCartModel = {
         subtotal: "R$ 0,00",
         createdAt: "24/08/2022 13:48:42",
         isChecked: false
-    }
+    },
+    products: []
 }
 
 const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: any) => {
@@ -37,6 +37,23 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
             return {
                 ...state,
                 shoppingCart: action.shoppingCart, loading: false
+            }
+        case GET_PRODUCTS_BY_DESCRIPTION:
+
+            return {
+                ...state,
+                products: action.productResponse.products, loading: false
+            }
+        case PUT_SHOPPING_CART_ITEM:
+
+            return {
+                ...state,
+                shoppingCart: action.shoppingCart, loading: false
+            }
+        case CLEAR_PRODUCT_LIST:
+            return {
+                ...state,
+                products: [], loading: false
             }
         default:
             return state;

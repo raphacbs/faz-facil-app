@@ -8,18 +8,21 @@ import {
   setShoppingList,
 } from "../../store/actions/shoppingListAction";
 import { RootState } from "../../store/reducers";
-import Loading from "../../components/Loading";
+import Container from "../../components/Container";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { AntDesign } from "@expo/vector-icons";
 import MessageAlert from "../../components/Alert";
 import { connect } from "react-redux";
 import { ShoppingList } from "../../types";
+import { clearError } from "../../store/actions/commonAction";
+import EmptyListContainer from "../../components/EmptyListContainer";
 
 const HomeScreen = (props: any) => {
   const { navigation } = props;
   const dispatch = useDispatch();
-  const { shoppingLists, shoppingList, error, loading, showAlert } =
-    useSelector((state: RootState) => state.shoppingListReducer);
+  const { shoppingLists, shoppingList } = useSelector(
+    (state: RootState) => state.shoppingListReducer
+  );
 
   const fetchShoppingList = () => {
     dispatch(getAll(false));
@@ -70,16 +73,16 @@ const HomeScreen = (props: any) => {
     fetchShoppingList();
   }, [dispatch]);
 
-  useEffect(() => {}, [error, dispatch]);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", () => {
+  //     dispatch(clearError());
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
 
   return (
-    <Stack>
-      {showAlert ? (
-        <MessageAlert title={error.message} status="error" show={showAlert} />
-      ) : null}
-      {loading ? (
-        <Loading />
-      ) : (
+    <Container refreshControl={false} onRefresh={fetchShoppingList}>
+      {shoppingLists != null && shoppingLists.length > 0 ? (
         <Stack>
           <FlatList
             keyExtractor={keyExtractor}
@@ -96,8 +99,10 @@ const HomeScreen = (props: any) => {
             onPress={goToShoppingListScreen}
           />
         </Stack>
+      ) : (
+        <EmptyListContainer showAddButton type="ShoppingList" />
       )}
-    </Stack>
+    </Container>
   );
 };
 

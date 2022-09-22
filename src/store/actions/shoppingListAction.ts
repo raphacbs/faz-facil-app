@@ -1,4 +1,4 @@
-import { GET_SHOPPING_LISTS, DEFAULT_LOADING, ERROR, SHOW_ALERT, PUT_SHOPPING_LIST, OFF_LOADING, SET_SHOPPING_LIST, GET_SHOPPING_CART, POST_SHOPPING_LIST } from "./types";
+import { GET_SHOPPING_LISTS, DEFAULT_LOADING, ERROR, SHOW_ALERT, PUT_SHOPPING_LIST, OFF_LOADING, SET_SHOPPING_LIST, GET_SHOPPING_CART, POST_SHOPPING_LIST, SET_ERROR, CLEAR_ERROR } from "./types";
 import { api } from '../../services/api';
 import { Alert } from "../../services/models";
 import { ShoppingList } from "../../types";
@@ -8,12 +8,14 @@ const endPoint = '/api/v1/shopping-carts';
 export const getAll: any = (isArchived: boolean) => {
     return async (dispatch: any) => {
         try {
+            dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             const response = await api.get(`${endPoint}?isArchived=${isArchived}`);
             dispatch({ type: GET_SHOPPING_LISTS, shoppingLists: response.data })
-        } catch (error) {
-            dispatch({ type: ERROR, error });
-            dispatch({ type: GET_SHOPPING_LISTS, shoppingLists: [] })
+            dispatch({ type: OFF_LOADING })
+        } catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
         }
     }
 }
@@ -21,6 +23,7 @@ export const getAll: any = (isArchived: boolean) => {
 export const putShoppingList: any = (shoppingList: ShoppingList) => {
     return async (dispatch: any) => {
         try {
+            dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             let body = {
                 id: shoppingList.id,
@@ -32,10 +35,9 @@ export const putShoppingList: any = (shoppingList: ShoppingList) => {
             }
             const response = await api.put(endPoint, body);
             dispatch({ type: PUT_SHOPPING_LIST, shoppingList: response.data })
-        } catch (error) {
-            console.error(error)
-            dispatch({ type: ERROR, error });
-            dispatch({ type: GET_SHOPPING_LISTS })
+        } catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
         }
     }
 }
@@ -43,6 +45,7 @@ export const putShoppingList: any = (shoppingList: ShoppingList) => {
 export const postShoppingList: any = (shoppingList: ShoppingList) => {
     return async (dispatch: any) => {
         try {
+            dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             let body = {
                 description: shoppingList.description,
@@ -52,10 +55,12 @@ export const postShoppingList: any = (shoppingList: ShoppingList) => {
             const response = await api.post(endPoint, body);
             dispatch({ type: POST_SHOPPING_LIST, shoppingList: response.data })
         }
-        catch (error) { }
+        catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
+        }
     }
 }
-
 
 export const setShoppingList: any = (shoppingList: ShoppingList) => {
     return async (dispatch: any) => {
@@ -66,14 +71,15 @@ export const setShoppingList: any = (shoppingList: ShoppingList) => {
 export const getShoppingCart: any = (shoppingListId: string) => {
     return async (dispatch: any) => {
         try {
+            dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             const url = `${endPoint}/${shoppingListId}/cart-item`
             const response = await api.get(url);
             dispatch({ type: GET_SHOPPING_CART, shoppingCart: response.data });
             dispatch({ type: OFF_LOADING });
-        } catch (error) {
-            dispatch({ type: ERROR, error });
-            dispatch({ type: GET_SHOPPING_LISTS, shoppingCart: {} })
+        } catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
         }
     }
 }

@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ShoppingListScreen from "../../screens/ShoppingList";
 import DrawerNavigator from "../DrawerNavigator";
 import ShoppingCartScreen from "../../screens/ShoppingCart";
+import ProductSearchScreen from "../../screens/Product/ProductSearch";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,17 @@ const ScreenSnack = () => {
         name="ShoppingCart"
         component={ShoppingCartScreen}
         options={{
+          headerStyle: {
+            backgroundColor: "#0099e6",
+          },
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name="ProductSearch"
+        component={ProductSearchScreen}
+        options={{
+          title: "Pesquisar Produtos",
           headerStyle: {
             backgroundColor: "#0099e6",
           },

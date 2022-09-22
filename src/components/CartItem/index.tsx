@@ -19,6 +19,8 @@ import {
 } from "native-base";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { CartItem } from "../../types";
+import { useDispatch } from "react-redux";
+import { putCartItem } from "../../store/actions/shoppingCartAction";
 
 interface Props {
   cartItem: CartItem;
@@ -26,6 +28,7 @@ interface Props {
 }
 
 const CartItemComponent = (props: Props) => {
+  const dispatch = useDispatch();
   const { cartItem, index } = props;
   const [openActionSheet, setOpenActionSheet] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
@@ -33,6 +36,10 @@ const CartItemComponent = (props: Props) => {
 
   const onCloseActionSheet = () => setOpenActionSheet(false);
   const onCloseAlert = () => setOpenAlert(false);
+
+  const onUpdateCartItem = (cartItem: CartItem) => {
+    dispatch(putCartItem(cartItem));
+  };
 
   return (
     <Pressable
@@ -55,8 +62,7 @@ const CartItemComponent = (props: Props) => {
           colorScheme="success"
           isChecked={cartItem.isChecked}
           onChange={(state) => {
-            let _cartItem = { ...cartItem };
-            _cartItem.isChecked = state;
+            onUpdateCartItem({ ...cartItem, isChecked: state });
           }}
           value="one"
         >
@@ -144,8 +150,7 @@ const CartItemComponent = (props: Props) => {
                       if (value <= 0) {
                         return;
                       }
-                      let _cartItem = { ...cartItem };
-                      _cartItem.amountOfProduct = value;
+                      onUpdateCartItem({ ...cartItem, amountOfProduct: value });
                     }}
                   />
                   <Heading alignSelf={"center"} size="xs">
@@ -161,8 +166,7 @@ const CartItemComponent = (props: Props) => {
                     }}
                     onPress={() => {
                       let value = cartItem.amountOfProduct + 1;
-                      let _cartItem = { ...cartItem };
-                      _cartItem.amountOfProduct = value;
+                      onUpdateCartItem({ ...cartItem, amountOfProduct: value });
                     }}
                   />
                 </HStack>

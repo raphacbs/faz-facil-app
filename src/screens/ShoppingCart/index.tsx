@@ -9,23 +9,28 @@ import {
   Fab,
   Box,
 } from "native-base";
-import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { connect } from "react-redux";
-import { ShoppingCart } from "../../types";
+import { ShoppingCartType, ShoppingList } from "../../types";
 import CartItem from "../../components/CartItem";
 import { useDispatch } from "react-redux";
 import { getShoppingCart } from "../../store/actions/shoppingListAction";
-import Loading from "../../components/Loading";
+import Container from "../../components/Container";
+import EmptyListContainer from "../../components/EmptyListContainer";
+import { FAB } from "react-native-paper";
+import { FabStyle } from "./style";
+import { FontAwesome5 } from "@expo/vector-icons";
+import SummaryShoppingCart from "../../components/SummaryShoppingCart";
 
 interface Props {
-  shoppingCart: ShoppingCart;
+  shoppingCart: ShoppingCartType;
   navigation: any;
-  shoppingList: any;
-  loading: boolean;
+  shoppingList: ShoppingList;
 }
 
-const ShoppingCartScreen: React.FC<Props> = (props) => {
-  const { shoppingCart, navigation, shoppingList, loading } = props;
+const ShoppingCartScreen = (props: Props) => {
+  const { shoppingCart, navigation, shoppingList } = props;
+  const [openFab, setOpenFab] = React.useState<boolean>(false);
   const keyExtractor = (item: any) => item.id;
   const dispatch = useDispatch();
 
@@ -43,50 +48,64 @@ const ShoppingCartScreen: React.FC<Props> = (props) => {
   const onRefresh = () => {
     dispatch(getShoppingCart(shoppingList.id));
   };
+
+  const handleFAB = ({ open }: any) => setOpenFab(open);
+
   return (
     <Stack flex={1}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Stack flex={1}>
-          <FlatList
-            flex={1}
-            keyExtractor={keyExtractor}
-            data={shoppingCart.cartItems}
-            renderItem={renderItem}
-            refreshing={false}
-            onRefresh={onRefresh}
-            ListFooterComponent={listFooterComponent}
-          />
-
-          {shoppingCart.cartItems != null &&
-          shoppingCart.cartItems.length > 0 ? (
-            <Fab
-              renderInPortal={false}
-              shadow={2}
-              icon={<Icon color="white" as={AntDesign} name="plus" size="md" />}
+      <Container refreshControl={false} onRefresh={onRefresh}>
+        <SummaryShoppingCart />
+        {shoppingCart.cartItems != null && shoppingCart.cartItems.length > 0 ? (
+          <Stack flex={1}>
+            <FlatList
+              flex={1}
+              keyExtractor={keyExtractor}
+              data={shoppingCart.cartItems}
+              renderItem={renderItem}
+              refreshing={false}
+              onRefresh={onRefresh}
+              ListFooterComponent={listFooterComponent}
             />
-          ) : (
-            <Stack />
-          )}
-
-          {/* <SummaryBarComponent
-            backgroundColor="#0099e6"
-            amount={shoppingCart.amountItems}
-            totalProducts={shoppingCart.totalProducts}
-            totalCartItems={shoppingCart.totalCartItems}
-            onPressAddItem={readItemCodeBar}
-          ></SummaryBarComponent> */}
-        </Stack>
-      )}
+            <FAB.Group
+              open={openFab}
+              icon={openFab ? "cart-plus" : "plus"}
+              color="white"
+              visible={true}
+              fabStyle={FabStyle}
+              actions={[
+                {
+                  icon: "barcode-scan",
+                  label: "Código de Barras",
+                  onPress: () => console.log("Leu código"),
+                },
+                {
+                  icon: "shopping-search",
+                  label: "Pesquisar",
+                  onPress: () => navigation.navigate("ProductSearch"),
+                },
+              ]}
+              onStateChange={handleFAB}
+              onPress={() => {
+                if (openFab) {
+                  // do something if the speed dial is open
+                }
+              }}
+            />
+          </Stack>
+        ) : (
+          <EmptyListContainer showAddButton type="CartItem" />
+        )}
+      </Container>
     </Stack>
   );
 };
 
-const mapStateToProps = (store: any) => ({
-  shoppingCart: store.shoppingCartReducer.shoppingCart,
-  loading: store.commonReducer.loading,
-  shoppingList: store.shoppingListReducer.shoppingList,
-});
+const mapStateToProps = (store: any) => {
+  return {
+    shoppingCart: store.shoppingCartReducer.shoppingCart,
+    loading: store.commonReducer.loading,
+    shoppingList: store.shoppingListReducer.shoppingList,
+  };
+};
 
 export default connect(mapStateToProps)(ShoppingCartScreen);

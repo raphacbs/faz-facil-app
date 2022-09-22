@@ -29,10 +29,22 @@ export interface CartItem {
     isChecked: boolean
 }
 
-export interface ShoppingCart {
+export interface ShoppingCartType {
     cartItems: Array<CartItem>,
     totalCartItems: number,
     totalProducts: number,
     amountItems: string,
     subtotalChecked: string,
+    totalProductsChecked: number,
+}
+
+
+export interface ProductItemType {
+    id: string,
+    description: string,
+    brand: string,
+    image: string,
+    ean: string,
+    createAt: string,
+    updateAt: string
 }
