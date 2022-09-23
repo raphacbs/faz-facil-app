@@ -16,7 +16,7 @@ const CameraComponent = (props) => {
   useEffect(() => {
     if (pickedImagePath == undefined) {
       (async () => {
-        const image = Asset.fromModule(require("../assets/icon.png"));
+        const image = Asset.fromModule(require("../../assets/icon.png"));
         await image.downloadAsync();
 
         const manipResult = await manipulateAsync(

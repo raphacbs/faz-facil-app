@@ -15,7 +15,7 @@ import {
   HStack,
 } from "native-base";
 import { Audio } from "expo-av";
-import ModalAddProductComponent from "../components/ModalAddProductComponent";
+import ModalAddProductComponent from "../../components/ModalAddProductComponent";
 import { BASE_URL, X_API_KEY } from "@env";
 
 export default function BarCodeScanScreen({ route, navigation }, props) {
@@ -66,7 +66,7 @@ export default function BarCodeScanScreen({ route, navigation }, props) {
 
   const playBeep = async () => {
     const { sound } = await Audio.Sound.createAsync(
-      require("../assets/beep.mp3")
+      require("../../../assets/beep.mp3")
     );
     await sound.playAsync();
   };

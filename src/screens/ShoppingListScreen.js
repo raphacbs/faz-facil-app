@@ -5,7 +5,8 @@ import { AntDesign } from "@expo/vector-icons";
 import ShoppingListItem from "../components/ShoppingListItem";
 import ListEmptyComponent from "../components/ListEmptyComponent";
 
-export default function ShoppingListScreen({ navigation, route }) {
+export default function ShoppingListScreen(props) {
+  const { navigation, route } = props;
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
 

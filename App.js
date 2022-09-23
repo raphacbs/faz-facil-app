@@ -6,7 +6,7 @@ import { StatusBar } from "expo-status-bar";
 
 import * as SplashScreen from "expo-splash-screen";
 
-import ScreenSnack from "./navigation/ScreenSnack";
+import ScreenSnack from "./src/navigation/ScreenSnack";
 
 function App() {
   // SplashScreen.preventAutoHideAsync()
