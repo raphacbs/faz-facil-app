@@ -55,7 +55,7 @@ const ShoppingCartScreen = (props: Props) => {
 
   return (
     <Stack flex={1}>
-      <Container refreshControl={false} onRefresh={onRefresh}>
+      {/* <Container refreshControl={false} onRefresh={onRefresh}>
         {shoppingCart.cartItems != null && shoppingCart.cartItems.length > 0 ? (
           <Stack w={"100%"} flex={1}>
             <SummaryShoppingCart />
@@ -100,7 +100,51 @@ const ShoppingCartScreen = (props: Props) => {
             <EmptyListContainer showAddButton type="CartItem" />
           </Stack>
         )}
-      </Container>
+      </Container> */}
+      {shoppingCart.cartItems != null && shoppingCart.cartItems.length > 0 ? (
+        <Stack w={"100%"} flex={1}>
+          <SummaryShoppingCart />
+          <FlatList
+            flex={1}
+            keyExtractor={keyExtractor}
+            data={shoppingCart.cartItems}
+            renderItem={renderItem}
+            refreshing={false}
+            onRefresh={onRefresh}
+            ListFooterComponent={listFooterComponent}
+          />
+          <FAB.Group
+            open={openFab}
+            icon={openFab ? "cart-plus" : "plus"}
+            color="white"
+            visible={true}
+            fabStyle={FabStyle}
+            actions={[
+              {
+                icon: "barcode-scan",
+                label: "Código de Barras",
+                onPress: () => console.log("Leu código"),
+              },
+              {
+                icon: "shopping-search",
+                label: "Pesquisar",
+                onPress: () => navigation.navigate("ProductSearch"),
+              },
+            ]}
+            onStateChange={handleFAB}
+            onPress={() => {
+              if (openFab) {
+                // do something if the speed dial is open
+              }
+            }}
+          />
+        </Stack>
+      ) : (
+        <Stack w={"100%"} flex={1}>
+          <SummaryShoppingCart />
+          <EmptyListContainer showAddButton type="CartItem" />
+        </Stack>
+      )}
     </Stack>
   );
 };

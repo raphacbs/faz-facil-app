@@ -55,3 +55,15 @@ export const clearProductList: any = () => {
         }
     }
 }
+export const resetShoppingCart: any = () => {
+    return async (dispatch: any) => {
+        try {
+            dispatch({ type: CLEAR_ERROR });
+            dispatch({ type: DELETE_SHOPPING_CART_ITEM })
+        } catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
+        }
+    }
+}
+

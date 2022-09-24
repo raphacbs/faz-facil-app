@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import { ShoppingList } from "../../types";
 import { clearError } from "../../store/actions/commonAction";
 import EmptyListContainer from "../../components/EmptyListContainer";
+import { resetShoppingCart } from "../../store/actions/shoppingCartAction";
 
 const HomeScreen = (props: any) => {
   const { navigation } = props;
@@ -73,12 +74,13 @@ const HomeScreen = (props: any) => {
     fetchShoppingList();
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener("focus", () => {
-  //     dispatch(clearError());
-  //   });
-  //   return unsubscribe;
-  // }, [navigation]);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      dispatch(clearError());
+      dispatch(resetShoppingCart());
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <Container refreshControl={false} onRefresh={fetchShoppingList}>

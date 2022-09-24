@@ -53,8 +53,9 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
                 shoppingCart: action.shoppingCart, loading: false
             }
         case DELETE_SHOPPING_CART_ITEM:
+
             return {
-                ...state, loading: false
+                ...state, loading: false, shoppingCart: initialState.shoppingCart
             }
         case CLEAR_PRODUCT_LIST:
             return {
