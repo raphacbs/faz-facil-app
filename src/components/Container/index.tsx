@@ -78,7 +78,7 @@ const Container = (props: Props) => {
           </Center>
         </RefreshControl>
       ) : (
-        <Center {...props} w={w} h="100%">
+        <Stack {...props} w={w} h="100%">
           {isError ? (
             <Center>
               <LottieView
@@ -103,7 +103,7 @@ const Container = (props: Props) => {
           ) : (
             children
           )}
-        </Center>
+        </Stack>
       )}
     </Center>
   );

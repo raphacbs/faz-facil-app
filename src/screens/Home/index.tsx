@@ -35,7 +35,7 @@ const HomeScreen = (props: any) => {
         onPress={onPressItem}
         onEdit={onEditItem}
         index={obj.index}
-        item={obj.item}
+        shoppingList={obj.item}
       />
     );
   };
@@ -85,7 +85,7 @@ const HomeScreen = (props: any) => {
   return (
     <Container refreshControl={false} onRefresh={fetchShoppingList}>
       {shoppingLists != null && shoppingLists.length > 0 ? (
-        <Stack>
+        <Stack flex={1}>
           <FlatList
             keyExtractor={keyExtractor}
             data={shoppingLists}
