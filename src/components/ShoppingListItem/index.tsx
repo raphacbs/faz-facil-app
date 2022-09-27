@@ -60,41 +60,159 @@ const ShoppingListItem: React.FC<Props> = ({
   };
 
   return (
-    <List.Item
-      title={shoppingList.description}
-      titleStyle={{ fontSize: 18, fontWeight: "bold" }}
-      titleEllipsizeMode={"middle"}
-      descriptionStyle={{}}
-      description={
-        <VStack>
-          <HStack bgColor={"amber.100"} w={"100%"}>
-            <Icon
-              marginTop={1}
-              as={MaterialIcons}
-              name="place"
-              color="amber.600"
-            />
-            <Text>{shoppingList.supermarket}</Text>
-          </HStack>
-          <HStack bgColor={"amber.100"} w={"100%"}>
-            <Icon
-              marginTop={1}
-              as={MaterialIcons}
-              name="place"
-              color="amber.600"
-            />
-            <Text>{shoppingList.supermarket}</Text>
-          </HStack>
-        </VStack>
-      }
-      onPress={() => {
-        onPress && onPress(shoppingList);
-      }}
-      descriptionNumberOfLines={3}
-      touchSoundDisabled={false}
-    />
-
-    // <Text>{shoppingList.description}</Text>
+    <Stack w={"100%"}>
+      <List.Item
+        title={shoppingList.description}
+        titleStyle={{ fontSize: 18, fontWeight: "bold" }}
+        titleEllipsizeMode={"middle"}
+        descriptionStyle={{ width: "100%" }}
+        right={() => (
+          <IconButton
+            size={"md"}
+            variant="ghost"
+            alignSelf={"flex-start"}
+            onPress={() => {
+              setOpenActionSheet(true);
+            }}
+            _icon={{
+              as: MaterialCommunityIcons,
+              name: "dots-vertical",
+              color: "gray.600",
+            }}
+          />
+        )}
+        left={() => (
+          <Box
+            roundedLeft={8}
+            bgColor={shoppingList.archived ? "gray.400" : "green.800"}
+            w={1}
+          ></Box>
+        )}
+        description={
+          <VStack width={"100%"}>
+            <HStack>
+              <Icon
+                marginRight={2}
+                marginLeft={1}
+                as={MaterialIcons}
+                name="place"
+                color="amber.600"
+                size={"sm"}
+              />
+              <Text>{shoppingList.supermarket}</Text>
+            </HStack>
+            <HStack>
+              <Icon
+                marginTop={1}
+                marginRight={2}
+                marginLeft={1}
+                as={FontAwesome}
+                name="calendar"
+                color="blue.500"
+                size={"sm"}
+              />
+              <Text>{shoppingList.createAt}</Text>
+            </HStack>
+            <HStack>
+              <Icon
+                marginTop={1}
+                marginRight={2}
+                as={Zocial}
+                name="cart"
+                color="indigo.800"
+                size={"sm"}
+              />
+              <Text>{`${shoppingList.amountCheckedProducts}/${shoppingList.amountProducts}`}</Text>
+            </HStack>
+            <HStack>
+              <Icon
+                marginTop={1}
+                marginRight={1}
+                marginLeft={1}
+                as={FontAwesome}
+                name="money"
+                color="green.700"
+                size={"sm"}
+              />
+              <Text bold>{shoppingList.amount}</Text>
+            </HStack>
+            <Center>
+              <AlertDialog
+                leastDestructiveRef={cancelRef}
+                isOpen={showAlert}
+                onClose={onCloseAlert}
+              >
+                <AlertDialog.Content>
+                  <AlertDialog.CloseButton />
+                  <AlertDialog.Header>Finalizar lista</AlertDialog.Header>
+                  <AlertDialog.Body>
+                    <Text>
+                      Deseja finalizar a lista
+                      <Heading size={"sm"}> {shoppingList.description}</Heading>
+                      ?
+                    </Text>
+                  </AlertDialog.Body>
+                  <AlertDialog.Footer>
+                    <Button.Group space={2}>
+                      <Button
+                        variant="unstyled"
+                        colorScheme="coolGray"
+                        onPress={onCloseAlert}
+                        ref={cancelRef}
+                      >
+                        Não
+                      </Button>
+                      <Button
+                        colorScheme="danger"
+                        onPress={() => {
+                          onUpdate &&
+                            onUpdate({ ...shoppingList, archived: true });
+                        }}
+                      >
+                        Sim
+                      </Button>
+                    </Button.Group>
+                  </AlertDialog.Footer>
+                </AlertDialog.Content>
+              </AlertDialog>
+              <Actionsheet
+                isOpen={openActionSheet}
+                onClose={onCloseActionSheet}
+              >
+                <Actionsheet.Content marginBottom={-10}>
+                  <Actionsheet.Item
+                    onPress={() => {
+                      onEdit && onEdit(shoppingList);
+                    }}
+                  >
+                    Editar
+                  </Actionsheet.Item>
+                  <Actionsheet.Item
+                    onPress={() => {
+                      onCloseActionSheet();
+                      setShowAlert(true);
+                    }}
+                  >
+                    Finalizar
+                  </Actionsheet.Item>
+                  <Actionsheet.Item onPress={() => {}} isDisabled>
+                    Comparar
+                  </Actionsheet.Item>
+                  <Actionsheet.Item onPress={onCloseActionSheet}>
+                    Cancelar
+                  </Actionsheet.Item>
+                </Actionsheet.Content>
+              </Actionsheet>
+            </Center>
+          </VStack>
+        }
+        onPress={() => {
+          onPress && onPress(shoppingList);
+        }}
+        descriptionNumberOfLines={3}
+        touchSoundDisabled={false}
+      />
+    </Stack>
   );
 };
 
