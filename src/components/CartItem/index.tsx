@@ -12,15 +12,15 @@ import {
   Skeleton,
   AlertDialog,
   Input,
-  Checkbox,
   Icon,
   Pressable,
   Actionsheet,
   Toast,
   useToast,
 } from "native-base";
+import { Checkbox } from "react-native-paper";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import { CartItem } from "../../types";
+import { CartItemType } from "../../types";
 import { useDispatch } from "react-redux";
 import {
   deleteCartItem,
@@ -29,7 +29,7 @@ import {
 import { connect } from "react-redux";
 import Modal from "../Modal";
 interface Props {
-  cartItem: CartItem;
+  cartItem: CartItemType;
   index: number;
 }
 
@@ -45,7 +45,7 @@ const CartItemComponent = (props: Props) => {
   const onCloseActionSheet = () => setOpenActionSheet(false);
   const onCloseAlert = () => setOpenAlert(false);
 
-  const onUpdateCartItem = (cartItem: CartItem) => {
+  const onUpdateCartItem = (cartItem: CartItemType) => {
     dispatch(putCartItem(cartItem));
   };
 
@@ -64,6 +64,14 @@ const CartItemComponent = (props: Props) => {
     });
   };
 
+  const handleCheck = () => {
+    console.log("handleCheck", cartItem);
+    onUpdateCartItem({
+      ...cartItem,
+      isChecked: !cartItem.isChecked,
+    });
+  };
+
   return (
     <Pressable
       rounded={8}
@@ -79,18 +87,27 @@ const CartItemComponent = (props: Props) => {
       }}
     >
       <HStack space={2}>
-        <Checkbox
+        {/* <Checkbox
           size={"lg"}
           icon={<Icon as={FontAwesome} name="check" opacity={1} />}
           colorScheme="success"
           isChecked={cartItem.isChecked}
-          onChange={(state) => {
-            onUpdateCartItem({ ...cartItem, isChecked: state });
-          }}
+          onChange={handleCheck}
+          
           value="one"
         >
           <Heading size={"sm"}>{"#" + index}</Heading>
-        </Checkbox>
+        </Checkbox> */}
+        <VStack justifyContent="center">
+          <Checkbox
+            status={cartItem.isChecked ? "checked" : "unchecked"}
+            onPress={handleCheck}
+            color="green"
+          />
+          <Heading marginLeft={1} size={"sm"}>
+            {"#" + index}
+          </Heading>
+        </VStack>
 
         <VStack flex={1}>
           <Heading isTruncated marginTop={1} marginRight={2} size="xs">
@@ -102,11 +119,11 @@ const CartItemComponent = (props: Props) => {
         </VStack>
       </HStack>
 
-      <HStack w={"100%"} justifyContent="space-around">
+      <HStack marginLeft={5} w={"100%"} justifyContent="space-around">
         <VStack>
           <Text fontSize="sm">Preço</Text>
           <Text fontWeight={"bold"} fontSize="sm">
-            {cartItem.unitValue}
+            {cartItem.price}
           </Text>
         </VStack>
         <VStack>
@@ -149,7 +166,7 @@ const CartItemComponent = (props: Props) => {
                   <VStack>
                     <Text fontSize="sm">Preço</Text>
                     <Text fontWeight={"bold"} fontSize="sm">
-                      {cartItem.unitValue}
+                      {cartItem.price}
                     </Text>
                   </VStack>
                   <VStack>
@@ -173,6 +190,7 @@ const CartItemComponent = (props: Props) => {
                       if (value <= 0) {
                         return;
                       }
+                      console.log("minus", cartItem);
                       onUpdateCartItem({
                         ...cartItem,
                         amountOfProduct: value,
@@ -201,6 +219,9 @@ const CartItemComponent = (props: Props) => {
                 </HStack>
               </VStack>
             </HStack>
+            <Actionsheet.Item onPress={handleCheck}>
+              {cartItem.isChecked ? "Check-out" : "Check-in"}
+            </Actionsheet.Item>
 
             <Actionsheet.Item
               onPress={() => {
@@ -247,10 +268,11 @@ const CartItemComponent = (props: Props) => {
   );
 };
 
-// const mapStateToProps = (store: any) => {
-//   return {
-//     loading: store.shoppingCartReducer.loading,
-//   };
-// };
+const mapStateToProps = (store: any) => {
+  return {
+    //loading: store.shoppingCartReducer.loading,
+    //   cartItem: store.shoppingCartReducer.cartItem,
+  };
+};
 
 export default connect()(CartItemComponent);

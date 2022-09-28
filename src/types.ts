@@ -1,4 +1,4 @@
-export interface ShoppingList {
+export interface ShoppingListType {
     id: string;
     description: string;
     supermarket: string;
@@ -10,7 +10,7 @@ export interface ShoppingList {
     amountCheckedProducts: number
 }
 
-export interface CartItem {
+export interface CartItemType {
     id: string,
     shoppingCartId: string,
     product: {
@@ -22,7 +22,7 @@ export interface CartItem {
         createAt: string,
         updateAt: string,
     },
-    unitValue: string,
+    price: string,
     amountOfProduct: number,
     subtotal: string,
     createdAt: string,
@@ -30,7 +30,7 @@ export interface CartItem {
 }
 
 export interface ShoppingCartType {
-    cartItems: Array<CartItem>,
+    cartItems: Array<CartItemType>,
     totalCartItems: number,
     totalProducts: number,
     amountItems: string,
@@ -47,4 +47,12 @@ export interface ProductItemType {
     ean: string,
     createAt: string,
     updateAt: string
+}
+
+export interface PageInfoType {
+    pageNo: number,
+    pageSize: number,
+    totalElements: number,
+    totalPages: number,
+    last: boolean
 }

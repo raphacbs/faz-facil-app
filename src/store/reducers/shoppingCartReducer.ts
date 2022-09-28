@@ -1,5 +1,5 @@
 import { ShoppingCartModel } from "../../services/models";
-import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM, SHOW_LOADING_SHOPPING_CART_ITEM, DELETE_SHOPPING_CART_ITEM } from "../actions/types";
+import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM, SHOW_LOADING_SHOPPING_CART_ITEM, DELETE_SHOPPING_CART_ITEM, GET_SHOPPING_CART_BY_PAGE, ON_END_REACHED_SHOPPING_CART } from "../actions/types";
 
 const initialState: ShoppingCartModel = {
     shoppingCart: {
@@ -22,14 +22,22 @@ const initialState: ShoppingCartModel = {
             createAt: "",
             updateAt: "",
         },
-        unitValue: "R$ 0,00",
+        price: "R$ 0,00",
         amountOfProduct: 0,
         subtotal: "R$ 0,00",
         createdAt: "24/08/2022 13:48:42",
         isChecked: false
     },
+    loadingEndReached: false,
     products: [],
-    loading: false
+    loading: false,
+    pageInfo: {
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+        last: false
+    }
 }
 
 const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: any) => {
@@ -38,7 +46,7 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
         case GET_SHOPPING_CART:
             return {
                 ...state,
-                shoppingCart: action.shoppingCart, loading: false
+                shoppingCart: action.shoppingCart, loading: false, pageInfo: action.pageInfo
             }
         case GET_PRODUCTS_BY_DESCRIPTION:
 
@@ -46,11 +54,30 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
                 ...state,
                 products: action.productResponse.products, loading: false
             }
-        case PUT_SHOPPING_CART_ITEM:
+        case GET_SHOPPING_CART_BY_PAGE:
+            const _shoppingCart = { ...state.shoppingCart }
+            _shoppingCart.cartItems = _shoppingCart.cartItems.concat(action.payload.shoppingCart.cartItems)
+            return { ...state, loadingEndReached: false, shoppingCart: _shoppingCart, pageInfo: action.payload.pageInfo }
 
+        case PUT_SHOPPING_CART_ITEM:
+            const clone = { ...state.shoppingCart }
+            clone.amountItems = action.data.amountItems;
+            clone.totalProducts = action.data.totalProducts;
+            clone.totalProductsChecked = action.data.totalProductsChecked;
+            clone.subtotalChecked = action.data.subtotalChecked;
+            clone.totalCartItems = action.data.totalCartItems;
+            clone.cartItems = clone.cartItems.map(
+                (cartItem, i) => cartItem.id == action.data.cartItems[0].id ? {
+                    ...cartItem,
+                    isChecked: action.data.cartItems[0].isChecked,
+                    price: action.data.cartItems[0].price,
+                    amountOfProduct: action.data.cartItems[0].amountOfProduct,
+                    subtotal: action.data.cartItems[0].subtotal
+                } : cartItem
+            )
             return {
                 ...state,
-                shoppingCart: action.shoppingCart, loading: false
+                shoppingCart: clone, loading: false
             }
         case DELETE_SHOPPING_CART_ITEM:
 
@@ -67,6 +94,8 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
                 ...state,
                 loading: true
             }
+        case ON_END_REACHED_SHOPPING_CART:
+            return { ...state, loadingEndReached: true };
         default:
             return state;
     }

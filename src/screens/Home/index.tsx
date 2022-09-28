@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { FlatList, Stack, Icon, Fab, Box } from "native-base";
+import { FlatList, Stack, Icon, Fab, Box, Spinner, Toast } from "native-base";
 import ShoppingListItem from "../../components/ShoppingListItem";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getAll,
+  getMore,
   getShoppingCart,
   setShoppingList,
 } from "../../store/actions/shoppingListAction";
@@ -13,20 +14,18 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import { AntDesign } from "@expo/vector-icons";
 import MessageAlert from "../../components/Alert";
 import { connect } from "react-redux";
-import { ShoppingList } from "../../types";
-import { clearError } from "../../store/actions/commonAction";
+import { ShoppingListType } from "../../types";
 import EmptyListContainer from "../../components/EmptyListContainer";
 import { resetShoppingCart } from "../../store/actions/shoppingCartAction";
 
 const HomeScreen = (props: any) => {
   const { navigation } = props;
   const dispatch = useDispatch();
-  const { shoppingLists, shoppingList } = useSelector(
-    (state: RootState) => state.shoppingListReducer
-  );
+  const { shoppingLists, shoppingList, pageInfo, loadingEndReached } =
+    useSelector((state: RootState) => state.shoppingListReducer);
 
   const fetchShoppingList = () => {
-    dispatch(getAll(false));
+    dispatch(getAll());
   };
 
   const renderItem = (obj: any) => {
@@ -42,10 +41,16 @@ const HomeScreen = (props: any) => {
 
   const keyExtractor = (item: any) => item.id;
 
-  const listFooterComponent = () => <Box marginBottom={70}></Box>;
+  const listFooterComponent = () => {
+    return loadingEndReached ? (
+      <Spinner marginBottom={10} size={"lg"} color="emerald.500" />
+    ) : (
+      <Box marginBottom={70}></Box>
+    );
+  };
 
   const goToShoppingListScreen = () => {
-    const shoppingList: ShoppingList = {
+    const shoppingList: ShoppingListType = {
       id: "",
       description: "",
       supermarket: "",
@@ -60,27 +65,35 @@ const HomeScreen = (props: any) => {
     navigation.navigate("ShoppingList");
   };
 
-  const onEditItem = (shoppingList: ShoppingList) => {
+  const onEditItem = (shoppingList: ShoppingListType) => {
     dispatch(setShoppingList(shoppingList));
     navigation.navigate("ShoppingList");
   };
 
-  const onPressItem = (shoppingList: ShoppingList) => {
-    dispatch(setShoppingList(shoppingList));
-    navigation.navigate("ShoppingCart");
-  };
+  const onPressItem = React.useCallback(
+    (shoppingList: ShoppingListType) => {
+      navigation.navigate("ShoppingCart", { shoppingList });
+    },
+    [dispatch]
+  );
+
+  // (shoppingList: ShoppingListType) => {
+  //   React.useCallback(() => {
+  //     dispatch(setShoppingList(shoppingList)); // <-- Dispatches action type of 'SET_GLOBAL_LOADING'
+  //   }, [dispatch]);
+  //   navigation.navigate("ShoppingCart");
+  // };
 
   useEffect(() => {
     fetchShoppingList();
   }, [dispatch]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      dispatch(clearError());
-      dispatch(resetShoppingCart());
-    });
-    return unsubscribe;
-  }, [navigation]);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", () => {
+  //     dispatch(resetShoppingCart());
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
 
   return (
     <Container refreshControl={false} onRefresh={fetchShoppingList}>
@@ -93,6 +106,21 @@ const HomeScreen = (props: any) => {
             refreshing={false}
             onRefresh={fetchShoppingList}
             ListFooterComponent={listFooterComponent}
+            // initialNumToRender={5} // Reduce initial render amount
+            // maxToRenderPerBatch={1} // Reduce number in each render batch
+            onEndReached={() => {
+              if (!loadingEndReached && !pageInfo.last) {
+                dispatch(getMore({ ...pageInfo, pageNo: pageInfo.pageNo + 1 }));
+              } else {
+                if (pageInfo.last) {
+                  Toast.show({
+                    title: "tudo atualizado!",
+                    color: "#0099e6",
+                  });
+                }
+              }
+            }}
+            onEndReachedThreshold={0.5}
           />
           <Fab
             renderInPortal={false}

@@ -13,7 +13,6 @@ import {
   Center,
   Pressable,
   Progress,
-  Stack,
 } from "native-base";
 import {
   FontAwesome,
@@ -21,20 +20,20 @@ import {
   Zocial,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { ShoppingList } from "../../types";
+import { ShoppingListType } from "../../types";
 import { connect } from "react-redux";
 import {
   getAll,
   putShoppingList,
 } from "../../store/actions/shoppingListAction";
-import { TouchableOpacity } from "react-native";
-import { List } from "react-native-paper";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
 interface Props {
-  shoppingList: ShoppingList;
+  shoppingList: ShoppingListType;
   index: number;
-  onEdit?: (shoppingList: ShoppingList) => void;
-  onPress?: (shoppingList: ShoppingList) => void;
-  onUpdate?: (shoppingList: ShoppingList) => void;
+  onEdit?: (shoppingList: ShoppingListType) => void;
+  onPress?: (shoppingList: ShoppingListType) => void;
+  onUpdate?: (shoppingList: ShoppingListType) => void;
 }
 
 const ShoppingListItem: React.FC<Props> = ({
@@ -60,159 +59,174 @@ const ShoppingListItem: React.FC<Props> = ({
   };
 
   return (
-    <Stack w={"100%"}>
-      <List.Item
-        title={shoppingList.description}
-        titleStyle={{ fontSize: 18, fontWeight: "bold" }}
-        titleEllipsizeMode={"middle"}
-        descriptionStyle={{ width: "100%" }}
-        right={() => (
-          <IconButton
-            size={"md"}
-            variant="ghost"
-            alignSelf={"flex-start"}
-            onPress={() => {
-              setOpenActionSheet(true);
-            }}
-            _icon={{
-              as: MaterialCommunityIcons,
-              name: "dots-vertical",
-              color: "gray.600",
-            }}
-          />
-        )}
-        left={() => (
+    <TouchableOpacity
+      onPress={() => {
+        onPress && onPress(shoppingList);
+      }}
+    >
+      <VStack
+        rounded={8}
+        shadow={5}
+        p={2}
+        bgColor={"gray.200"}
+        width="95%"
+        margin={2}
+        borderWidth="1"
+        borderColor="gray.200"
+        // onPress={() => {
+        //   onPress && onPress(shoppingList);
+        // }}
+      >
+        <HStack>
           <Box
+            marginLeft={-2}
+            marginBottom={-2}
+            marginTop={-2}
+            marginRight={2}
             roundedLeft={8}
             bgColor={shoppingList.archived ? "gray.400" : "green.800"}
             w={1}
           ></Box>
-        )}
-        description={
-          <VStack width={"100%"}>
-            <HStack>
-              <Icon
-                marginRight={2}
-                marginLeft={1}
-                as={MaterialIcons}
-                name="place"
-                color="amber.600"
-                size={"sm"}
+          <VStack width="100%">
+            <HStack space={2} justifyContent="space-between">
+              <Center>
+                <Heading color={"black"} size={"sm"}>
+                  {shoppingList.description}
+                </Heading>
+              </Center>
+              <IconButton
+                size={"md"}
+                variant="ghost"
+                alignSelf={"flex-end"}
+                onPress={() => {
+                  setOpenActionSheet(true);
+                }}
+                _icon={{
+                  as: MaterialCommunityIcons,
+                  name: "dots-vertical",
+                  color: "gray.600",
+                }}
               />
-              <Text>{shoppingList.supermarket}</Text>
             </HStack>
-            <HStack>
-              <Icon
-                marginTop={1}
-                marginRight={2}
-                marginLeft={1}
-                as={FontAwesome}
-                name="calendar"
-                color="blue.500"
-                size={"sm"}
+            <HStack space={2} justifyContent="space-between">
+              <HStack>
+                <Icon
+                  marginTop={1}
+                  as={MaterialIcons}
+                  name="place"
+                  color="amber.600"
+                />
+                <Text>{shoppingList.supermarket}</Text>
+              </HStack>
+              <Heading marginRight={2} color={"blue.800"} size={"sm"}>
+                {shoppingList.amount}
+              </Heading>
+            </HStack>
+            <HStack space={2} justifyContent="space-between">
+              <HStack>
+                <Icon
+                  margin={1}
+                  as={FontAwesome}
+                  name="calendar"
+                  color="gray.500"
+                />
+                <Text>{shoppingList.createAt}</Text>
+              </HStack>
+              <HStack>
+                <Icon
+                  marginRight={2}
+                  as={Zocial}
+                  name="cart"
+                  color="gray.500"
+                  size={"md"}
+                />
+                <Text marginRight={2}>{shoppingList.amountProducts}</Text>
+              </HStack>
+            </HStack>
+
+            <Box w="100%">
+              <Progress
+                bg="coolGray.100"
+                _filledTrack={{
+                  bg: "lime.500",
+                }}
+                value={calculateProgress(
+                  shoppingList.amountCheckedProducts,
+                  shoppingList.amountProducts
+                )}
+                size="sm"
               />
-              <Text>{shoppingList.createAt}</Text>
-            </HStack>
-            <HStack>
-              <Icon
-                marginTop={1}
-                marginRight={2}
-                as={Zocial}
-                name="cart"
-                color="indigo.800"
-                size={"sm"}
-              />
-              <Text>{`${shoppingList.amountCheckedProducts}/${shoppingList.amountProducts}`}</Text>
-            </HStack>
-            <HStack>
-              <Icon
-                marginTop={1}
-                marginRight={1}
-                marginLeft={1}
-                as={FontAwesome}
-                name="money"
-                color="green.700"
-                size={"sm"}
-              />
-              <Text bold>{shoppingList.amount}</Text>
-            </HStack>
-            <Center>
-              <AlertDialog
-                leastDestructiveRef={cancelRef}
-                isOpen={showAlert}
-                onClose={onCloseAlert}
-              >
-                <AlertDialog.Content>
-                  <AlertDialog.CloseButton />
-                  <AlertDialog.Header>Finalizar lista</AlertDialog.Header>
-                  <AlertDialog.Body>
-                    <Text>
-                      Deseja finalizar a lista
-                      <Heading size={"sm"}> {shoppingList.description}</Heading>
-                      ?
-                    </Text>
-                  </AlertDialog.Body>
-                  <AlertDialog.Footer>
-                    <Button.Group space={2}>
-                      <Button
-                        variant="unstyled"
-                        colorScheme="coolGray"
-                        onPress={onCloseAlert}
-                        ref={cancelRef}
-                      >
-                        Não
-                      </Button>
-                      <Button
-                        colorScheme="danger"
-                        onPress={() => {
-                          onUpdate &&
-                            onUpdate({ ...shoppingList, archived: true });
-                        }}
-                      >
-                        Sim
-                      </Button>
-                    </Button.Group>
-                  </AlertDialog.Footer>
-                </AlertDialog.Content>
-              </AlertDialog>
-              <Actionsheet
-                isOpen={openActionSheet}
-                onClose={onCloseActionSheet}
-              >
-                <Actionsheet.Content marginBottom={-10}>
-                  <Actionsheet.Item
-                    onPress={() => {
-                      onEdit && onEdit(shoppingList);
-                    }}
-                  >
-                    Editar
-                  </Actionsheet.Item>
-                  <Actionsheet.Item
-                    onPress={() => {
-                      onCloseActionSheet();
-                      setShowAlert(true);
-                    }}
-                  >
-                    Finalizar
-                  </Actionsheet.Item>
-                  <Actionsheet.Item onPress={() => {}} isDisabled>
-                    Comparar
-                  </Actionsheet.Item>
-                  <Actionsheet.Item onPress={onCloseActionSheet}>
-                    Cancelar
-                  </Actionsheet.Item>
-                </Actionsheet.Content>
-              </Actionsheet>
-            </Center>
+            </Box>
           </VStack>
-        }
-        onPress={() => {
-          onPress && onPress(shoppingList);
-        }}
-        descriptionNumberOfLines={3}
-        touchSoundDisabled={false}
-      />
-    </Stack>
+        </HStack>
+        <Center>
+          <AlertDialog
+            leastDestructiveRef={cancelRef}
+            isOpen={showAlert}
+            onClose={onCloseAlert}
+          >
+            <AlertDialog.Content>
+              <AlertDialog.CloseButton />
+              <AlertDialog.Header>Finalizar lista</AlertDialog.Header>
+              <AlertDialog.Body>
+                <Text>
+                  Deseja finalizar a lista
+                  <Heading size={"sm"}> {shoppingList.description}</Heading>?
+                </Text>
+              </AlertDialog.Body>
+              <AlertDialog.Footer>
+                <Button.Group space={2}>
+                  <Button
+                    variant="unstyled"
+                    colorScheme="coolGray"
+                    onPress={onCloseAlert}
+                    ref={cancelRef}
+                  >
+                    Não
+                  </Button>
+                  <Button
+                    colorScheme="danger"
+                    onPress={() => {
+                      onUpdate && onUpdate({ ...shoppingList, archived: true });
+                    }}
+                  >
+                    Sim
+                  </Button>
+                </Button.Group>
+              </AlertDialog.Footer>
+            </AlertDialog.Content>
+          </AlertDialog>
+        </Center>
+        <Center>
+          <Actionsheet isOpen={openActionSheet} onClose={onCloseActionSheet}>
+            <Actionsheet.Content>
+              <Actionsheet.Item
+                onPress={() => {
+                  onEdit && onEdit(shoppingList);
+                }}
+                // isDisabled={shoppingList.archived}
+              >
+                Editar
+              </Actionsheet.Item>
+              <Actionsheet.Item
+                onPress={() => {
+                  onCloseActionSheet();
+                  setShowAlert(true);
+                }}
+              >
+                Finalizar
+              </Actionsheet.Item>
+              <Actionsheet.Item onPress={() => {}} isDisabled>
+                Comparar
+              </Actionsheet.Item>
+              <Actionsheet.Item onPress={onCloseActionSheet}>
+                Cancelar
+              </Actionsheet.Item>
+            </Actionsheet.Content>
+          </Actionsheet>
+        </Center>
+      </VStack>
+    </TouchableOpacity>
   );
 };
 
@@ -225,7 +239,7 @@ const ShoppingListItem: React.FC<Props> = ({
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    onUpdate: (shoppingList: ShoppingList) => {
+    onUpdate: (shoppingList: ShoppingListType) => {
       dispatch(putShoppingList(shoppingList));
       dispatch(getAll(false));
     },

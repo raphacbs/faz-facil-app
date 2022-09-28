@@ -2,10 +2,11 @@ import { ERROR, DEFAULT_LOADING, OFF_LOADING, SET_LOADING, SET_ERROR, CLEAR_ERRO
 
 const initialState = {
     error: '',
-    loading: false,
+    loading: true,
     isError: false,
 }
 const commonReducer = (state = initialState, action: any) => {
+    console.log(action.type);
     switch (action.type) {
         case ERROR:
             return { ...state, error: action.error, loading: false, showAlert: true };
