@@ -4,6 +4,7 @@ import ShoppingListScreen from "../../screens/ShoppingList";
 import DrawerNavigator from "../DrawerNavigator";
 import ShoppingCartScreen from "../../screens/ShoppingCart";
 import ProductSearchScreen from "../../screens/Product/ProductSearch";
+import BarCodeScanScreen from "../../screens/BarCodeScan";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,17 @@ const ScreenSnack = () => {
         component={ProductSearchScreen}
         options={{
           title: "Pesquisar Produtos",
+          headerStyle: {
+            backgroundColor: "#0099e6",
+          },
+          headerTintColor: "#fff",
+        }}
+      />
+      <Stack.Screen
+        name="BarCodeScan"
+        component={BarCodeScanScreen}
+        options={{
+          title: "Adicionar produto",
           headerStyle: {
             backgroundColor: "#0099e6",
           },

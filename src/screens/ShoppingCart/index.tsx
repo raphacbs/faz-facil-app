@@ -11,18 +11,21 @@ import {
   Text,
   Center,
   Spinner,
+  Button,
 } from "native-base";
 
 import { connect } from "react-redux";
 import { PageInfoType, ShoppingCartType, ShoppingListType } from "../../types";
 import CartItem from "../../components/CartItem";
 import { useDispatch } from "react-redux";
-import { getShoppingCart } from "../../store/actions/shoppingListAction";
+import {
+  getShoppingCart,
+  setShoppingList,
+} from "../../store/actions/shoppingListAction";
 import Container from "../../components/Container";
 import EmptyListContainer from "../../components/EmptyListContainer";
-import { FAB } from "react-native-paper";
 import { FabStyle } from "./style";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import SummaryShoppingCart from "../../components/SummaryShoppingCart";
 import { getMoreCartItems } from "../../store/actions/shoppingCartAction";
 
@@ -41,6 +44,7 @@ const ShoppingCartScreen = (props: Props) => {
   const [openFab, setOpenFab] = React.useState<boolean>(false);
   const keyExtractor = (item: any) => item.id;
   const dispatch = useDispatch();
+  const [showButton, setShowButton] = React.useState(true);
 
   const renderItem = (obj: any) => {
     const { item, index } = obj;
@@ -52,8 +56,23 @@ const ShoppingCartScreen = (props: Props) => {
     );
   };
   const listFooterComponent = () => {
-    return loadingEndReached ? (
-      <Spinner marginBottom={10} size={"lg"} color="emerald.500" />
+    return showButton && !pageInfo.last ? (
+      <Box marginBottom={30}>
+        <Button
+          variant={"link"}
+          onPress={() => {
+            dispatch(
+              getMoreCartItems(shoppingList.id, {
+                ...pageInfo,
+                pageNo: pageInfo.pageNo + 1,
+              })
+            );
+          }}
+          isLoading={loadingEndReached}
+        >
+          Carregar mais
+        </Button>
+      </Box>
     ) : (
       <Box marginBottom={70}></Box>
     );
@@ -62,7 +81,12 @@ const ShoppingCartScreen = (props: Props) => {
   React.useEffect(() => {
     navigation.setOptions({ title: shoppingList.description });
     dispatch(getShoppingCart(shoppingList.id));
+    dispatch(setShoppingList(shoppingList));
   }, [dispatch]);
+
+  React.useEffect(() => {
+    setShowButton(false);
+  }, [loadingEndReached]);
 
   const onRefresh = () => {
     dispatch(getShoppingCart(shoppingList.id));
@@ -86,24 +110,33 @@ const ShoppingCartScreen = (props: Props) => {
               ListFooterComponent={listFooterComponent}
               onEndReachedThreshold={0.5}
               onEndReached={() => {
-                if (!loadingEndReached && !pageInfo.last) {
-                  dispatch(
-                    getMoreCartItems(shoppingList.id, {
-                      ...pageInfo,
-                      pageNo: pageInfo.pageNo + 1,
-                    })
-                  );
-                } else {
-                  if (pageInfo.last) {
-                    Toast.show({
-                      title: "tudo atualizado!",
-                      color: "#0099e6",
-                    });
-                  }
-                }
+                // if (!loadingEndReached && !pageInfo.last) {
+                //   dispatch(
+                //     getMoreCartItems(shoppingList.id, {
+                //       ...pageInfo,
+                //       pageNo: pageInfo.pageNo + 1,
+                //     })
+                //   );
+                // } else {
+                //   if (pageInfo.last) {
+                //     Toast.show({
+                //       title: "tudo atualizado!",
+                //       color: "#0099e6",
+                //     });
+                //   }
+                // }
+                setShowButton(true);
               }}
             />
-            <FAB.Group
+            <Fab
+              renderInPortal={false}
+              shadow={2}
+              icon={<Icon color="white" as={AntDesign} name="plus" size="md" />}
+              onPress={() => {
+                navigation.navigate("BarCodeScan");
+              }}
+            />
+            {/* <FAB.Group
               open={openFab}
               icon={openFab ? "cart-plus" : "plus"}
               color="white"
@@ -113,7 +146,7 @@ const ShoppingCartScreen = (props: Props) => {
                 {
                   icon: "barcode-scan",
                   label: "Código de Barras",
-                  onPress: () => console.log("Leu código"),
+                  onPress: () => navigation.navigate("BarCodeScan"),
                 },
                 {
                   icon: "shopping-search",
@@ -127,7 +160,7 @@ const ShoppingCartScreen = (props: Props) => {
                   // do something if the speed dial is open
                 }
               }}
-            />
+            /> */}
           </Stack>
         ) : (
           <Stack w={"100%"} flex={1}>

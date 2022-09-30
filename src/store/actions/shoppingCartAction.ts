@@ -1,7 +1,24 @@
 import api from "../../services/api";
-import { CartItemType as CartItemType, PageInfoType } from "../../types";
+import { CartItemBodyType, CartItemType as CartItemType, PageInfoType } from "../../types";
 import { getShoppingCart } from "./shoppingListAction";
-import { CLEAR_ERROR, CLEAR_PRODUCT_LIST, DEFAULT_LOADING, DELETE_SHOPPING_CART_ITEM, GET_PRODUCTS_BY_DESCRIPTION, GET_SHOPPING_CART_BY_PAGE, GET_SHOPPING_LISTS, GET_SHOPPING_LISTS_BY_PAGE, OFF_LOADING, ON_END_REACHED_SHOPPING_CART, ON_END_REACHED_SHOPPING_LIST, PUT_SHOPPING_CART_ITEM, SET_ERROR, SHOW_LOADING_SHOPPING_CART_ITEM } from "./types";
+import {
+    CLEAR_ERROR,
+    CLEAR_PRODUCT_LIST,
+    DEFAULT_LOADING,
+    DELETE_SHOPPING_CART_ITEM,
+    GET_PRODUCTS_BY_DESCRIPTION,
+    GET_SHOPPING_CART_BY_PAGE,
+    GET_SHOPPING_LISTS,
+    GET_SHOPPING_LISTS_BY_PAGE,
+    OFF_LOADING,
+    ON_END_REACHED_SHOPPING_CART,
+    ON_END_REACHED_SHOPPING_LIST,
+    POST_SHOPPING_CART_ITEM,
+    PUT_SHOPPING_CART_ITEM,
+    SET_CART_ITEM_BODY,
+    SET_ERROR,
+    SHOW_LOADING_SHOPPING_CART_ITEM
+} from "./types";
 
 const endPoint = '/api/v1/shopping-carts';
 
@@ -9,7 +26,6 @@ export const getMoreCartItems: any = (shoppingListId: string, pageInfo: PageInfo
 
     return async (dispatch: any) => {
         try {
-            console.log(pageInfo)
             dispatch({ type: CLEAR_ERROR });
             dispatch({ type: ON_END_REACHED_SHOPPING_CART });
             const url = `${endPoint}/${shoppingListId}/cart-item?pageNo=${pageInfo.pageNo}&pageSize=${pageInfo.pageSize}&sortDir=desc`
@@ -29,7 +45,6 @@ export const getMoreCartItems: any = (shoppingListId: string, pageInfo: PageInfo
         }
     }
 }
-
 export const putCartItem: any = (cartItem: CartItemType) => {
     return async (dispatch: any) => {
         try {
@@ -42,10 +57,50 @@ export const putCartItem: any = (cartItem: CartItemType) => {
             dispatch({ type: CLEAR_ERROR });
             dispatch({ type: SHOW_LOADING_SHOPPING_CART_ITEM })
             const url = `${endPoint}/${cartItem.shoppingCartId}/cart-item`
-            console.log(url)
             const response = await api.put(url, body);
             dispatch({ type: PUT_SHOPPING_CART_ITEM, data: response.data })
             dispatch({ type: OFF_LOADING })
+        } catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
+        }
+    }
+}
+export const postCartItem: any = (cartItemBodyType: CartItemBodyType, shoppingCartId: string) => {
+    return async (dispatch: any) => {
+        try {
+            // let body = {
+            //     amountOfProduct: cartItemBodyType.amountOfProduct,
+            //     price: cartItemBodyType.price,
+            //     isChecked: cartItemBodyType.isChecked,
+            //     productId: cartItemBodyType.productId
+            // }
+
+
+            dispatch({ type: CLEAR_ERROR });
+            dispatch({ type: SHOW_LOADING_SHOPPING_CART_ITEM })
+            const url = `${endPoint}/${shoppingCartId}/cart-item`
+            const response = await api.post(url, cartItemBodyType);
+            dispatch({ type: POST_SHOPPING_CART_ITEM, data: response.data })
+            dispatch({ type: OFF_LOADING })
+        } catch (error: any) {
+            let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
+            dispatch({ type: SET_ERROR, error: message });
+        }
+    }
+}
+export const setCartItemBody: any = (cartItemBody: CartItemBodyType) => {
+    return async (dispatch: any) => {
+        try {
+            // let body = {
+            //     amountOfProduct: cartItemBodyType.amountOfProduct,
+            //     price: cartItemBodyType.price,
+            //     isChecked: cartItemBodyType.isChecked,
+            //     productId: cartItemBodyType.productId
+            // }
+            dispatch({ type: CLEAR_ERROR });
+            dispatch({ type: SET_CART_ITEM_BODY, cartItemBody: cartItemBody });
+
         } catch (error: any) {
             let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
             dispatch({ type: SET_ERROR, error: message });
@@ -92,4 +147,5 @@ export const resetShoppingCart: any = () => {
         }
     }
 }
+
 

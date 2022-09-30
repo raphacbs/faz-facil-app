@@ -6,7 +6,6 @@ const initialState = {
     isError: false,
 }
 const commonReducer = (state = initialState, action: any) => {
-    console.log(action.type);
     switch (action.type) {
         case ERROR:
             return { ...state, error: action.error, loading: false, showAlert: true };

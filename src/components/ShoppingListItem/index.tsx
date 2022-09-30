@@ -59,7 +59,7 @@ const ShoppingListItem: React.FC<Props> = ({
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => {
         onPress && onPress(shoppingList);
       }}
@@ -226,7 +226,7 @@ const ShoppingListItem: React.FC<Props> = ({
           </Actionsheet>
         </Center>
       </VStack>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
-import { FlatList, Stack, Icon, Fab, Box, Spinner, Toast } from "native-base";
+import {
+  FlatList,
+  Stack,
+  Icon,
+  Fab,
+  Box,
+  Spinner,
+  Toast,
+  Button,
+} from "native-base";
 import ShoppingListItem from "../../components/ShoppingListItem";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -21,6 +30,7 @@ import { resetShoppingCart } from "../../store/actions/shoppingCartAction";
 const HomeScreen = (props: any) => {
   const { navigation } = props;
   const dispatch = useDispatch();
+  const [showButton, setShowButton] = React.useState(true);
   const { shoppingLists, shoppingList, pageInfo, loadingEndReached } =
     useSelector((state: RootState) => state.shoppingListReducer);
 
@@ -42,8 +52,18 @@ const HomeScreen = (props: any) => {
   const keyExtractor = (item: any) => item.id;
 
   const listFooterComponent = () => {
-    return loadingEndReached ? (
-      <Spinner marginBottom={10} size={"lg"} color="emerald.500" />
+    return showButton && !pageInfo.last ? (
+      <Box marginBottom={30}>
+        <Button
+          variant={"link"}
+          onPress={() => {
+            dispatch(getMore({ ...pageInfo, pageNo: pageInfo.pageNo + 1 }));
+          }}
+          isLoading={loadingEndReached}
+        >
+          Carregar mais
+        </Button>
+      </Box>
     ) : (
       <Box marginBottom={70}></Box>
     );
@@ -88,6 +108,10 @@ const HomeScreen = (props: any) => {
     fetchShoppingList();
   }, [dispatch]);
 
+  useEffect(() => {
+    setShowButton(false);
+  }, [loadingEndReached]);
+
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener("focus", () => {
   //     dispatch(resetShoppingCart());
@@ -109,16 +133,18 @@ const HomeScreen = (props: any) => {
             // initialNumToRender={5} // Reduce initial render amount
             // maxToRenderPerBatch={1} // Reduce number in each render batch
             onEndReached={() => {
-              if (!loadingEndReached && !pageInfo.last) {
-                dispatch(getMore({ ...pageInfo, pageNo: pageInfo.pageNo + 1 }));
-              } else {
-                if (pageInfo.last) {
-                  Toast.show({
-                    title: "tudo atualizado!",
-                    color: "#0099e6",
-                  });
-                }
-              }
+              // if (!loadingEndReached && !pageInfo.last) {
+
+              //   dispatch(getMore({ ...pageInfo, pageNo: pageInfo.pageNo + 1 }));
+              // } else {
+              //   if (pageInfo.last) {
+              //     Toast.show({
+              //       title: "Todos os ",
+              //       color: "#0099e6",
+              //     });
+              //   }
+              // }
+              setShowButton(true);
             }}
             onEndReachedThreshold={0.5}
           />
@@ -127,7 +153,6 @@ const HomeScreen = (props: any) => {
             shadow={2}
             icon={<Icon color="white" as={AntDesign} name="plus" size="md" />}
             onPress={() => {
-              console.log("onPress");
               goToShoppingListScreen();
             }}
           />

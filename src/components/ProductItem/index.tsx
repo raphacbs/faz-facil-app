@@ -6,15 +6,26 @@ import {
   Text,
   Center,
   Image,
+  Heading,
 } from "native-base";
 import React from "react";
-import { ProductItemType } from "../../types";
+import { CartItemBodyType, ProductItemType } from "../../types";
+import { useDispatch } from "react-redux";
+import { postCartItem } from "../../store/actions/shoppingCartAction";
+import Modal from "../Modal";
+import ProductComponent from "../../screens/BarCodeScan/productComponent";
+import { connect } from "react-redux";
 
 interface Props {
   product: ProductItemType;
+  shoppingListId: string;
+  cartItemBody: CartItemBodyType;
+  navigation: any;
 }
 const ProductItem = (props: Props) => {
-  const { product } = props;
+  const { product, shoppingListId, cartItemBody, navigation } = props;
+  const [openModalAdd, setOpenModalAdd] = React.useState(false);
+  const dispatch = useDispatch();
   return (
     <VStack>
       <HStack space={1} paddingBottom={5}>
@@ -54,7 +65,7 @@ const ProductItem = (props: Props) => {
             rounded={20}
             colorScheme="blue"
             onPress={() => {
-              // props.onAdd(product);
+              setOpenModalAdd(true);
             }}
           >
             Add
@@ -62,8 +73,38 @@ const ProductItem = (props: Props) => {
         </VStack>
       </HStack>
       <Divider marginTop={3} my="2" />
+      <Modal
+        isOpen={openModalAdd}
+        title={
+          <Heading size={"sm"} marginRight={5}>
+            {product.description}
+          </Heading>
+        }
+        buttonLeft={{
+          label: "Cancelar",
+          onPress: () => {
+            setOpenModalAdd(false);
+          },
+          colorScheme: "gray",
+        }}
+        buttonRight={{
+          label: "Adicionar",
+          onPress: () => {
+            dispatch(postCartItem(cartItemBody, shoppingListId));
+            navigation.pop(2);
+          },
+          colorScheme: "blue",
+        }}
+        body={<ProductComponent product={product} />}
+      />
     </VStack>
   );
 };
 
-export default ProductItem;
+const mapStateToProps = (store: any) => {
+  return {
+    cartItemBody: store.shoppingCartReducer.cartItemBody,
+  };
+};
+
+export default connect(mapStateToProps)(ProductItem);

@@ -35,7 +35,8 @@ export interface ShoppingCartType {
     totalProducts: number,
     amountItems: string,
     subtotalChecked: string,
-    totalProductsChecked: number,
+    totalProductsChecked: number
+
 }
 
 
@@ -55,4 +56,11 @@ export interface PageInfoType {
     totalElements: number,
     totalPages: number,
     last: boolean
+}
+
+export interface CartItemBodyType {
+    productId: string,
+    price: string,
+    amountOfProduct: number,
+    isChecked: boolean,
 }

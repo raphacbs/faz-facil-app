@@ -13,7 +13,11 @@ import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import ProductItem from "../../../components/ProductItem";
 import Container from "../../../components/Container";
-import { ProductItemType } from "../../../types";
+import {
+  CartItemBodyType,
+  ProductItemType,
+  ShoppingListType,
+} from "../../../types";
 import { useDispatch } from "react-redux";
 import {
   clearProductList,
@@ -21,14 +25,23 @@ import {
 } from "../../../store/actions/productAction";
 interface Props {
   products: Array<ProductItemType>;
+  shoppingList: ShoppingListType;
+  cartItemBody: CartItemBodyType;
+  navigation: any;
 }
 
 const ProductSearchScreen = (props: Props) => {
-  const { products } = props;
+  const { products, shoppingList, cartItemBody, navigation } = props;
   const dispatch = useDispatch();
   const [searchedText, setSearchedText] = useState("");
   const renderItemComponent = (data: any) => {
-    return <ProductItem product={data.item} />;
+    return (
+      <ProductItem
+        navigation={navigation}
+        shoppingListId={shoppingList.id}
+        product={data.item}
+      />
+    );
   };
 
   const handleProducts = () => {
@@ -103,6 +116,9 @@ const mapStateToProps = (store: any) => {
   return {
     loading: store.commonReducer.loading,
     products: store.shoppingCartReducer.products,
+    productDidFounded: store.shoppingCartReducer.productDidFounded,
+    shoppingList: store.shoppingListReducer.shoppingList,
+    cartItemBody: store.shoppingCartReducer.cartItemBodyType,
   };
 };
 

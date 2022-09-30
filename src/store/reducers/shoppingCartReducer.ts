@@ -1,5 +1,5 @@
 import { ShoppingCartModel } from "../../services/models";
-import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM, SHOW_LOADING_SHOPPING_CART_ITEM, DELETE_SHOPPING_CART_ITEM, GET_SHOPPING_CART_BY_PAGE, ON_END_REACHED_SHOPPING_CART } from "../actions/types";
+import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM, SHOW_LOADING_SHOPPING_CART_ITEM, DELETE_SHOPPING_CART_ITEM, GET_SHOPPING_CART_BY_PAGE, ON_END_REACHED_SHOPPING_CART, GET_PRODUCTS_BY_EAN, POST_SHOPPING_CART_ITEM, SET_CART_ITEM_BODY, SET_PRODUCT_POST_BODY } from "../actions/types";
 
 const initialState: ShoppingCartModel = {
     shoppingCart: {
@@ -8,7 +8,7 @@ const initialState: ShoppingCartModel = {
         totalProducts: 0,
         amountItems: "R$ 0,00",
         subtotalChecked: "R$ 0,00",
-        totalProductsChecked: 0
+        totalProductsChecked: 0,
     },
     cartItem: {
         id: "",
@@ -30,6 +30,16 @@ const initialState: ShoppingCartModel = {
     },
     loadingEndReached: false,
     products: [],
+    product: {
+        id: "",
+        description: "",
+        brand: "",
+        image: "",
+        ean: "",
+        createAt: "",
+        updateAt: "",
+    },
+
     loading: false,
     pageInfo: {
         pageNo: 0,
@@ -37,6 +47,21 @@ const initialState: ShoppingCartModel = {
         totalElements: 0,
         totalPages: 0,
         last: false
+    },
+    cartItemBody: {
+        productId: "",
+        price: "",
+        amountOfProduct: 0,
+        isChecked: false,
+    },
+    productDidFounded: false,
+    productBodyPost: {
+        description: "",
+        brand: "",
+        image: "https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4",
+        ean: "",
+        price: "0,00",
+        amountOfProduct: 1,
     }
 }
 
@@ -48,11 +73,20 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
                 ...state,
                 shoppingCart: action.shoppingCart, loading: false, pageInfo: action.pageInfo
             }
-        case GET_PRODUCTS_BY_DESCRIPTION:
-
+        case SET_CART_ITEM_BODY:
             return {
                 ...state,
-                products: action.productResponse.products, loading: false
+                cartItemBody: action.cartItemBody
+            }
+        case GET_PRODUCTS_BY_DESCRIPTION:
+            return {
+                ...state,
+                products: action.productResponse.products, loading: false, productDidFounded: action.productResponse.products.length > 0
+            }
+        case GET_PRODUCTS_BY_EAN:
+            return {
+                ...state,
+                product: action.product == null ? initialState.product : action.product, loading: false, productDidFounded: action.productDidFounded
             }
         case GET_SHOPPING_CART_BY_PAGE:
             const _shoppingCart = { ...state.shoppingCart }
@@ -79,6 +113,22 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
                 ...state,
                 shoppingCart: clone, loading: false
             }
+
+        case POST_SHOPPING_CART_ITEM:
+            let _shoppingCartCopy = state.shoppingCart;
+            const cartItemsClone = [..._shoppingCartCopy.cartItems];
+            cartItemsClone.splice(0, 0, action.data.cartItems[0]);
+            return {
+                ...state, shoppingCart: {
+                    cartItems: cartItemsClone,
+                    amountItems: action.data.amountItems,
+                    totalProducts: action.data.totalProducts,
+                    totalProductsChecked: action.data.totalProductsChecked,
+                    subtotalChecked: action.data.subtotalChecked,
+                    totalCartItems: action.data.totalCartItems,
+                }
+                , loading: false
+            }
         case DELETE_SHOPPING_CART_ITEM:
 
             return {
@@ -88,6 +138,11 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
             return {
                 ...state,
                 products: [], loading: false
+            }
+        case SET_PRODUCT_POST_BODY:
+            return {
+                ...state,
+                productBodyPost: action.productBodyPost, loading: false
             }
         case SHOW_LOADING_SHOPPING_CART_ITEM:
             return {

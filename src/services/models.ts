@@ -1,4 +1,4 @@
-import { CartItemType, ProductItemType, ShoppingCartType } from "../types"
+import { CartItemType, ProductItemType, ShoppingCartType, CartItemBodyType } from "../types"
 export interface ModelsInitialState {
     shoppingLists: Array<object>,
     shoppingList: {
@@ -28,6 +28,7 @@ export interface ShoppingCartModel {
     shoppingCart: ShoppingCartType,
     cartItem: CartItemType,
     products: Array<ProductItemType>
+    product: ProductItemType,
     loading: boolean,
     loadingEndReached: boolean,
     pageInfo: {
@@ -36,6 +37,16 @@ export interface ShoppingCartModel {
         totalElements: number,
         totalPages: number,
         last: boolean
+    },
+    cartItemBody: CartItemBodyType,
+    productDidFounded: boolean,
+    productBodyPost: {
+        description: string,
+        brand: string,
+        image: string,
+        ean: string,
+        price: string,
+        amountOfProduct: number,
     }
 }
 

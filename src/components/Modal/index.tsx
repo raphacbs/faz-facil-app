@@ -12,7 +12,7 @@ const Modal = (props: Props) => {
       // onClose={onClose}
     >
       <AlertDialog.Content>
-        <AlertDialog.CloseButton />
+        <AlertDialog.CloseButton ref={cancelRef} />
         <AlertDialog.Header>{title}</AlertDialog.Header>
         <AlertDialog.Body>{body}</AlertDialog.Body>
         <AlertDialog.Footer>

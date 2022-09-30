@@ -1,7 +1,7 @@
 import { ColorSchemeType } from "native-base/lib/typescript/components/types";
 
 export interface Props {
-    title: string;
+    title: string | React.ComponentType<any> | React.ReactElement;
     body: React.ComponentType<any> | React.ReactElement;
     buttonRight: ModalButton;
     buttonLeft: ModalButton;

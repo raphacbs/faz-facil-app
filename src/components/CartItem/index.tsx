@@ -65,7 +65,6 @@ const CartItemComponent = (props: Props) => {
   };
 
   const handleCheck = () => {
-    console.log("handleCheck", cartItem);
     onUpdateCartItem({
       ...cartItem,
       isChecked: !cartItem.isChecked,
@@ -190,7 +189,6 @@ const CartItemComponent = (props: Props) => {
                       if (value <= 0) {
                         return;
                       }
-                      console.log("minus", cartItem);
                       onUpdateCartItem({
                         ...cartItem,
                         amountOfProduct: value,
