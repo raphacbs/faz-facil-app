@@ -1,4 +1,4 @@
-import { ERROR, DEFAULT_LOADING, OFF_LOADING, SET_LOADING, SET_ERROR, CLEAR_ERROR } from "../actions/types";
+import { ERROR, DEFAULT_LOADING, OFF_LOADING, SET_LOADING, SET_ERROR, CLEAR_ERROR, SHOW_LOADING_SHOPPING_CART_ITEM } from "../actions/types";
 
 const initialState = {
     error: '',

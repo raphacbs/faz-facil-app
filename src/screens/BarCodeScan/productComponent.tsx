@@ -53,6 +53,10 @@ const ProductComponent = (props: Props) => {
     }
   }, [price, quantity]);
 
+  React.useEffect(() => {
+    console.log("Mudou o loading " + loading);
+  }, [loading]);
+
   const calculateTotal = () => {
     let _price = price + "";
     let len =
@@ -132,7 +136,9 @@ const ProductComponent = (props: Props) => {
                 uri: product.image,
               }}
               size="lg"
-            ></Avatar>
+            >
+              FF
+            </Avatar>
           </Center>
 
           <HStack space={2}>
@@ -163,7 +169,20 @@ const ProductComponent = (props: Props) => {
         </VStack>
       ) : (
         <VStack space={2}>
-          <Heading size={"xs"}>Código de barras: {productBodyPost.ean}</Heading>
+          <HStack w="100%" justifyContent={"space-between"}>
+            <FormControl isInvalid={false} w="50%" maxW="300px">
+              <FormControl.Label>Código de barras</FormControl.Label>
+              <Input
+                variant={"unstyled"}
+                isDisabled
+                value={productBodyPost.ean}
+              />
+            </FormControl>
+
+            <Avatar bg="green.500" size="md">
+              FF
+            </Avatar>
+          </HStack>
           <FormControl isInvalid={false} w="100%" maxW="300px">
             <FormControl.Label>Descrição</FormControl.Label>
             <Input
@@ -222,7 +241,7 @@ const ProductComponent = (props: Props) => {
 
 const mapStateToProps = (store: any) => {
   return {
-    loading: store.shoppingCartReducer.loading,
+    loading: store.commonReducer.loading,
     cartItemBody: store.shoppingCartReducer.cartItemBodyType,
     productDidFounded: store.shoppingCartReducer.productDidFounded,
     productBodyPost: store.shoppingCartReducer.productBodyPost,

@@ -66,6 +66,7 @@ const initialState: ShoppingCartModel = {
 }
 
 const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: any) => {
+    console.log("shoppingCartReducer", action.type)
 
     switch (action.type) {
         case GET_SHOPPING_CART:
@@ -86,7 +87,7 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
         case GET_PRODUCTS_BY_EAN:
             return {
                 ...state,
-                product: action.product == null ? initialState.product : action.product, loading: false, productDidFounded: action.productDidFounded
+                product: action.product == null ? initialState.product : action.product, productDidFounded: action.productDidFounded
             }
         case GET_SHOPPING_CART_BY_PAGE:
             const _shoppingCart = { ...state.shoppingCart }
@@ -111,7 +112,7 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
             )
             return {
                 ...state,
-                shoppingCart: clone, loading: false
+                shoppingCart: clone
             }
 
         case POST_SHOPPING_CART_ITEM:
@@ -142,13 +143,9 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
         case SET_PRODUCT_POST_BODY:
             return {
                 ...state,
-                productBodyPost: action.productBodyPost, loading: false
+                productBodyPost: action.productBodyPost
             }
-        case SHOW_LOADING_SHOPPING_CART_ITEM:
-            return {
-                ...state,
-                loading: true
-            }
+
         case ON_END_REACHED_SHOPPING_CART:
             return { ...state, loadingEndReached: true };
         default:

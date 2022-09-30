@@ -69,16 +69,7 @@ export const putCartItem: any = (cartItem: CartItemType) => {
 export const postCartItem: any = (cartItemBodyType: CartItemBodyType, shoppingCartId: string) => {
     return async (dispatch: any) => {
         try {
-            // let body = {
-            //     amountOfProduct: cartItemBodyType.amountOfProduct,
-            //     price: cartItemBodyType.price,
-            //     isChecked: cartItemBodyType.isChecked,
-            //     productId: cartItemBodyType.productId
-            // }
-
-
-            dispatch({ type: CLEAR_ERROR });
-            dispatch({ type: SHOW_LOADING_SHOPPING_CART_ITEM })
+            dispatch({ type: DEFAULT_LOADING })
             const url = `${endPoint}/${shoppingCartId}/cart-item`
             const response = await api.post(url, cartItemBodyType);
             dispatch({ type: POST_SHOPPING_CART_ITEM, data: response.data })

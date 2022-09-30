@@ -10,6 +10,7 @@ import {
   FormControl,
   Input,
   Spinner,
+  Skeleton,
 } from "native-base";
 import { View, StyleSheet, Dimensions } from "react-native";
 import { container } from "./styles";
@@ -33,7 +34,7 @@ import {
 import ProductComponent from "./productComponent";
 import { postCartItem } from "../../store/actions/shoppingCartAction";
 import { color } from "react-native-reanimated";
-
+import { Audio } from "expo-av";
 interface Props {
   navigation: any;
   product: ProductItemType;
@@ -70,6 +71,14 @@ const BarCodeScanScreen = (props: Props) => {
   const viewMinY = (height - finderHeight) / 2;
   const dispatch = useDispatch();
 
+  const playBeep = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../../assets/beep/beep.wav")
+    );
+    console.log("beep");
+    await sound.playAsync();
+  };
+
   React.useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -84,6 +93,7 @@ const BarCodeScanScreen = (props: Props) => {
       setShowModalInputBarCode(false);
       setScanned(true);
     }
+    console.log(loading);
   }, [loading]);
 
   const handleBarCodeScanned = ({
@@ -98,7 +108,7 @@ const BarCodeScanScreen = (props: Props) => {
       x <= viewMinX + finderWidth / 2 &&
       y <= viewMinY + finderHeight / 2
     ) {
-      setScanned(true);
+      playBeep();
       dispatch(
         setProductBodyPost({
           ...productBodyPost,
@@ -108,6 +118,7 @@ const BarCodeScanScreen = (props: Props) => {
         })
       );
       dispatch(getProductByEan(data));
+      setScanned(true);
     }
   };
 
@@ -120,6 +131,26 @@ const BarCodeScanScreen = (props: Props) => {
 
   const handleScanAgain = () => {
     setScanned(false);
+  };
+
+  // const handleSearchProduct =  React.useCallback(
+  //   (ean: string) => {
+  //     dispatch(getProductByEan(ean));
+  //   },
+  //   [dispatch]
+  // );
+
+  const handleSearchProduct = (ean: string) => {
+    dispatch(
+      setProductBodyPost({
+        ...productBodyPost,
+        ean: ean,
+        brand: "",
+        description: "",
+      })
+    );
+
+    dispatch(getProductByEan(ean));
   };
 
   return (
@@ -142,6 +173,7 @@ const BarCodeScanScreen = (props: Props) => {
           rounded={20}
           colorScheme="blue"
           onPress={() => {
+            setEan("");
             setShowModalInputBarCode(true);
           }}
         >
@@ -173,11 +205,13 @@ const BarCodeScanScreen = (props: Props) => {
       <Modal
         isOpen={scanned}
         title={
-          <Heading size={"sm"} marginRight={5}>
-            {productDidFounded
-              ? product.description
-              : "Produto não encontrado, cadastre-o"}
-          </Heading>
+          <Skeleton.Text lines={1} isLoaded={!loading}>
+            <Heading size={"sm"} marginRight={5}>
+              {productDidFounded
+                ? product.description
+                : "Produto não encontrado, cadastre-o"}
+            </Heading>
+          </Skeleton.Text>
         }
         buttonLeft={{
           label: "Cancelar",
@@ -213,7 +247,7 @@ const BarCodeScanScreen = (props: Props) => {
         buttonRight={{
           label: "Buscar",
           onPress: () => {
-            dispatch(getProductByEan(ean));
+            handleSearchProduct(ean);
           },
           colorScheme: "blue",
         }}

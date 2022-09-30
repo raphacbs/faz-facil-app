@@ -23,7 +23,6 @@ export const getProductByDescription: any = (description: string) => {
 export const getProductByEan: any = (ean: string) => {
     return async (dispatch: any) => {
         try {
-            dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             const response = await api.get(`${endPoint}?ean=${ean}`);
             const product = response.status == 200 ? response.data.products[0] : null;
@@ -39,7 +38,6 @@ export const getProductByEan: any = (ean: string) => {
 export const postProduct: any = (productBodyPost: any, shoppingListId: string) => {
     return async (dispatch: any) => {
         try {
-            dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             const formData = new FormData();
             let body = {
@@ -49,25 +47,21 @@ export const postProduct: any = (productBodyPost: any, shoppingListId: string) =
                 ean: productBodyPost.ean
             }
             formData.append("data", JSON.stringify(body));
-
             const response = await axios({
                 method: "post",
                 url: config.baseURL + endPoint,
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data", "X-API-KEY": config.headers["X-API-Key"] },
             })
-
             const product = response.data;
-
             const bodyCartItem: CartItemBodyType = {
                 productId: product.id,
                 amountOfProduct: productBodyPost.amountOfProduct,
                 price: productBodyPost.price,
                 isChecked: true
             }
-
             dispatch(postCartItem(bodyCartItem, shoppingListId));
-
+            dispatch({ type: OFF_LOADING })
         } catch (error: any) {
             let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
             dispatch({ type: SET_ERROR, error: message });
