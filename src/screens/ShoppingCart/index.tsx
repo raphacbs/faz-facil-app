@@ -165,7 +165,13 @@ const ShoppingCartScreen = (props: Props) => {
         ) : (
           <Stack w={"100%"} flex={1}>
             <SummaryShoppingCart />
-            <EmptyListContainer showAddButton type="CartItem" />
+            <EmptyListContainer
+              onPressAddButton={() => {
+                navigation.navigate("BarCodeScan");
+              }}
+              showAddButton
+              type="CartItem"
+            />
           </Stack>
         )}
       </Container>
