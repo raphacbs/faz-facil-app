@@ -23,6 +23,7 @@ const ScreenSnack = () => {
         component={ShoppingListScreen}
         options={{
           title: "Criar lista",
+          headerShown: false,
           headerStyle: {
             backgroundColor: "#0099e6",
           },

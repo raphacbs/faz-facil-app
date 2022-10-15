@@ -14,18 +14,14 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getAll,
   getMore,
-  getShoppingCart,
   setShoppingList,
 } from "../../store/actions/shoppingListAction";
 import { RootState } from "../../store/reducers";
 import Container from "../../components/Container";
-import LoadingSpinner from "../../components/LoadingSpinner";
 import { AntDesign } from "@expo/vector-icons";
-import MessageAlert from "../../components/Alert";
 import { connect } from "react-redux";
 import { ShoppingListType } from "../../types";
 import EmptyListContainer from "../../components/EmptyListContainer";
-import { resetShoppingCart } from "../../store/actions/shoppingCartAction";
 
 const HomeScreen = (props: any) => {
   const { navigation } = props;

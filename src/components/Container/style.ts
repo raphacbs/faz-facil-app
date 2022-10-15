@@ -1,7 +1,7 @@
 export const animation = {
-    width: 350,
-    height: 350,
-    marginTop: 20
+    width: 500,
+    height: 500,
+    marginTop: "20%"
 
 }
 

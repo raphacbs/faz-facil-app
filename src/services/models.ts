@@ -1,6 +1,6 @@
-import { CartItemType, ProductItemType, ShoppingCartType, CartItemBodyType } from "../types"
+import { CartItemType, ProductItemType, ShoppingCartType, CartItemBodyType, ShoppingListType } from "../types"
 export interface ModelsInitialState {
-    shoppingLists: Array<object>,
+    shoppingLists: Array<ShoppingListType>,
     shoppingList: {
         id: string;
         description: string;

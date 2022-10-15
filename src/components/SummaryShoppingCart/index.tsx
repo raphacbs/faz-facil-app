@@ -29,7 +29,6 @@ const SummaryShoppingCart = (props: Props) => {
         _filledTrack={{
           bg: "lime.500",
         }}
-        rounded="0"
         value={calculateProgress(
           shoppingCart.totalProductsChecked,
           shoppingCart.totalProducts

@@ -28,6 +28,7 @@ import { FabStyle } from "./style";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import SummaryShoppingCart from "../../components/SummaryShoppingCart";
 import { getMoreCartItems } from "../../store/actions/shoppingCartAction";
+import ScreenHeader from "../../components/ScreenHeader";
 
 interface Props {
   shoppingCart: ShoppingCartType;
@@ -98,10 +99,14 @@ const ShoppingCartScreen = (props: Props) => {
     <Stack flex={1}>
       <Container refreshControl={false} onRefresh={onRefresh}>
         {shoppingCart.cartItems != null && shoppingCart.cartItems.length > 0 ? (
-          <Stack w={"100%"} flex={1}>
-            <SummaryShoppingCart />
+          <Stack flex={1} w={"100%"}>
+            <ScreenHeader
+              title={shoppingList.description}
+              subtitle={shoppingList.supermarket}
+              children={undefined}
+            ></ScreenHeader>
+            {/* <SummaryShoppingCart /> */}
             <FlatList
-              flex={1}
               keyExtractor={keyExtractor}
               data={shoppingCart.cartItems}
               renderItem={renderItem}
@@ -129,6 +134,7 @@ const ShoppingCartScreen = (props: Props) => {
               }}
             />
             <Fab
+              flex={2}
               renderInPortal={false}
               shadow={2}
               icon={<Icon color="white" as={AntDesign} name="plus" size="md" />}
@@ -164,7 +170,11 @@ const ShoppingCartScreen = (props: Props) => {
           </Stack>
         ) : (
           <Stack w={"100%"} flex={1}>
-            <SummaryShoppingCart />
+            <ScreenHeader
+              title={shoppingList.description}
+              subtitle={shoppingList.supermarket}
+              children={undefined}
+            ></ScreenHeader>
             <EmptyListContainer
               onPressAddButton={() => {
                 navigation.navigate("BarCodeScan");

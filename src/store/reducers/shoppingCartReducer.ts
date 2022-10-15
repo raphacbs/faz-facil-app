@@ -1,5 +1,5 @@
 import { ShoppingCartModel } from "../../services/models";
-import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM, SHOW_LOADING_SHOPPING_CART_ITEM, DELETE_SHOPPING_CART_ITEM, GET_SHOPPING_CART_BY_PAGE, ON_END_REACHED_SHOPPING_CART, GET_PRODUCTS_BY_EAN, POST_SHOPPING_CART_ITEM, SET_CART_ITEM_BODY, SET_PRODUCT_POST_BODY } from "../actions/types";
+import { GET_SHOPPING_CART, ERROR, GET_PRODUCTS_BY_DESCRIPTION, CLEAR_PRODUCT_LIST, PUT_SHOPPING_CART_ITEM, SHOW_LOADING_SHOPPING_CART_ITEM, DELETE_SHOPPING_CART_ITEM, GET_SHOPPING_CART_BY_PAGE, ON_END_REACHED_SHOPPING_CART, GET_PRODUCTS_BY_EAN, POST_SHOPPING_CART_ITEM, SET_CART_ITEM_BODY, SET_PRODUCT_POST_BODY, CHANGE_SHOPPING_CART_ITEM } from "../actions/types";
 
 const initialState: ShoppingCartModel = {
     shoppingCart: {
@@ -113,6 +113,21 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
             return {
                 ...state,
                 shoppingCart: clone
+            }
+        case CHANGE_SHOPPING_CART_ITEM:
+            const toChange = { ...state.shoppingCart }
+            toChange.cartItems = toChange.cartItems.map(
+                (cartItem, i) => cartItem.id == action.cartItem.id ? {
+                    ...cartItem,
+                    isChecked: action.cartItem.isChecked,
+                    price: action.cartItem.price,
+                    amountOfProduct: action.cartItem.amountOfProduct,
+                    subtotal: action.cartItem.subtotal
+                } : cartItem
+            )
+            return {
+                ...state,
+                shoppingCart: toChange
             }
 
         case POST_SHOPPING_CART_ITEM:

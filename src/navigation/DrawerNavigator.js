@@ -14,6 +14,7 @@ const DrawerNavigator = () => {
         initialParams={{ isArchived: false }}
         options={({ navigation }) => ({
           title: "Minhas Listas",
+          headerShown: false,
           headerStyle: {
             backgroundColor: "#0099e6",
           },

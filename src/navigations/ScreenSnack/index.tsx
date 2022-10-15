@@ -22,6 +22,7 @@ const ScreenSnack = () => {
         name="ShoppingList"
         component={ShoppingListScreen}
         options={{
+          headerShown: false,
           title: "Criar lista",
           headerStyle: {
             backgroundColor: "#0099e6",
@@ -33,6 +34,7 @@ const ScreenSnack = () => {
         name="ShoppingCart"
         component={ShoppingCartScreen}
         options={{
+          headerShown: false,
           headerStyle: {
             backgroundColor: "#0099e6",
           },

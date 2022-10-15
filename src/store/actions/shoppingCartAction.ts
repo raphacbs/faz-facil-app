@@ -2,6 +2,7 @@ import api from "../../services/api";
 import { CartItemBodyType, CartItemType as CartItemType, PageInfoType } from "../../types";
 import { getShoppingCart } from "./shoppingListAction";
 import {
+    CHANGE_SHOPPING_CART_ITEM,
     CLEAR_ERROR,
     CLEAR_PRODUCT_LIST,
     DEFAULT_LOADING,
@@ -54,12 +55,13 @@ export const putCartItem: any = (cartItem: CartItemType) => {
                 price: cartItem.price,
                 isChecked: cartItem.isChecked
             }
-            dispatch({ type: CLEAR_ERROR });
-            dispatch({ type: SHOW_LOADING_SHOPPING_CART_ITEM })
+            // await dispatch({ type: CHANGE_SHOPPING_CART_ITEM, cartItem: cartItem })
+            await dispatch({ type: CLEAR_ERROR });
+            await dispatch({ type: SHOW_LOADING_SHOPPING_CART_ITEM })
             const url = `${endPoint}/${cartItem.shoppingCartId}/cart-item`
             const response = await api.put(url, body);
-            dispatch({ type: PUT_SHOPPING_CART_ITEM, data: response.data })
-            dispatch({ type: OFF_LOADING })
+            await dispatch({ type: PUT_SHOPPING_CART_ITEM, data: response.data })
+            await dispatch({ type: OFF_LOADING })
         } catch (error: any) {
             let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
             dispatch({ type: SET_ERROR, error: message });

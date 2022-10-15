@@ -140,7 +140,9 @@ const ShoppingListItem: React.FC<Props> = ({
                   color="gray.500"
                   size={"md"}
                 />
-                <Text marginRight={2}>{shoppingList.amountProducts}</Text>
+                <Text
+                  marginRight={2}
+                >{`${shoppingList.amountCheckedProducts}/${shoppingList.amountProducts}`}</Text>
               </HStack>
             </HStack>
 
