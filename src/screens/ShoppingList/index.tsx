@@ -143,7 +143,7 @@ const ShoppingListScreen = (props: any) => {
                         setShoppingList({ ...shoppingList, supermarket: value })
                       );
                     }}
-                    value={shoppingList.supermarket}
+                    value={shoppingList.supermarket.description}
                     InputLeftElement={
                       <Icon
                         as={<FontAwesome5 name="shopping-cart" />}

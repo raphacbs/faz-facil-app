@@ -12,6 +12,7 @@ export const getAll: any = () => {
             dispatch({ type: DEFAULT_LOADING })
             const response = await api.get(`${endPoint}?pageNo=0&pageSize=10`);
             let shoppingLists = response.data.content;
+
             let pageInfo = {
                 pageNo: response.data.pageNo,
                 pageSize: response.data.pageSize,
@@ -22,6 +23,7 @@ export const getAll: any = () => {
             dispatch({ type: GET_SHOPPING_LISTS, payload: { shoppingLists, pageInfo } })
             dispatch({ type: OFF_LOADING })
         } catch (error: any) {
+            console.error(error)
             let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
             dispatch({ type: SET_ERROR, error: message });
         }

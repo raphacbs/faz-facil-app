@@ -1,7 +1,7 @@
 export interface ShoppingListType {
     id: string;
     description: string;
-    supermarket: string;
+    supermarket: any;
     createAt: string;
     updateAt: string;
     amount: string;
@@ -63,4 +63,12 @@ export interface CartItemBodyType {
     price: string,
     amountOfProduct: number,
     isChecked: boolean,
+}
+
+export interface PriceHistoryType {
+    id: string,
+    productId: string,
+    supermarketId: string,
+    price: string,
+    date: string
 }

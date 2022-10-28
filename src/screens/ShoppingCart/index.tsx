@@ -102,7 +102,7 @@ const ShoppingCartScreen = (props: Props) => {
           <Stack flex={1} w={"100%"}>
             <ScreenHeader
               title={shoppingList.description}
-              subtitle={shoppingList.supermarket}
+              subtitle={shoppingList.supermarket.description}
               children={undefined}
             ></ScreenHeader>
             {/* <SummaryShoppingCart /> */}
@@ -172,7 +172,7 @@ const ShoppingCartScreen = (props: Props) => {
           <Stack w={"100%"} flex={1}>
             <ScreenHeader
               title={shoppingList.description}
-              subtitle={shoppingList.supermarket}
+              subtitle={shoppingList.supermarket.description}
               children={undefined}
             ></ScreenHeader>
             <EmptyListContainer

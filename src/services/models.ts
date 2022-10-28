@@ -1,4 +1,4 @@
-import { CartItemType, ProductItemType, ShoppingCartType, CartItemBodyType, ShoppingListType } from "../types"
+import { CartItemType, ProductItemType, ShoppingCartType, CartItemBodyType, ShoppingListType, PriceHistoryType } from "../types"
 export interface ModelsInitialState {
     shoppingLists: Array<ShoppingListType>,
     shoppingList: {
@@ -22,6 +22,11 @@ export interface ModelsInitialState {
     }
 
 
+}
+export interface PriceHistoryModel {
+    priceHistoryList: Array<PriceHistoryType>,
+    lastPrice: PriceHistoryType,
+    loadingPrice: boolean
 }
 
 export interface ShoppingCartModel {

@@ -99,7 +99,7 @@ const ShoppingListItem: React.FC<Props> = ({
                 color="amber.600"
                 size={"sm"}
               />
-              <Text>{shoppingList.supermarket}</Text>
+              <Text>{shoppingList.supermarket.description}</Text>
             </HStack>
             <HStack>
               <Icon

@@ -26,7 +26,6 @@ import {
   getAll,
   putShoppingList,
 } from "../../store/actions/shoppingListAction";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface Props {
   shoppingList: ShoppingListType;
@@ -116,7 +115,7 @@ const ShoppingListItem: React.FC<Props> = ({
                   name="place"
                   color="amber.600"
                 />
-                <Text>{shoppingList.supermarket}</Text>
+                <Text>{shoppingList.supermarket.description}</Text>
               </HStack>
               <Heading marginRight={2} color={"blue.800"} size={"sm"}>
                 {shoppingList.amount}

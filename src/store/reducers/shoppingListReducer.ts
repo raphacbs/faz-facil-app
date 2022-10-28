@@ -27,6 +27,7 @@ const initialState = {
 const shoppingListReducer = (state: ModelsInitialState = initialState, action: any) => {
     switch (action.type) {
         case GET_SHOPPING_LISTS:
+
             return { ...state, shoppingLists: action.payload.shoppingLists, pageInfo: action.payload.pageInfo };
         case PUT_SHOPPING_LIST:
             return { ...state, shoppingList: action.shoppingList, };
