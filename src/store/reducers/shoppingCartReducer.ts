@@ -82,7 +82,7 @@ const shoppingCartReducer = (state: ShoppingCartModel = initialState, action: an
         case GET_PRODUCTS_BY_DESCRIPTION:
             return {
                 ...state,
-                products: action.productResponse.products, loading: false, productDidFounded: action.productResponse.products.length > 0
+                products: action.productResponse, loading: false, productDidFounded: action.productResponse.length > 0
             }
         case GET_PRODUCTS_BY_EAN:
             return {

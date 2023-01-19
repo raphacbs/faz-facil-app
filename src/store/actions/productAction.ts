@@ -11,7 +11,7 @@ export const getProductByDescription: any = (description: string) => {
             dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             const response = await api.get(`${endPoint}?description=${description}`);
-            dispatch({ type: GET_PRODUCTS_BY_DESCRIPTION, productResponse: response.data })
+            dispatch({ type: GET_PRODUCTS_BY_DESCRIPTION, productResponse: response.data.content })
             dispatch({ type: OFF_LOADING })
         } catch (error: any) {
             let message = error ? error.message + ' - ' + error.code : 'Erro desconhecido';
@@ -25,7 +25,7 @@ export const getProductByEan: any = (ean: string) => {
         try {
             dispatch({ type: DEFAULT_LOADING })
             const response = await api.get(`${endPoint}?ean=${ean}`);
-            const product = response.status == 200 ? response.data.products[0] : null;
+            const product = response.status == 200 ? response.data.content[0] : null;
             dispatch({ type: GET_PRODUCTS_BY_EAN, product, productDidFounded: product != null })
             dispatch({ type: OFF_LOADING })
         } catch (error: any) {

@@ -107,6 +107,7 @@ export const getShoppingCart: any = (shoppingListId: string) => {
             dispatch({ type: CLEAR_ERROR });
             dispatch({ type: DEFAULT_LOADING })
             const url = `${endPoint}/${shoppingListId}/cart-item?pageNo=0&pageSize=10&sortDir=desc`
+            console.log(url)
             const response = await api.get(url);
             let shoppingCart = response.data.content;
             let _pageInfo = {

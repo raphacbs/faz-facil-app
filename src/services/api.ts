@@ -1,18 +1,13 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
+import { getToken } from "./TokenService";
 
-export const api = axios.create({ baseURL: 'https://feira-facil-bff-app-dev.herokuapp.com' });
+export const api = axios.create({ baseURL: "http://192.168.1.17:8080" });
 
 api.interceptors.request.use(async (config: any) => {
-    config.headers['X-API-KEY'] = 'appff22rc';
-    config.headers['Accept'] = 'application/json';
-    config.headers['Content-Type'] = 'application/json';
-    return config;
-})
+  config.headers["Accept"] = "application/json";
+  config.headers["Content-Type"] = "application/json";
+  config.headers["Authorization"] = "Bearer " + (await getToken());
+  return config;
+});
 
-export const config = {
-    headers: {
-        'X-API-Key': 'appff22rc'
-    },
-    baseURL: 'https://feira-facil-bff-app-dev.herokuapp.com'
-}
 export default api;

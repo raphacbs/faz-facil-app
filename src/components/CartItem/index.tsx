@@ -17,10 +17,11 @@ import {
   Actionsheet,
   Toast,
   useToast,
+  Spinner,
 } from "native-base";
 import { Checkbox } from "react-native-paper";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import { CartItemType } from "../../types";
+import { CartItemType, PriceHistoryType } from "../../types";
 import { useDispatch } from "react-redux";
 import {
   deleteCartItem,
@@ -28,15 +29,35 @@ import {
 } from "../../store/actions/shoppingCartAction";
 import { connect } from "react-redux";
 import Modal from "../Modal";
+import {
+  Chart,
+  Line,
+  Area,
+  HorizontalAxis,
+  VerticalAxis,
+} from "react-native-responsive-linechart";
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from "react-native-chart-kit";
+
+import { Dimensions } from "react-native";
+import { getByProductId } from "../../store/actions/priceHistoryAction";
 interface Props {
   cartItem: CartItemType;
   index: number;
+  loadingPrice: boolean;
+  priceHistoryList: Array<PriceHistoryType>;
 }
 
 const CartItemComponent = (props: Props) => {
   const toast = useToast();
   const dispatch = useDispatch();
-  const { cartItem, index } = props;
+  const { cartItem, index, priceHistoryList, loadingPrice } = props;
   const [openActionSheet, setOpenActionSheet] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -64,6 +85,68 @@ const CartItemComponent = (props: Props) => {
     });
   };
 
+  const handleOpenActionSheet = () => {
+    setOpenActionSheet(true);
+    dispatch(getByProductId(cartItem.product.id));
+  };
+
+  const renderChartPriceHistory = () => {
+    const labels = priceHistoryList.map((x) => x.date);
+    const data =
+      priceHistoryList.length > 0
+        ? priceHistoryList.map((x) =>
+            parseFloat(x.price.replace("R$ ", "").replace(",", "."))
+          )
+        : [0];
+    console.log("labels", labels);
+    console.log("data", data);
+    return (
+      <VStack>
+        <Heading size={"sm"}>Histórico de preços</Heading>
+        {loadingPrice ? (
+          <Spinner size={"lg"} />
+        ) : (
+          <LineChart
+            data={{
+              labels: labels,
+              datasets: [
+                {
+                  data: data,
+                },
+              ],
+            }}
+            width={Dimensions.get("window").width - 50} // from react-native
+            height={200}
+            yAxisLabel="R$ "
+            yAxisSuffix=""
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: "#0099e6",
+              backgroundGradientFrom: "#0088e6",
+              backgroundGradientTo: "#0050e6",
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#ffa726",
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        )}
+      </VStack>
+    );
+  };
+
   const handleCheck = () => {
     onUpdateCartItem({
       ...cartItem,
@@ -82,7 +165,8 @@ const CartItemComponent = (props: Props) => {
       borderWidth="1"
       borderColor="gray.200"
       onPress={() => {
-        setOpenActionSheet(true);
+        // setOpenActionSheet(true);
+        handleOpenActionSheet();
       }}
     >
       <HStack space={2}>
@@ -217,6 +301,7 @@ const CartItemComponent = (props: Props) => {
                 </HStack>
               </VStack>
             </HStack>
+            <VStack>{renderChartPriceHistory()}</VStack>
             <Actionsheet.Item onPress={handleCheck}>
               {cartItem.isChecked ? "Check-out" : "Check-in"}
             </Actionsheet.Item>
@@ -270,7 +355,9 @@ const mapStateToProps = (store: any) => {
   return {
     //loading: store.shoppingCartReducer.loading,
     //   cartItem: store.shoppingCartReducer.cartItem,
+    loadingPrice: store.priceHistoryReducer.loadingPrice,
+    priceHistoryList: store.priceHistoryReducer.priceHistoryList,
   };
 };
 
-export default connect()(CartItemComponent);
+export default connect(mapStateToProps)(CartItemComponent);
