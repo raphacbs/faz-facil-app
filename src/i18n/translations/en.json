@@ -26,20 +26,45 @@
     "message_no_compost_name": "Only single name",
     "label_quantity_abbr": "QTY",
     "label_total": "Total",
+    "label_note": "Note",
     "last_lists_label": "Last lists",
     "label_filter_title": "Filter",
     "label_filter_apply": "Apply",
     "label_filter_cancel": "Cancel",
     "label_filter_order_by": "Order by",
+    "placeholder_select": "Choose",
     "select_option_created_at": "Created at",
+    "select_option_updated_at": "Updated at",
     "select_option_description": "Description",
-    "select_option_status": "Status",
     "label_sort_direction": "Sort Direction",
+    "select_option_status": "Status",
+    "label_is_added": "Added",
+    "label_select_option_off": "Off",
+    "label_select_option_true": "True",
+    "label_select_option_false": "False",
+    "label_price_per_unit": "Price per unit",
+    "label_price_history": "Price history",
+    "label_quantity": "Quantity",
     "label_ascending": "Ascending",
     "label_descending": "Descending",
     "label_try_again": "Try Again",
     "placeholder_search_list": "Search lists",
-    "load_more_list": "more..."
+    "placeholder_search_items": "Search items",
+    "placeholder_search_supermarket": "Search supermarkets",
+    "load_more_list": "more...",
+    "label_description": "Description",
+    "label_supermarket": "Supermarket",
+    "placeholder_description": "Input a description for your list",
+    "placeholder_supermarket": "Select the supermarket",
+    "label_create": "Create",
+    "label_edit": "Edit",
+    "label_status_to_in_progress": "Start shopping",
+    "label_status_to_ready": "Done shopping",
+    "label_status_ready": "Shopping completed",
+    "label_cancel": "Cancel",
+    "label_apply": "Apply",
+    "label_qtd_product": "Qty products",
+    "label_expected_total": "Expected total"
   },
   "sing_in_screen": {
     "welcome": "Welcome to Faz Feira!",
@@ -56,12 +81,22 @@
     "hello_user": "Hello"
   },
   "shopping_list": {
-    "status_in_planning": "Planed",
-    "status_in_progress": "In Progress",
-    "status_ready": "Done",
-    "title": "Shopping Lists"
+    "status_in_planning": "PLANED",
+    "status_in_progress": "IN PROGRESS",
+    "status_ready": "DONE",
+    "title": "Shopping Lists",
+    "registe_title": "Create a Shopping List",
+    "edit_title": "Editing your shopping list"
   },
   "search": {
-    "title": "Search by description"
+    "title": "Search by description",
+    "title_supermarket": "Search by supermarkets"
+  },
+  "item": {
+    "title": "Items"
+  },
+  "fab": {
+    "add_shopping_list": "Shopping List",
+    "search_product_bar_code": "Scan Product"
   }
 }

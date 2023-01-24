@@ -1,8 +1,10 @@
 import { PropsWithChildren } from "react";
 import {
   IPageInfo,
-  IParams,
+  IParamsShoppingList,
   IShoppingList,
+  IShoppingListPost,
+  IShoppingListPut,
   ShoppingListContextType,
 } from "../@types/shoppingList";
 import { ShoppingListContextProvider } from "../context";
@@ -12,8 +14,8 @@ import api from "../services/api";
 const initialParams = {
   pageNo: 1,
   pageSize: 10,
-  sortBy: "createdAt",
-  sortDir: "asc",
+  sortBy: "updatedAt",
+  sortDir: "desc",
 };
 
 const initialPageInfo = {
@@ -25,9 +27,12 @@ const initialPageInfo = {
 };
 const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [shoppingLists, setShoppingLists] = useState<IShoppingList[]>([]);
+  const [shoppingList, setShoppingList] = useState<
+    IShoppingListPost | IShoppingListPut | null
+  >(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>("");
-  const [params, setParams] = useState<IParams>(initialParams);
+  const [params, setParams] = useState<IParamsShoppingList>(initialParams);
   const [pageInfo, setPageInfo] = useState<IPageInfo>(initialPageInfo);
   const endPoint = "/api/v1/shopping-lists";
 
@@ -36,12 +41,11 @@ const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setParams({ ...params, description: undefined });
     }, []);
 
-  useEffect(() => {
-    console.log(shoppingLists);
-  }, [shoppingLists]);
-
   const get: ShoppingListContextType["get"] = useCallback(
-    async (_params: IParams, _shoppingLists: IShoppingList[] | null = null) => {
+    async (
+      _params: IParamsShoppingList,
+      _shoppingLists: IShoppingList[] | null = null
+    ) => {
       setLoading(_shoppingLists == null);
       setParams({ ..._params });
       const url = `${endPoint}?pageNo=${_params.pageNo}&pageSize=${
@@ -51,8 +55,6 @@ const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
       }${_params.description ? "&description=" + _params.description : ""}${
         _params.supermarketId ? "&supermarketId=" + _params.supermarketId : ""
       }`;
-
-      console.log(shoppingLists);
 
       try {
         const response = await api.get(url);
@@ -77,14 +79,59 @@ const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
     },
     []
   );
+
   const getById: ShoppingListContextType["getById"] = useCallback(
-    async (id: string) => {},
+    async (id: string) => {
+      try {
+        setLoading(true);
+        const response = await api.get(`${endPoint}/${id}`);
+        setShoppingList(response.data);
+      } catch (err: any) {
+        setError(err);
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
     []
   );
+
   const update: ShoppingListContextType["update"] = useCallback(
-    async (shoppingList: IShoppingList) => {},
+    async (shoppingList: IShoppingListPut) => {
+      try {
+        setLoading(true);
+        await api.put(endPoint, shoppingList);
+        setShoppingList(null);
+      } catch (err: any) {
+        setError(err);
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
     []
   );
+
+  const add: ShoppingListContextType["add"] = useCallback(
+    async (shoppingList: IShoppingListPost) => {
+      try {
+        setLoading(true);
+        await api.post(endPoint, shoppingList);
+        setShoppingList(null);
+      } catch (err: any) {
+        setError(err);
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  const _setShoppingList: ShoppingListContextType["_setShoppingList"] =
+    useCallback(async (_shoppingList: IShoppingList | null) => {
+      setShoppingList(_shoppingList);
+    }, []);
 
   const value = useMemo(() => {
     return {
@@ -93,10 +140,13 @@ const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
       loading,
       error,
       pageInfo,
+      shoppingList,
+      _setShoppingList,
       resetParams,
       get,
       getById,
       update,
+      add,
     };
   }, [
     shoppingLists,
@@ -104,10 +154,13 @@ const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
     loading,
     error,
     pageInfo,
+    shoppingList,
+    _setShoppingList,
     get,
     getById,
     update,
     resetParams,
+    add,
   ]);
 
   return (

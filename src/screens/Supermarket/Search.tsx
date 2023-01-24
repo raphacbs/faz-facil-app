@@ -1,60 +1,81 @@
 import { Center, FlatList, HStack, Icon, Input, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
-  useShoppingList,
   useState,
   useTranslation,
   useRef,
   useNavigation,
+  useSupermarket,
 } from "../../hooks";
 
 import Container from "../../components/Container";
-import { TouchableOpacity } from "react-native";
-import ShoppingList from "./ShoppingList";
+
 import React, { useEffect } from "react";
 import LottieView from "lottie-react-native";
-import { IShoppingList } from "../../@types/shoppingList";
+import SupermarketItem from "./SupermarketItem";
+import * as Location from "expo-location";
 
-const SearchScreen = () => {
-  const { shoppingLists, get, params, loading, error, resetParams } =
-    useShoppingList();
-  const [shoppingListSearched, setShoppingListSearched] = useState<
-    IShoppingList[]
-  >([]);
+const SearchSupermarketScreen = () => {
+  const {
+    supermarkets,
+    get,
+    loading,
+    params,
+    error,
+    updateSupermarket,
+    resetSupermarkets,
+  } = useSupermarket();
+  const [location, setLocation] = useState<any>(null);
+
   const { t } = useTranslation();
-  const [description, setDescription] = useState(
-    params.description ? params.description : ""
-  );
+  const [name, setName] = useState(params.name ? params.name : "");
   const inputSearch: any = useRef();
   const navigation = useNavigation();
+
+  const search = async () => {
+    await get({ ...params, pageNo: 1 });
+  };
 
   useEffect(
     () =>
       navigation.addListener("beforeRemove", (e) => {
-        // Prevent default behavior of leaving the screen
         e.preventDefault();
-        get({ ...params, description: undefined, pageNo: 1 });
+        resetSupermarkets();
         navigation.dispatch(e.data.action);
       }),
     [navigation]
   );
 
   useEffect(() => {
-    setShoppingListSearched([...shoppingLists]);
-  }, [shoppingLists]);
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
 
-  useEffect(() => {
-    if (description == "") {
-      setShoppingListSearched([]);
-    }
-  }, [description]);
-
-  const search = async () => {
-    await get({ ...params, pageNo: 1 });
-  };
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      await get({
+        ...params,
+        name: undefined,
+        pageNo: 1,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })();
+  }, []);
 
   const _renderItem = ({ item }: any) => {
-    return <ShoppingList shoppingList={item} />;
+    return (
+      <SupermarketItem
+        onPress={() => {
+          updateSupermarket(item);
+          navigation.goBack();
+        }}
+        supermarket={item}
+      />
+    );
   };
 
   const _ListEmptyComponent = () => (
@@ -74,20 +95,18 @@ const SearchScreen = () => {
 
   return (
     <VStack h={"93%"}>
-      <VStack h={"8%"}>
+      <VStack marginBottom={3} h={"7%"}>
         <HStack justifyContent={"center"}>
           <Input
-            placeholder={t("form_messages.placeholder_search_list")}
+            placeholder={`${t("form_messages.placeholder_search_supermarket")}`}
             width="95%"
             borderRadius="4"
             m={1}
-            autoFocus
-            onFocus={() => setShoppingListSearched([])}
             returnKeyType="search"
             ref={inputSearch}
-            value={description}
+            value={name}
             fontSize="14"
-            onChangeText={setDescription}
+            onChangeText={setName}
             InputLeftElement={
               <Icon
                 m="2"
@@ -98,20 +117,26 @@ const SearchScreen = () => {
               />
             }
             InputRightElement={
-              description.length >= 1 ? (
+              name.length >= 1 ? (
                 <Icon
                   m="2"
                   mr="3"
                   size="6"
                   color="gray.400"
                   as={<MaterialIcons name="close" />}
-                  onPress={() => setDescription("")}
+                  onPress={() => setName("")}
                 />
               ) : null
             }
             onSubmitEditing={() => {
-              if (description.trim() != "") {
-                get({ ...params, description: description.trim(), pageNo: 1 });
+              if (name.trim() != "") {
+                get({
+                  ...params,
+                  name: name.trim(),
+                  pageNo: 1,
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                });
               } else {
                 inputSearch.current.focus();
               }
@@ -122,7 +147,7 @@ const SearchScreen = () => {
       <Container loading={loading} error={error} tryAgain={search}>
         <FlatList
           refreshing={false}
-          data={shoppingListSearched}
+          data={supermarkets}
           renderItem={_renderItem}
           ListEmptyComponent={_ListEmptyComponent}
         />
@@ -131,4 +156,4 @@ const SearchScreen = () => {
   );
 };
 
-export default SearchScreen;
+export default SearchSupermarketScreen;

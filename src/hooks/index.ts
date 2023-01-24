@@ -30,3 +30,5 @@ export {
 export * as secureStore from "../utils/secureStore";
 
 export { useShoppingListContext as useShoppingList } from "../context";
+export { useSupermarketContext as useSupermarket } from "../context";
+export { useItemContext as useItem } from "../context";

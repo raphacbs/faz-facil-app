@@ -10,3 +10,16 @@ export const convertStatusShoppingList = (status: string) => {
       return "shopping_list.status_in_planning";
   }
 };
+
+export const convertStatusShoppingListColorSchema = (status: string) => {
+  switch (status) {
+    case "IN_PLANNING":
+      return "info";
+    case "IN_PROGRESS":
+      return "warning";
+    case "READY":
+      return "success";
+    default:
+      return "info";
+  }
+};

@@ -9,5 +9,16 @@ api.interceptors.request.use(async (config: any) => {
   config.headers["Authorization"] = "Bearer " + (await getToken());
   return config;
 });
+const token = async () => {
+  return await getToken();
+};
+
+export const config = {
+  headers: {
+    ["Accept"]: "application/json",
+    ["Content-Type"]: "application/json",
+    ["Authorization"]: `Bearer ${token()})`,
+  },
+};
 
 export default api;

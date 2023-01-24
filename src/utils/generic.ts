@@ -1,3 +1,4 @@
+import moment from "moment";
 import i18n from "../i18n";
 
 export const calculateProgress = (partialValue: number, totalValue: number) => {
@@ -5,7 +6,21 @@ export const calculateProgress = (partialValue: number, totalValue: number) => {
   return parseInt(percentile);
 };
 
-export const formatCurrency = (value: number) => {
+export const compareDate = (a: any, b: any) => {
+  if (
+    moment(a.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000").isSameOrAfter(
+      moment(b.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000")
+    )
+  ) {
+    return 1;
+  } else {
+    return -1;
+  }
+};
+export const formatDate = (date: string, format: string) => {
+  return moment(date, "YYYY-MM-DD-THH:mm:ss.00000").format(format);
+};
+export const formatCurrency = (value: number | undefined) => {
   const language = i18n.language;
 
   switch (language) {

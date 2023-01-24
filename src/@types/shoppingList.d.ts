@@ -14,7 +14,20 @@ export interface IShoppingList {
   };
 }
 
-export interface IParams {
+export interface IShoppingListPut {
+  id: string;
+  description: string;
+  supermarketId: string;
+  status: string;
+}
+
+export interface IShoppingListPost {
+  description: string;
+  supermarketId: string;
+  status: string;
+}
+
+export interface IParamsShoppingList {
   pageNo: number;
   pageSize: number;
   sortBy: string;
@@ -34,12 +47,18 @@ export interface IPageInfo {
 
 export type ShoppingListContextType = {
   shoppingLists: IShoppingList[];
-  params: IParams;
+  shoppingList: IShoppingList | null;
+  params: IParamsShoppingList;
   pageInfo: IPageInfo;
   loading: boolean;
   error: any | null;
   resetParams: () => void;
-  get: (_params: IParams, _shoppingList: IShoppingList[] | null = null) => void;
+  get: (
+    _params: IParamsShoppingList,
+    _shoppingList: IShoppingList[] | null = null
+  ) => void;
   getById: (id: string) => void;
-  update: (shoppingList: IShoppingList) => void;
+  update: (shoppingList: IShoppingListPut) => void;
+  _setShoppingList: (_shoppingList: IShoppingList | null) => void;
+  add: (shoppingList: IShoppingListPost) => void;
 };

@@ -1,22 +1,33 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ShoppingListScreen from "../../screens/ShoppingList";
 import DrawerNavigator from "../DrawerNavigator";
-import ShoppingCartScreen from "../../screens/ShoppingCart";
-import ProductSearchScreen from "../../screens/Product/ProductSearch";
-import BarCodeScanScreen from "../../screens/BarCodeScan";
 import SignIn from "../../screens/SignIn";
-import { useEffect, useDispatch, useAuth, useTranslation } from "../../hooks";
-import { isSignedIn } from "../../services/TokenService";
+import {
+  useEffect,
+  useDispatch,
+  useAuth,
+  useTranslation,
+  useShoppingList,
+  useItem,
+} from "../../hooks";
 import SignUp from "../../screens/SignUp";
 import SearchScreen from "../../screens/Home/Search";
-
+import ShoppingListForm from "../../screens/Home/ShoppingListForm";
+import SearchSupermarketScreen from "../../screens/Supermarket/Search";
+import ItemScreen from "../../screens/Item";
+import { Box, HStack, IconButton, ZStack } from "native-base";
+import Filter from "../../screens/Home/Filter";
+import { Ionicons } from "@expo/vector-icons";
+import SearchItem from "../../screens/Item/SearchItem";
+import FilterItem from "../../screens/Item/FilterItem";
 const Stack = createNativeStackNavigator();
 
 const ScreenSnack = (props: any) => {
+  const { shoppingList } = useShoppingList();
+  const { item, loading } = useItem();
   const { isSignedIn } = useAuth();
   const { t } = useTranslation();
-  console.log("_isSignedIn", isSignedIn);
+
   return (
     <Stack.Navigator>
       {!isSignedIn ? (
@@ -32,7 +43,7 @@ const ScreenSnack = (props: any) => {
             name="SignUp"
             component={SignUp}
             options={{
-              title: t("sing_up_screen.screen_title"),
+              title: `${t("sing_up_screen.screen_title")}`,
             }}
           />
         </Stack.Group>
@@ -49,8 +60,61 @@ const ScreenSnack = (props: any) => {
             name="SearchList"
             component={SearchScreen}
             options={{
-              title: t("search.title"),
+              title: `${t("search.title")}`,
 
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="ShoppingListRegister"
+            component={ShoppingListForm}
+            options={{
+              title: `${t("shopping_list.registe_title")}`,
+
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="ShoppingListEdit"
+            component={ShoppingListForm}
+            options={{
+              title: `${t("shopping_list.edit_title")}`,
+
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="SearchSupermarket"
+            component={SearchSupermarketScreen}
+            options={{
+              title: `${t("search.title_supermarket")}`,
+
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="Item"
+            component={ItemScreen}
+            options={{
+              title: shoppingList?.description,
+              headerRight: () => (
+                <HStack justifyContent={"flex-end"}>
+                  <FilterItem />
+                  <SearchItem />
+                </HStack>
+              ),
               headerStyle: {
                 backgroundColor: "#0099e6",
               },
