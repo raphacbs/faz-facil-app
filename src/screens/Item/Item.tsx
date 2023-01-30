@@ -22,7 +22,7 @@ import {
 } from "../../hooks";
 import moment from "moment";
 import { formatCurrency } from "../../utils/generic";
-import ItemAction from "./ItemAction";
+import ActionItem from "./ActionItem";
 import { IShoppingList } from "../../@types/shoppingList";
 
 type Props = {
@@ -200,7 +200,7 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
           </HStack>
         </Stack>
       </Pressable>
-      <ItemAction
+      <ActionItem
         shoppingList={shoppingList}
         item={item}
         isOpen={isOpenAction}

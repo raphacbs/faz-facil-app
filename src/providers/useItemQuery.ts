@@ -54,6 +54,7 @@ const useQueryItems = (params: IParamsItem) =>
         return false;
       },
       refetchInterval: 60000,
+      refetchOnWindowFocus: true,
     }
   );
 
