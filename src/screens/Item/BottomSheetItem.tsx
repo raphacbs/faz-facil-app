@@ -179,7 +179,7 @@ const BottomSheetItem = () => {
   const updateItem = async () => {
     const _item = itemToItemPut();
     updateBackground(_item);
-    get({ ...params, pageNo: 1 });
+    get({ ...params, pageParam: 1 });
     setSendDataItem(false);
   };
   useEffect(() => {
@@ -192,7 +192,7 @@ const BottomSheetItem = () => {
 
   useEffect(() => {
     if (item) {
-      //bottomSheetRef.current?.snapToIndex(0);
+      bottomSheetRef.current?.snapToIndex(0);
       verifyIfPriceUp();
       getHist();
       setLocalItem(item);
@@ -265,7 +265,7 @@ const BottomSheetItem = () => {
                 value={localItem.added}
                 onValueChange={(value) => {
                   setLocalItem({ ...localItem, added: value });
-                  // setSendDataItem(true);
+                  setSendDataItem(true);
                 }}
                 colorScheme="primary"
               />
@@ -305,7 +305,7 @@ const BottomSheetItem = () => {
                         (localItem.perUnit * quantity).toFixed(2)
                       ),
                     });
-                    // setSendDataItem(true);
+                    setSendDataItem(true);
                   }}
                 />
 
@@ -334,7 +334,7 @@ const BottomSheetItem = () => {
                           (localItem.perUnit * quantity).toFixed(2)
                         ),
                       });
-                      // setSendDataItem(true);
+                      setSendDataItem(true);
                     }
                   }}
                 />
@@ -396,7 +396,7 @@ const BottomSheetItem = () => {
                   (localItem.perUnit * parseInt(quantity)).toFixed(2)
                 ),
               });
-              // setSendDataItem(true);
+              setSendDataItem(true);
             }}
             onChangeText={(
               formatted: string,
@@ -421,7 +421,7 @@ const BottomSheetItem = () => {
                 ...localItem,
                 perUnit: parseFloat(perUnit),
               });
-              // setSendDataItem(true);
+              setSendDataItem(true);
             }}
             onChangeText={(
               formatted: string,

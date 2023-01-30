@@ -1,5 +1,7 @@
 import moment from "moment";
 import i18n from "../i18n";
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 export const calculateProgress = (partialValue: number, totalValue: number) => {
   let percentile: string = ((partialValue / totalValue) * 100).toFixed();
@@ -25,39 +27,23 @@ export const formatCurrency = (value: number | undefined) => {
 
   switch (language) {
     case "en-US":
-      return "$ " + value;
-    // return new Intl.NumberFormat("en-US", {
-    //   style: "currency",
-    //   currency: "USD",
-    // }).format(value);
-    case "pt-BR":
-      // return new Intl.NumberFormat("pt-BR", {
+      // return new Intl.NumberFormat("en-US", {
       //   style: "currency",
-      //   currency: "BRL",
+      //   currency: "USD",
       // }).format(value);
-      return ("R$ " + value).replace(".", ",");
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(value);
+    case "pt-BR":
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(value);
     default:
-      return "$ " + value;
-    // return new Intl.NumberFormat("en-US", {
-    //   style: "currency",
-    //   currency: "USD",
-    // }).format(value);
-  } // switch (language) {
-  //   case "en-US":
-  //     return new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(value);
-  //   case "pt-BR":
-  //     return new Intl.NumberFormat("pt-BR", {
-  //       style: "currency",
-  //       currency: "BRL",
-  //     }).format(value);
-
-  //   default:
-  //     return new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(value);
-  // }
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(value);
+  }
 };

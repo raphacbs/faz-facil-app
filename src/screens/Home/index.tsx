@@ -1,57 +1,62 @@
-import { FlatList, VStack } from "native-base";
-import {
-  useTranslation,
-  useEffect,
-  useShoppingList,
-  useState,
-} from "../../hooks";
+import { FlatList, Heading, VStack } from "native-base";
+import { useTranslation, useState } from "../../hooks";
 import ShoppingList from "./ShoppingList";
-import { RefreshControl } from "react-native";
 import React from "react";
 import Container from "../../components/Container";
-import ListFooter from "./ListFooter";
+import ListFooter from "../../components/ListFooter";
 import FABActions from "./FABAction";
+import useQueryShoppingLists from "../../providers/useShoppingList";
 
 const HomeScreen = () => {
-  const { t } = useTranslation();
-  const { shoppingLists, get, params, loading, error } = useShoppingList();
-  const [showFooter, setShowFooter] = useState(false);
+  const [params, setParams] = useState({
+    pageParam: 1,
+    pageSize: 10,
+    sortBy: "updatedAt",
+    sortDir: "desc",
+  });
 
-  useEffect(() => {
-    loadContent();
-  }, []);
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
 
-  const loadContent = async () => {
-    await get(params);
-  };
+    fetchNextPage,
+  } = useQueryShoppingLists();
 
   const _renderItem = ({ item }: any) => {
     return <ShoppingList shoppingList={item} />;
   };
 
+  const loadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
   return (
     <VStack h={"100%"}>
-      <Container loading={loading} error={error} tryAgain={loadContent}>
+      <Container loading={isLoading} error={error} tryAgain={fetchNextPage}>
         <VStack>
-          <FlatList
-            h={"100%"}
-            refreshControl={
-              <RefreshControl
-                refreshing={false}
-                onRefresh={async () => {
-                  await get({ ...params, pageNo: 1 });
-                }}
-              />
-            }
-            refreshing={false}
-            data={shoppingLists}
-            renderItem={_renderItem}
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {
-              setShowFooter(true);
-            }}
-            ListFooterComponent={<ListFooter isVisible={showFooter} />}
-          />
+          {isSuccess && (
+            <FlatList
+              h={"100%"}
+              refreshing={false}
+              data={data.pages.map((page) => page.items).flat()}
+              renderItem={_renderItem}
+              ListFooterComponent={
+                <ListFooter
+                  isVisible={hasNextPage}
+                  isLoading={isFetchingNextPage}
+                  handleMore={loadMore}
+                  sizeEmpty={70}
+                />
+              }
+            />
+          )}
         </VStack>
       </Container>
       <FABActions />

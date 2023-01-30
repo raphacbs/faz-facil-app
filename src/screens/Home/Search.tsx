@@ -14,67 +14,58 @@ import ShoppingList from "./ShoppingList";
 import React, { useEffect } from "react";
 import LottieView from "lottie-react-native";
 import { IShoppingList } from "../../@types/shoppingList";
+import { fetchShoppingLists } from "../../providers/useShoppingList";
+import ListFooter from "../../components/ListFooter";
+import { useInfiniteQuery, useMutation, useQueryClient } from "react-query";
 
 const SearchScreen = () => {
-  const { shoppingLists, get, params, loading, error, resetParams } =
-    useShoppingList();
-  const [shoppingListSearched, setShoppingListSearched] = useState<
-    IShoppingList[]
-  >([]);
-  const { t } = useTranslation();
-  const [description, setDescription] = useState(
-    params.description ? params.description : ""
-  );
-  const inputSearch: any = useRef();
-  const navigation = useNavigation();
+  const queryClient = useQueryClient();
+  const [description, setDescription] = useState("");
+  const [search, setSearch] = useState("");
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    fetchNextPage,
+  } = useInfiniteQuery(
+    ["searchShoppingList", search],
+    ({ pageParam = 1 }) => fetchShoppingLists(pageParam, description),
+    {
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.last) {
+          return lastPage.pageNo + 1;
+        }
+        return false;
+      },
 
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        get({ ...params, description: undefined, pageNo: 1 });
-        navigation.dispatch(e.data.action);
-      }),
-    [navigation]
-  );
-
-  useEffect(() => {
-    setShoppingListSearched([...shoppingLists]);
-  }, [shoppingLists]);
-
-  useEffect(() => {
-    if (description == "") {
-      setShoppingListSearched([]);
+      enabled: search != "",
     }
-  }, [description]);
+  );
 
-  const search = async () => {
-    await get({ ...params, pageNo: 1 });
-  };
+  const { t } = useTranslation();
+  const inputSearch: any = useRef();
 
   const _renderItem = ({ item }: any) => {
     return <ShoppingList shoppingList={item} />;
   };
 
-  const _ListEmptyComponent = () => (
-    <Center>
-      <LottieView
-        source={require("../../../assets/shopping_list_empty.json")}
-        style={{
-          width: 300,
-          height: 300,
-          marginTop: "20%",
-        }}
-        loop={false}
-        progress={100}
-      />
-    </Center>
-  );
+  const loadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const tryAgain = () => {
+    setSearch("");
+  };
 
   return (
     <VStack h={"93%"}>
-      <VStack h={"8%"}>
+      <VStack h={"6%"}>
         <HStack justifyContent={"center"}>
           <Input
             placeholder={t("form_messages.placeholder_search_list")}
@@ -82,7 +73,6 @@ const SearchScreen = () => {
             borderRadius="4"
             m={1}
             autoFocus
-            onFocus={() => setShoppingListSearched([])}
             returnKeyType="search"
             ref={inputSearch}
             value={description}
@@ -105,13 +95,16 @@ const SearchScreen = () => {
                   size="6"
                   color="gray.400"
                   as={<MaterialIcons name="close" />}
-                  onPress={() => setDescription("")}
+                  onPress={() => {
+                    setSearch("");
+                    setDescription("");
+                  }}
                 />
               ) : null
             }
             onSubmitEditing={() => {
               if (description.trim() != "") {
-                get({ ...params, description: description.trim(), pageNo: 1 });
+                setSearch(description);
               } else {
                 inputSearch.current.focus();
               }
@@ -119,13 +112,26 @@ const SearchScreen = () => {
           />
         </HStack>
       </VStack>
-      <Container loading={loading} error={error} tryAgain={search}>
-        <FlatList
-          refreshing={false}
-          data={shoppingListSearched}
-          renderItem={_renderItem}
-          ListEmptyComponent={_ListEmptyComponent}
-        />
+      <Container loading={isFetching} error={error} tryAgain={tryAgain}>
+        <VStack>
+          {isSuccess && (
+            <FlatList
+              marginTop={5}
+              h={"97%"}
+              refreshing={false}
+              data={data.pages.map((page) => page.items).flat()}
+              renderItem={_renderItem}
+              ListFooterComponent={
+                <ListFooter
+                  isVisible={hasNextPage}
+                  isLoading={isFetchingNextPage}
+                  handleMore={loadMore}
+                  sizeEmpty={0}
+                />
+              }
+            />
+          )}
+        </VStack>
       </Container>
     </VStack>
   );

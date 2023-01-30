@@ -1,11 +1,11 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreenOld from "../../screens/Home";
-import SidebarMenu from "../../components/SideBarMenu";
 import { useShoppingList, useTranslation } from "../../hooks";
 import Filter from "../../screens/Home/Filter";
 import { HStack, IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
+import SidebarMenu from "../../components/SideBarMenu";
 
 const Drawer = createDrawerNavigator();
 

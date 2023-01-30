@@ -13,14 +13,7 @@ import {
   Badge,
 } from "native-base";
 import { IShoppingList } from "../../@types/shoppingList";
-import {
-  useEffect,
-  useItem,
-  useNavigation,
-  useShoppingList,
-  useState,
-  useTranslation,
-} from "../../hooks";
+import { useNavigation, useState, useTranslation } from "../../hooks";
 import {
   convertStatusShoppingList,
   convertStatusShoppingListColorSchema,
@@ -40,18 +33,13 @@ type Props = {
 
 const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
   const { t } = useTranslation();
-  const status = convertStatusShoppingList(shoppingList.status);
+
   const [open, setOpen] = useState(false);
-  const { getById, _setShoppingList, shoppingLists } = useShoppingList();
 
   const navigation = useNavigation();
   const onClose = () => {
     setOpen(false);
   };
-
-  useEffect(() => {
-    _setShoppingList(shoppingList);
-  }, [shoppingLists]);
 
   const messageStatus = () => {
     switch (shoppingList.status) {
@@ -79,8 +67,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
     <VStack>
       <Pressable
         onPress={async () => {
-          _setShoppingList(shoppingList);
-          navigation.navigate("Item");
+          navigation.navigate("Item", { shoppingList: shoppingList });
         }}
       >
         <VStack
@@ -217,8 +204,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
                 />
               }
               onPress={async () => {
-                await getById(shoppingList.id);
-                navigation.navigate("ShoppingListEdit");
+                navigation.navigate("ShoppingListEdit", { shoppingList });
               }}
             >
               {t("form_messages.label_edit")}

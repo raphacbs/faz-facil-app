@@ -1,34 +1,58 @@
 import { VStack, Heading, HStack, FlatList, Center } from "native-base";
-import {
-  useEffect,
-  useItem,
-  useShoppingList,
-  useTranslation,
-} from "../../hooks";
+import { useEffect, useState, useTranslation } from "../../hooks";
 import { formatCurrency } from "../../utils/generic";
-import { RefreshControl } from "react-native";
 import Container from "../../components/Container";
 import Item from "./Item";
 import BottomSheetItem from "./BottomSheetItem";
 import FABActions from "../Home/FABAction";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { IParamsItem } from "../../@types/item";
+import useQueryItems from "../../providers/useItemQuery";
+import ListFooter from "../../components/ListFooter";
+import { getShoppingListById } from "../../providers/useShoppingList";
+import FABItemActions from "./FABItemAction";
 
-const ItemScreen = () => {
-  const { shoppingList } = useShoppingList();
+const initialParams = {
+  pageNo: 1,
+  pageSize: 10,
+  sortBy: "updatedAt",
+  sortDir: "desc",
+  shoppingListId: "",
+};
+
+const ItemScreen = ({ route }: any) => {
   const { t } = useTranslation();
+  const [params, setParams] = useState<IParamsItem>(initialParams);
 
-  const { get, items, item, loading, error, params } = useItem();
+  const {
+    data,
+    error,
+    isLoading,
+    isSuccess,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useQueryItems(params);
 
   const _renderItem = ({ item }: any) => {
-    return <Item key={item.id} item={item} />;
+    item.shoppingList = shoppingList;
+    return <Item key={item.id} item={item} shoppingList={shoppingList} />;
   };
 
-  useEffect(() => {
-    loadContent();
-  }, []);
+  const { shoppingList } = route.params;
+  const { data: _shoppingList } = getShoppingListById(
+    shoppingList.id,
+    isSuccess
+  );
 
-  const loadContent = async () => {
-    await get(params, shoppingList?.id);
+  useEffect(() => {
+    setParams({ ...params, shoppingListId: shoppingList.id });
+  }, [route]);
+
+  const loadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
   };
 
   return (
@@ -45,46 +69,42 @@ const ItemScreen = () => {
           <Heading
             size={"xs"}
             color={"white"}
-          >{`${shoppingList?.itemsInfo.quantityAddedProduct}/${shoppingList?.itemsInfo.quantityPlannedProduct}`}</Heading>
+          >{`${_shoppingList?.itemsInfo.quantityAddedProduct}/${_shoppingList?.itemsInfo.quantityPlannedProduct}`}</Heading>
         </Center>
         <Center marginRight={2} marginLeft={2} justifyContent={"center"}>
           <Heading size={"xs"} color={"white"}>
             {t("form_messages.label_total")}
           </Heading>
           <Heading size={"xs"} color={"white"}>{`${formatCurrency(
-            shoppingList?.itemsInfo.totalValueAdded
+            _shoppingList?.itemsInfo.totalValueAdded
           )}/${formatCurrency(
-            shoppingList?.itemsInfo.plannedTotalValue
+            _shoppingList?.itemsInfo.plannedTotalValue
           )}`}</Heading>
         </Center>
       </HStack>
-      <Container loading={loading} error={error} tryAgain={() => {}}>
+      <Container loading={isLoading} error={error} tryAgain={() => {}}>
         <VStack>
-          <FlatList
-            h={"90%"}
-            backgroundColor="blue.50"
-            refreshControl={
-              <RefreshControl
-                refreshing={false}
-                onRefresh={async () => {
-                  await get({ ...params, pageNo: 1 }, shoppingList?.id);
-                }}
-              />
-            }
-            refreshing={false}
-            data={items}
-            renderItem={_renderItem}
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {
-              // setShowFooter(true);
-              //TODO implementar paginação para os items da lista
-            }}
-            // ListFooterComponent={<ListFooter isVisible={showFooter} />}
-          />
+          {isSuccess && (
+            <FlatList
+              h={"90%"}
+              backgroundColor="blue.50"
+              refreshing={false}
+              data={data.pages.map((page) => page.items).flat()}
+              renderItem={_renderItem}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                <ListFooter
+                  isVisible={hasNextPage}
+                  isLoading={isFetchingNextPage}
+                  handleMore={loadMore}
+                  sizeEmpty={70}
+                />
+              }
+            />
+          )}
         </VStack>
       </Container>
-      <FABActions />
-      <BottomSheetItem />
+      <FABItemActions />
     </VStack>
   );
 };

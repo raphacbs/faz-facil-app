@@ -10,6 +10,7 @@ import {
   Input,
   Select,
   Text,
+  useMediaQuery,
   VStack,
   WarningOutlineIcon,
 } from "native-base";
@@ -19,8 +20,6 @@ import {
   useForm,
   useNavigation,
   useRef,
-  useShoppingList,
-  useState,
   useSupermarket,
   useTranslation,
 } from "../../hooks";
@@ -28,49 +27,31 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Container from "../../components/Container";
 
-import {
-  FontAwesome,
-  FontAwesome5,
-  MaterialIcons,
-  Zocial,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useMutation, useQueryClient } from "react-query";
+import { postOrPutShoppingList } from "../../providers/useShoppingList";
+import { IShoppingListPutAndPost } from "../../@types/shoppingList";
 
-const ShoppingListForm = () => {
+const ShoppingListForm = ({ route }: any) => {
+  const queryClient = useQueryClient();
+
+  const { mutate: createShoppingList, isLoading } = useMutation({
+    mutationFn: (changeShoppingList: IShoppingListPutAndPost) =>
+      postOrPutShoppingList(changeShoppingList),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
+      queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
+      navigation.goBack();
+    },
+  });
+
   const { t } = useTranslation();
-
   const inputDescription: any = useRef();
-  const selectSupermarket: any = useRef();
-  const {
-    loading,
-    add,
-    error,
-    get,
-    params,
-    shoppingList,
-    update,
-    _setShoppingList,
-  } = useShoppingList();
-
   const { supermarket, updateSupermarket } = useSupermarket();
   const navigation = useNavigation();
-  const [_shoppingList, setShoppingList] = useState(
-    shoppingList
-      ? shoppingList
-      : { description: "", supermarketId: "", id: null, status: "IN_PLANNING" }
-  );
-
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        e.preventDefault();
-        get({ ...params, pageNo: 1 });
-        updateSupermarket(null);
-        _setShoppingList(null);
-        navigation.dispatch(e.data.action);
-      }),
-    [navigation]
-  );
+  const { shoppingList } = route.params
+    ? route.params
+    : { shoppingList: undefined };
 
   const fieldValidationSchema = yup.object().shape({
     description: yup
@@ -90,26 +71,19 @@ const ShoppingListForm = () => {
     formState: { errors },
     clearErrors,
     trigger,
+    getValues,
   } = useForm({ resolver: yupResolver(fieldValidationSchema) });
 
-  const save = async () => {
-    if (_shoppingList.id) {
-      await update({ ..._shoppingList });
-    } else {
-      await add({
-        ..._shoppingList,
-      });
-    }
-
-    if (error == null) {
-      await get({ ...params, pageNo: 1 });
-      navigation.navigate("Home");
-    }
-  };
+  const save = async () => {};
 
   const onSubmit = async (data: any) => {
-    setShoppingList({ ...shoppingList, description: data.description });
-    save();
+    const toSave: IShoppingListPutAndPost = {
+      id: shoppingList ? shoppingList.id : undefined,
+      description: data.description,
+      supermarketId: supermarket?.id,
+      status: shoppingList ? shoppingList.status : "IN_PLANNING",
+    };
+    createShoppingList(toSave);
   };
 
   useEffect(() => {
@@ -118,29 +92,18 @@ const ShoppingListForm = () => {
   }, [register]);
 
   useEffect(() => {
+    if (supermarket) {
+      setValue("supermarket", supermarket.id);
+    }
+  }, [supermarket]);
+
+  useEffect(() => {
     if (shoppingList) {
       setValue("description", shoppingList.description);
       setValue("supermarket", shoppingList.supermarketId);
-
       updateSupermarket({
-        id: shoppingList.supermarketId,
         name: shoppingList.supermarketName,
-        country: "",
-        region: "",
-        state: "",
-        stateCode: "",
-        city: "",
-        municipality: "",
-        postcode: "",
-        district: "",
-        neighbourhood: "",
-        suburb: "",
-        street: "",
-        longitude: 0,
-        latitude: 0,
-        address: "",
-        placeId: "",
-        distance: 0,
+        id: shoppingList.supermarketId,
       });
     } else {
       setValue("description", "");
@@ -149,22 +112,8 @@ const ShoppingListForm = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (
-      supermarket != null &&
-      JSON.stringify(supermarket) !== JSON.stringify({})
-    ) {
-      setValue("supermarket", supermarket.id);
-      trigger("supermarket");
-      _shoppingList.supermarketId = supermarket.id;
-    } else {
-      setValue("supermarket", "");
-      _shoppingList.supermarketId = "";
-    }
-  }, [supermarket]);
-
   return (
-    <Container loading={loading} error={error} tryAgain={save}>
+    <Container loading={isLoading} error={null} tryAgain={save}>
       <VStack
         paddingLeft={5}
         paddingRight={5}
@@ -196,13 +145,13 @@ const ShoppingListForm = () => {
                 clearErrors("description");
                 setValue("description", text);
                 trigger("description");
-                setShoppingList({ ..._shoppingList, description: text });
               }}
               onSubmitEditing={() => {
-                selectSupermarket.current.focus();
+                navigation.navigate("SearchSupermarket");
               }}
-              isDisabled={loading}
-              value={_shoppingList.description}
+              isDisabled={isLoading}
+              // value={getValues("description")}
+              defaultValue={shoppingList ? shoppingList.description : ""}
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}
@@ -264,7 +213,7 @@ const ShoppingListForm = () => {
             onPress={handleSubmit(onSubmit)}
             bgColor={"green.500"}
             marginTop={5}
-            isLoading={loading}
+            isLoading={isLoading}
           >
             {t("form_messages.label_create")}
           </Button>

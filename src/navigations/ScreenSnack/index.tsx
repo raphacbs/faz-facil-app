@@ -20,6 +20,8 @@ import Filter from "../../screens/Home/Filter";
 import { Ionicons } from "@expo/vector-icons";
 import SearchItem from "../../screens/Item/SearchItem";
 import FilterItem from "../../screens/Item/FilterItem";
+import ScanScreen from "../../screens/Product/Scan";
+import AddItemScreen from "../../screens/Item/AddItem";
 const Stack = createNativeStackNavigator();
 
 const ScreenSnack = (props: any) => {
@@ -115,6 +117,28 @@ const ScreenSnack = (props: any) => {
                   <SearchItem />
                 </HStack>
               ),
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="Scan"
+            component={ScanScreen}
+            options={{
+              title: `${t("scan.title")}`,
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="AddItem"
+            component={AddItemScreen}
+            options={{
+              title: `${t("add_item.title")}`,
               headerStyle: {
                 backgroundColor: "#0099e6",
               },

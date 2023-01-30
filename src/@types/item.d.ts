@@ -51,6 +51,22 @@ export interface IItemPut {
   updateAt: string;
   added: boolean;
 }
+export interface IItemPutAndPost {
+  id: string;
+  note: string;
+  quantity: number;
+  price: number;
+  perUnit: number;
+  product: {
+    code: string;
+  };
+  shoppingList: {
+    id: string;
+  };
+  createdAt: string;
+  updateAt: string;
+  added: boolean;
+}
 
 export type ItemContextType = {
   items: IItem[];
@@ -81,4 +97,14 @@ export interface IParamsItem {
   sortDir: string;
   isAdded?: boolean;
   productDesc?: string;
+  shoppingListId: string;
+}
+
+export interface IParamProduct {
+  pageNo: number;
+  pageSize: number;
+  sortBy: string;
+  sortDir: string;
+  code?: string;
+  description?: string;
 }

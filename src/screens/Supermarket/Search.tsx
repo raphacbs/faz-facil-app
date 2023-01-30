@@ -15,7 +15,7 @@ import LottieView from "lottie-react-native";
 import SupermarketItem from "./SupermarketItem";
 import * as Location from "expo-location";
 
-const SearchSupermarketScreen = () => {
+const SearchSupermarketScreen = ({ route }: any) => {
   const {
     supermarkets,
     get,
@@ -35,16 +35,6 @@ const SearchSupermarketScreen = () => {
   const search = async () => {
     await get({ ...params, pageNo: 1 });
   };
-
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        e.preventDefault();
-        resetSupermarkets();
-        navigation.dispatch(e.data.action);
-      }),
-    [navigation]
-  );
 
   useEffect(() => {
     (async () => {

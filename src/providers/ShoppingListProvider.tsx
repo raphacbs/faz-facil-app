@@ -48,7 +48,7 @@ const ShoppingListProvider: React.FC<PropsWithChildren> = ({ children }) => {
     ) => {
       setLoading(_shoppingLists == null);
       setParams({ ..._params });
-      const url = `${endPoint}?pageNo=${_params.pageNo}&pageSize=${
+      const url = `${endPoint}?pageNo=${_params.pageParam}&pageSize=${
         _params.pageSize
       }&sortBy=${_params.sortBy}&sortDir=${_params.sortDir}${
         _params.status ? "&status=" + _params.status : ""

@@ -21,6 +21,13 @@ export interface IShoppingListPut {
   status: string;
 }
 
+export interface IShoppingListPutAndPost {
+  id: string | undefined;
+  description: string;
+  supermarketId: string;
+  status: string;
+}
+
 export interface IShoppingListPost {
   description: string;
   supermarketId: string;
@@ -28,7 +35,7 @@ export interface IShoppingListPost {
 }
 
 export interface IParamsShoppingList {
-  pageNo: number;
+  pageParam: number;
   pageSize: number;
   sortBy: string;
   sortDir: string;

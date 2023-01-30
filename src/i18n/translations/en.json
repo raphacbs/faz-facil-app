@@ -92,11 +92,19 @@
     "title": "Search by description",
     "title_supermarket": "Search by supermarkets"
   },
+  "scan": {
+    "title": "Scaning product"
+  },
   "item": {
     "title": "Items"
   },
+
+  "add_item": {
+    "title": "Add Item"
+  },
   "fab": {
     "add_shopping_list": "Shopping List",
+    "search_product_by_description": "Search Product",
     "search_product_bar_code": "Scan Product"
   }
 }
