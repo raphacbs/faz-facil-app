@@ -65,6 +65,7 @@ const SearchItem = () => {
                   }}
                 />
               }
+              //@ts-ignore
               InputRightElement={
                 searchText.length >= 1 ? (
                   <Icon

@@ -28,7 +28,7 @@ import MaskInput, { Masks } from "react-native-mask-input";
 import { useMutation, useQueryClient } from "react-query";
 import { postOrPutItem } from "../../providers/useItemQuery";
 import Container from "../../components/Container";
-import ItemHistory from "./ItemHistory";
+import ProductHistory from "../Product/ItemHistory";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -232,7 +232,7 @@ const AddItemScreen = ({ route }: any) => {
               </HStack>
 
               <HStack justifyContent={"center"}>
-                <ItemHistory product={product.items[0]} />
+                <ProductHistory product={product.items[0]} />
               </HStack>
 
               <HStack justifyContent={"center"}>

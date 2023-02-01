@@ -1,5 +1,4 @@
 import { Center, Heading, VStack } from "native-base";
-import { IItem, IItemPost, IItemPut, IItemPutAndPost } from "../../@types/item";
 import { useEffect, useState, useTranslation } from "../../hooks";
 import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
@@ -17,7 +16,7 @@ const initialHist = {
     },
   ],
 };
-const ItemHistory: React.FC<Props> = ({ product }) => {
+const ProductHistory: React.FC<Props> = ({ product }) => {
   const { t } = useTranslation();
   const [hist, setHist] = useState(initialHist);
   const [priceIcon, setPriceIcon] = useState<any>({
@@ -119,4 +118,4 @@ const ItemHistory: React.FC<Props> = ({ product }) => {
   );
 };
 
-export default ItemHistory;
+export default ProductHistory;

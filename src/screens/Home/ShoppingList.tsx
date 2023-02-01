@@ -67,6 +67,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
     <VStack>
       <Pressable
         onPress={async () => {
+          //@ts-ignore
           navigation.navigate("Item", { shoppingList: shoppingList });
         }}
       >
@@ -204,6 +205,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
                 />
               }
               onPress={async () => {
+                //@ts-ignore
                 navigation.navigate("ShoppingListEdit", { shoppingList });
               }}
             >

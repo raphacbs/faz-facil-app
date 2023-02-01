@@ -23,12 +23,17 @@ const FABItemActions: React.FC<Props> = ({ shoppingListId }) => {
           icon: "barcode-scan",
           label: `${t("fab.search_product_bar_code")}`,
           onPress: () =>
+            //@ts-ignore
             navigation.navigate("Scan", { shoppingListId: shoppingListId }),
         },
         {
           icon: "shopping",
           label: `${t("fab.search_product_by_description")}`,
-          onPress: () => navigation.navigate("ShoppingListRegister"),
+          onPress: () =>
+            //@ts-ignore
+            navigation.navigate("ProductSearch", {
+              shoppingListId: shoppingListId,
+            }),
         },
       ]}
       onStateChange={onStateChange}

@@ -19,6 +19,19 @@ export const compareDate = (a: any, b: any) => {
     return -1;
   }
 };
+
+export const compareDateDesc = (a: any, b: any) => {
+  if (
+    moment(a.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000").isSameOrBefore(
+      moment(b.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000")
+    )
+  ) {
+    return 1;
+  } else {
+    return -1;
+  }
+};
+
 export const formatDate = (date: string, format: string) => {
   return moment(date, "YYYY-MM-DD-THH:mm:ss.00000").format(format);
 };

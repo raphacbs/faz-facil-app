@@ -22,6 +22,7 @@ import SearchItem from "../../screens/Item/SearchItem";
 import FilterItem from "../../screens/Item/FilterItem";
 import ScanScreen from "../../screens/Product/Scan";
 import AddItemScreen from "../../screens/Item/AddItem";
+import ProductSearchScreen from "../../screens/Product/Search";
 const Stack = createNativeStackNavigator();
 
 const ScreenSnack = (props: any) => {
@@ -139,6 +140,17 @@ const ScreenSnack = (props: any) => {
             component={AddItemScreen}
             options={{
               title: `${t("add_item.title")}`,
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="ProductSearch"
+            component={ProductSearchScreen}
+            options={{
+              title: `${t("product.title")}`,
               headerStyle: {
                 backgroundColor: "#0099e6",
               },

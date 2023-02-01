@@ -63,7 +63,7 @@ export const getShoppingListById = (id: string, enabled: boolean) =>
     enabled: enabled,
   });
 
-const useQueryShoppingLists = (description = undefined) =>
+const useQueryShoppingLists = (description: string) =>
   useInfiniteQuery(
     ["shoppingLists"],
     ({ pageParam = 1 }) => fetchShoppingLists(pageParam, description),

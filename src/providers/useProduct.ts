@@ -17,6 +17,14 @@ export const getProductByCode = (code: string, enabled: boolean) =>
     enabled: enabled,
   });
 
+export const fetchProducts = async (pageParam: number, description: string) => {
+  const url = `${endPoint}?pageNo=${pageParam}&pageSize=10&sortBy=description&sortDir=asc${
+    description ? "&description=" + description : ""
+  }`;
+  const { data } = await api.get(url);
+  return data;
+};
+
 // export const postOrPutItem = async (item: IItemPutAndPost) => {
 //   const url = `${endPoint}`;
 //   if (item.id) {
