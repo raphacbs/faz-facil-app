@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-export const apiAuth = axios.create({ baseURL: "http://192.168.1.17:8085" });
+export const apiAuth = axios.create({
+  baseURL: "https://auth-faz-feira-hml.herokuapp.com",
+});
 
 apiAuth.interceptors.request.use(async (config: any) => {
   config.headers["Accept"] = "application/json";

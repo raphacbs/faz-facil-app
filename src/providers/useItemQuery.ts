@@ -35,6 +35,11 @@ export const postOrPutItem = async (item: IItemPutAndPost) => {
   }
 };
 
+export const deleteItem = async (itemId: string) => {
+  const url = `${endPoint}/${itemId}`;
+  await api.delete(url);
+};
+
 // export const putShoppingList = async (shoppingList: IShoppingListPost) => {
 //   const url = `${endPoint}`;
 

@@ -52,7 +52,7 @@ export interface IItemPut {
   added: boolean;
 }
 export interface IItemPutAndPost {
-  id: string;
+  id?: string;
   note: string;
   quantity: number;
   price: number;
@@ -63,8 +63,8 @@ export interface IItemPutAndPost {
   shoppingList: {
     id: string;
   };
-  createdAt: string;
-  updateAt: string;
+  createdAt?: string;
+  updateAt?: string;
   added: boolean;
 }
 

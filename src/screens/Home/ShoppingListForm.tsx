@@ -1,16 +1,12 @@
 import {
   Badge,
-  Box,
   Button,
   Center,
-  CheckIcon,
   FormControl,
   HStack,
   IconButton,
   Input,
-  Select,
   Text,
-  useMediaQuery,
   VStack,
   WarningOutlineIcon,
 } from "native-base";
@@ -38,9 +34,9 @@ const ShoppingListForm = ({ route }: any) => {
   const { mutate: createShoppingList, isLoading } = useMutation({
     mutationFn: (changeShoppingList: IShoppingListPutAndPost) =>
       postOrPutShoppingList(changeShoppingList),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
-      queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
+      await queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
       navigation.goBack();
     },
   });
@@ -80,6 +76,7 @@ const ShoppingListForm = ({ route }: any) => {
     const toSave: IShoppingListPutAndPost = {
       id: shoppingList ? shoppingList.id : undefined,
       description: data.description,
+      //@ts-ignore
       supermarketId: supermarket?.id,
       status: shoppingList ? shoppingList.status : "IN_PLANNING",
     };
@@ -101,6 +98,7 @@ const ShoppingListForm = ({ route }: any) => {
     if (shoppingList) {
       setValue("description", shoppingList.description);
       setValue("supermarket", shoppingList.supermarketId);
+      //@ts-ignore
       updateSupermarket({
         name: shoppingList.supermarketName,
         id: shoppingList.supermarketId,
@@ -147,6 +145,7 @@ const ShoppingListForm = ({ route }: any) => {
                 trigger("description");
               }}
               onSubmitEditing={() => {
+                //@ts-ignore
                 navigation.navigate("SearchSupermarket");
               }}
               isDisabled={isLoading}
@@ -190,6 +189,7 @@ const ShoppingListForm = ({ route }: any) => {
                 variant="ghost"
                 alignSelf={"center"}
                 onPress={() => {
+                  //@ts-ignore
                   navigation.navigate("SearchSupermarket");
                 }}
                 _icon={{

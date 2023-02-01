@@ -1,4 +1,11 @@
-import { VStack, Heading, HStack, FlatList, Center } from "native-base";
+import {
+  VStack,
+  Heading,
+  HStack,
+  FlatList,
+  Center,
+  Spinner,
+} from "native-base";
 import { useEffect, useState, useTranslation } from "../../hooks";
 import { formatCurrency } from "../../utils/generic";
 import Container from "../../components/Container";
@@ -31,6 +38,7 @@ const ItemScreen = ({ route }: any) => {
     isSuccess,
     hasNextPage,
     isFetchingNextPage,
+    isFetching,
     fetchNextPage,
   } = useQueryItems(params);
 
@@ -66,20 +74,28 @@ const ItemScreen = ({ route }: any) => {
           <Heading size={"xs"} color={"white"}>
             {t("form_messages.label_quantity")}
           </Heading>
-          <Heading
-            size={"xs"}
-            color={"white"}
-          >{`${_shoppingList?.itemsInfo.quantityAddedProduct}/${_shoppingList?.itemsInfo.quantityPlannedProduct}`}</Heading>
+          {isFetching ? (
+            <Spinner />
+          ) : (
+            <Heading
+              size={"xs"}
+              color={"white"}
+            >{`${_shoppingList?.itemsInfo.quantityAddedProduct}/${_shoppingList?.itemsInfo.quantityPlannedProduct}`}</Heading>
+          )}
         </Center>
         <Center marginRight={2} marginLeft={2} justifyContent={"center"}>
           <Heading size={"xs"} color={"white"}>
             {t("form_messages.label_total")}
           </Heading>
-          <Heading size={"xs"} color={"white"}>{`${formatCurrency(
-            _shoppingList?.itemsInfo.totalValueAdded
-          )}/${formatCurrency(
-            _shoppingList?.itemsInfo.plannedTotalValue
-          )}`}</Heading>
+          {isFetching ? (
+            <Spinner />
+          ) : (
+            <Heading size={"xs"} color={"white"}>{`${formatCurrency(
+              _shoppingList?.itemsInfo.totalValueAdded
+            )}/${formatCurrency(
+              _shoppingList?.itemsInfo.plannedTotalValue
+            )}`}</Heading>
+          )}
         </Center>
       </HStack>
       <Container loading={isLoading} error={error} tryAgain={() => {}}>
@@ -104,7 +120,7 @@ const ItemScreen = ({ route }: any) => {
           )}
         </VStack>
       </Container>
-      <FABItemActions />
+      <FABItemActions shoppingListId={shoppingList.id} />
     </VStack>
   );
 };

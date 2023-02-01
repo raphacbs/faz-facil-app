@@ -6,7 +6,7 @@ import api, { config } from "../services/api";
 
 const endPoint = "/api/v1/products";
 
-const fetchProductByCode = async (code: string) => {
+export const fetchProductByCode = async (code: string) => {
   const url = `${endPoint}?pageNo=1&pageSize=10&sortBy=description&code=${code}`;
   const { data } = await api.get(url);
   return data;

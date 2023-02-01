@@ -13,8 +13,9 @@ import {
   Badge,
   Skeleton,
   ScrollView,
+  Button,
 } from "native-base";
-import { useEffect, useState, useTranslation } from "../../hooks";
+import { useEffect, useRef, useState, useTranslation } from "../../hooks";
 import { Dimensions, Switch } from "react-native";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { compareDate, formatCurrency, formatDate } from "../../utils/generic";
@@ -24,8 +25,9 @@ import ModalInput from "./ModalInput";
 import { Masks } from "react-native-mask-input";
 import { IShoppingList } from "../../@types/shoppingList";
 import { useMutation, useQueryClient } from "react-query";
-import { postOrPutItem } from "../../providers/useItemQuery";
+import { deleteItem, postOrPutItem } from "../../providers/useItemQuery";
 import moment from "moment";
+import AlertYesOrNo from "../../components/Alert";
 
 type Props = {
   shoppingList: IShoppingList;
@@ -53,6 +55,7 @@ const ActionItem: React.FC<Props> = ({
   const [priceModal, setPriceModal] = useState(false);
   const [quantityModal, setQuantityModal] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
+  const [isOpenDelete, setOpenDelete] = useState(false);
   const [hist, setHist] = useState(initialHist);
   const [lastHist, setLastHist] = useState({
     id: "",
@@ -70,6 +73,7 @@ const ActionItem: React.FC<Props> = ({
     icon: "equal-box",
     diference: 0,
   });
+  const actionItemRef = useRef(null);
 
   function compare(a: any, b: any) {
     if (
@@ -143,6 +147,20 @@ const ActionItem: React.FC<Props> = ({
     },
   });
 
+  const {
+    mutate: delItem,
+    isLoading: isLoadingDelete,
+    isSuccess: isSuccessDelete,
+  } = useMutation({
+    mutationFn: (itemId: string) => deleteItem(itemId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
+      await queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
+      await queryClient.invalidateQueries({ queryKey: ["shoppingListById"] });
+      setOpenDelete(false);
+    },
+  });
+
   useEffect(() => {
     getHistData();
     verifyIfPriceUp();
@@ -154,7 +172,7 @@ const ActionItem: React.FC<Props> = ({
 
   return (
     <Center>
-      <Actionsheet isOpen={isOpen} onClose={onClose}>
+      <Actionsheet ref={actionItemRef} isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content>
           <VStack marginLeft={2} marginRight={2} space={2}>
             <HStack justifyContent={"space-between"}>
@@ -266,7 +284,11 @@ const ActionItem: React.FC<Props> = ({
                       isDisabled={isLoading}
                       onPress={() => {
                         if (item.quantity > 0 && isLoading == false) {
-                          updateItem({ ...item, quantity: item.quantity - 1 });
+                          updateItem({
+                            ...item,
+                            quantity: item.quantity - 1,
+                            updateAt: "",
+                          });
                         }
                       }}
                     />
@@ -294,7 +316,11 @@ const ActionItem: React.FC<Props> = ({
                       isDisabled={isLoading}
                       onPress={() => {
                         if (isLoading == false) {
-                          updateItem({ ...item, quantity: item.quantity + 1 });
+                          updateItem({
+                            ...item,
+                            quantity: item.quantity + 1,
+                            updateAt: "",
+                          });
                         }
                       }}
                     />
@@ -343,7 +369,16 @@ const ActionItem: React.FC<Props> = ({
                   />
                 </Center>
               )}
-
+              <Button
+                mb={"5%"}
+                mt={"5%"}
+                colorScheme={"danger"}
+                onPress={() => {
+                  setOpenDelete(true);
+                }}
+              >
+                {t("form_messages.label_delete")}
+              </Button>
               <ModalInput
                 isOpen={quantityModal}
                 isTextArea={false}
@@ -354,7 +389,11 @@ const ActionItem: React.FC<Props> = ({
                 }}
                 value={item.quantity + ""}
                 onSave={(text) => {
-                  updateItem({ ...item, quantity: parseInt(text) });
+                  updateItem({
+                    ...item,
+                    quantity: parseInt(text),
+                    updateAt: "",
+                  });
                 }}
                 onChangeText={(
                   formatted: string,
@@ -375,7 +414,11 @@ const ActionItem: React.FC<Props> = ({
                     .replace("R$ ", "")
                     .replace(".", "")
                     .replace(",", ".");
-                  updateItem({ ...item, perUnit: parseFloat(newValue) });
+                  updateItem({
+                    ...item,
+                    perUnit: parseFloat(newValue),
+                    updateAt: "",
+                  });
                 }}
                 onChangeText={(
                   formatted: string,
@@ -392,12 +435,44 @@ const ActionItem: React.FC<Props> = ({
                 isTextArea={true}
                 value={item.note}
                 onSave={(text) => {
-                  updateItem({ ...item, note: text });
+                  updateItem({
+                    ...item,
+                    note: text,
+                    updateAt: "",
+                  });
                 }}
                 onChangeText={(
                   formatted: string,
                   extracted: string | undefined
                 ) => {}}
+              />
+              <AlertYesOrNo
+                body={
+                  isLoadingDelete ? (
+                    <Spinner />
+                  ) : (
+                    <Heading size={"xs"}>
+                      {t("form_messages.label_delete_message", {
+                        name: item.product.description,
+                      })}
+                    </Heading>
+                  )
+                }
+                title={
+                  <Heading color={"red.500"} size={"sm"}>
+                    {t("form_messages.label_delete")}
+                  </Heading>
+                }
+                isShow={isOpenDelete}
+                onPressYes={() => {
+                  delItem(item.id);
+                }}
+                onPressNo={() => {
+                  setOpenDelete(false);
+                }}
+                onClose={() => {
+                  setOpenDelete(false);
+                }}
               />
             </ScrollView>
           </VStack>

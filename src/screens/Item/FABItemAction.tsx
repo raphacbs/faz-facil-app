@@ -1,7 +1,9 @@
 import { FAB } from "react-native-paper";
 import { useNavigation, useState, useTranslation } from "../../hooks";
-
-const FABItemActions = () => {
+type Props = {
+  shoppingListId: string;
+};
+const FABItemActions: React.FC<Props> = ({ shoppingListId }) => {
   const [openFab, setOpenFab] = useState<boolean>(false);
   const navigation = useNavigation();
   const onStateChange = ({ open }: any) => setOpenFab(open);
@@ -20,7 +22,8 @@ const FABItemActions = () => {
         {
           icon: "barcode-scan",
           label: `${t("fab.search_product_bar_code")}`,
-          onPress: () => navigation.navigate("Scan"),
+          onPress: () =>
+            navigation.navigate("Scan", { shoppingListId: shoppingListId }),
         },
         {
           icon: "shopping",

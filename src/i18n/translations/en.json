@@ -48,11 +48,14 @@
     "label_ascending": "Ascending",
     "label_descending": "Descending",
     "label_try_again": "Try Again",
+    "label_search": "Search",
     "placeholder_search_list": "Search lists",
     "placeholder_search_items": "Search items",
     "placeholder_search_supermarket": "Search supermarkets",
     "load_more_list": "more...",
     "label_description": "Description",
+    "label_code": "Code",
+    "placeholder_code": "Input the code of product",
     "label_supermarket": "Supermarket",
     "placeholder_description": "Input a description for your list",
     "placeholder_supermarket": "Select the supermarket",
@@ -62,9 +65,14 @@
     "label_status_to_ready": "Done shopping",
     "label_status_ready": "Shopping completed",
     "label_cancel": "Cancel",
+    "label_no": "No",
+    "label_yes": "Yes",
+    "label_delete": "Delete",
     "label_apply": "Apply",
     "label_qtd_product": "Qty products",
-    "label_expected_total": "Expected total"
+    "label_expected_total": "Expected total",
+    "min_value": "The value must have at least {{min}}",
+    "label_delete_message": "Do you want to remove item {{name}}?"
   },
   "sing_in_screen": {
     "welcome": "Welcome to Faz Feira!",
@@ -93,7 +101,13 @@
     "title_supermarket": "Search by supermarkets"
   },
   "scan": {
-    "title": "Scaning product"
+    "title": "Scaning product",
+    "error_message": "Ocurred when search product",
+    "error_label": "Error",
+    "button_ok_label": "OK",
+    "alert_header_product_not_found": "Product not found",
+    "button_add_item": "Add Item",
+    "message_not_found_product": "The product with the code '{{code}}' were not found, you want to register?"
   },
   "item": {
     "title": "Items"
