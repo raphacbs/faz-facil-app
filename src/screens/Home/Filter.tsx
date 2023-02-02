@@ -14,18 +14,16 @@ import {
   useCallback,
   useMemo,
   useRef,
-  useShoppingList,
   useState,
   useTranslation,
 } from "../../hooks";
 import { Ionicons } from "@expo/vector-icons";
 
 const Filter = () => {
-  const { params, get, loading } = useShoppingList();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [sortBy, setSortBy] = useState(params.sortBy);
-  const [sortDir, setSortDir] = useState(params.sortDir);
+  const [sortBy, setSortBy] = useState();
+  const [sortDir, setSortDir] = useState();
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
@@ -40,9 +38,7 @@ const Filter = () => {
           color: "white",
         }}
         onPress={() => {
-          if (!loading) {
-            setIsOpen(true);
-          }
+          setIsOpen(true);
         }}
       />
       <Modal
@@ -69,7 +65,7 @@ const Filter = () => {
                 defaultValue={sortBy}
                 onValueChange={(value) => {
                   console.log(value);
-                  setSortBy(value);
+                  // setSortBy(value);
                 }}
                 mt="1"
               >
@@ -98,7 +94,7 @@ const Filter = () => {
                 accessibilityLabel="favorite number"
                 value={sortDir}
                 onChange={(nextValue) => {
-                  setSortDir(nextValue);
+                  // setSortDir(nextValue);
                 }}
               >
                 <Radio value="asc" my={1}>
@@ -121,13 +117,7 @@ const Filter = () => {
               >
                 {t("form_messages.label_filter_cancel")}
               </Button>
-              <Button
-                colorScheme="success"
-                onPress={async () => {
-                  get({ ...params, sortBy, sortDir });
-                  setIsOpen(false);
-                }}
-              >
+              <Button colorScheme="success" onPress={async () => {}}>
                 {t("form_messages.label_filter_apply")}
               </Button>
             </Button.Group>

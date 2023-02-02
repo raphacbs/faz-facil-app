@@ -1,18 +1,47 @@
-import { FC, PropsWithChildren } from "react";
-import { AuthProvider } from "./AuthProvider";
-import ItemProvider from "./ItemProvider";
-import ShoppingListProvider from "./ShoppingListProvider";
-import SupermarketProvider from "./SupermarketProvider";
+import { PropsWithChildren } from "react";
+import { AppContextType, IShoppingList } from "../@types/app";
+import { ISupermarket } from "../@types/supermarket";
+import { ShoppingListContextProvider } from "../context";
+import { useState, useCallback, useMemo } from "../hooks";
 
-const AppProvider: FC<PropsWithChildren> = ({ children }) => {
+const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const [currentShoppingList, setCurrentShoppingList] =
+    useState<IShoppingList | null>(null);
+  const [currentSupermarket, setCurrentSupermarket] =
+    useState<ISupermarket | null>(null);
+
+  const setShoppingList: AppContextType["setShoppingList"] = useCallback(
+    async (shoppingList: IShoppingList | null) => {
+      setCurrentShoppingList(shoppingList);
+    },
+    []
+  );
+
+  const setSupermarket: AppContextType["setSupermarket"] = useCallback(
+    async (supermarket: ISupermarket | null) => {
+      setCurrentSupermarket(supermarket);
+    },
+    []
+  );
+
+  const value = useMemo(() => {
+    return {
+      currentShoppingList,
+      currentSupermarket,
+      setShoppingList,
+      setSupermarket,
+    };
+  }, [
+    currentShoppingList,
+    currentSupermarket,
+    setShoppingList,
+    setSupermarket,
+  ]);
+
   return (
-    <AuthProvider>
-      <ShoppingListProvider>
-        <SupermarketProvider>
-          <ItemProvider>{children}</ItemProvider>
-        </SupermarketProvider>
-      </ShoppingListProvider>
-    </AuthProvider>
+    <ShoppingListContextProvider value={value}>
+      {children}
+    </ShoppingListContextProvider>
   );
 };
 

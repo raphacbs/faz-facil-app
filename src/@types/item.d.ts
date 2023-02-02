@@ -1,4 +1,4 @@
-import { IShoppingList } from "./shoppingList";
+import { IShoppingList } from "./app";
 
 export interface IItem {
   id: string;

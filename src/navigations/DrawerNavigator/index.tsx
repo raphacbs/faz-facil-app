@@ -1,7 +1,7 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreenOld from "../../screens/Home";
-import { useShoppingList, useTranslation } from "../../hooks";
+import { useTranslation } from "../../hooks";
 import Filter from "../../screens/Home/Filter";
 import { HStack, IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,7 +11,6 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
   const { t } = useTranslation();
-  const { loading } = useShoppingList();
 
   return (
     <Drawer.Navigator drawerContent={(props) => <SidebarMenu {...props} />}>
@@ -28,7 +27,7 @@ const DrawerNavigator = () => {
           headerTintColor: "#fff",
           headerRight: () => (
             <HStack justifyContent={"flex-end"}>
-              <Filter />
+              {/* <Filter /> */}
               <IconButton
                 size={"md"}
                 variant="ghost"
@@ -39,9 +38,7 @@ const DrawerNavigator = () => {
                   color: "white",
                 }}
                 onPress={() => {
-                  if (!loading) {
-                    navigation.navigate("SearchList");
-                  }
+                  navigation.navigate("SearchList");
                 }}
               />
             </HStack>

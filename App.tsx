@@ -12,6 +12,7 @@ import i18n from "./src/i18n";
 import AppProvider from "./src/providers/AppProvider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { AuthProvider } from "./src/providers/AuthProvider";
 
 export default function App() {
   i18n;
@@ -21,12 +22,14 @@ export default function App() {
       <SafeAreaProvider>
         <NativeBaseProvider theme={theme}>
           <AppProvider>
-            <NavigationContainer>
-              <QueryClientProvider client={queryClient}>
-                <StatusBar style="auto" />
-                <ScreenSnack />
-              </QueryClientProvider>
-            </NavigationContainer>
+            <AuthProvider>
+              <NavigationContainer>
+                <QueryClientProvider client={queryClient}>
+                  <StatusBar style="auto" />
+                  <ScreenSnack />
+                </QueryClientProvider>
+              </NavigationContainer>
+            </AuthProvider>
           </AppProvider>
         </NativeBaseProvider>
       </SafeAreaProvider>

@@ -1,19 +1,13 @@
 import { Center, FlatList, HStack, Icon, Input, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  useShoppingList,
-  useState,
-  useTranslation,
-  useRef,
-  useNavigation,
-} from "../../hooks";
+import { useState, useTranslation, useRef } from "../../hooks";
 
 import Container from "../../components/Container";
 import { TouchableOpacity } from "react-native";
 import ShoppingList from "./ShoppingList";
 import React, { useEffect } from "react";
 import LottieView from "lottie-react-native";
-import { IShoppingList } from "../../@types/shoppingList";
+import { IShoppingList } from "../../@types/app";
 import { fetchShoppingLists } from "../../providers/useShoppingList";
 import ListFooter from "../../components/ListFooter";
 import { useInfiniteQuery, useMutation, useQueryClient } from "react-query";

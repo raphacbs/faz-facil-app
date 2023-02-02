@@ -1,3 +1,5 @@
+import { ISupermarket } from "./supermarket";
+
 export interface IShoppingList {
   id: string;
   description: string;
@@ -52,20 +54,9 @@ export interface IPageInfo {
   last: boolean;
 }
 
-export type ShoppingListContextType = {
-  shoppingLists: IShoppingList[];
-  shoppingList: IShoppingList | null;
-  params: IParamsShoppingList;
-  pageInfo: IPageInfo;
-  loading: boolean;
-  error: any | null;
-  resetParams: () => void;
-  get: (
-    _params: IParamsShoppingList,
-    _shoppingList: IShoppingList[] | null = null
-  ) => void;
-  getById: (id: string) => void;
-  update: (shoppingList: IShoppingListPut) => void;
-  _setShoppingList: (_shoppingList: IShoppingList | null) => void;
-  add: (shoppingList: IShoppingListPost) => void;
+export type AppContextType = {
+  currentShoppingList: IShoppingList | null;
+  setShoppingList: (_shoppingList: IShoppingList | null) => void;
+  currentSupermarket: ISupermarket | null;
+  setSupermarket: (supermarket: ISupermarket | null) => void;
 };

@@ -12,8 +12,8 @@ import {
   Actionsheet,
   Badge,
 } from "native-base";
-import { IShoppingList } from "../../@types/shoppingList";
-import { useNavigation, useState, useTranslation } from "../../hooks";
+import { IShoppingList } from "../../@types/app";
+import { useApp, useNavigation, useState, useTranslation } from "../../hooks";
 import {
   convertStatusShoppingList,
   convertStatusShoppingListColorSchema,
@@ -33,7 +33,7 @@ type Props = {
 
 const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
   const { t } = useTranslation();
-
+  const { setShoppingList } = useApp();
   const [open, setOpen] = useState(false);
 
   const navigation = useNavigation();
@@ -67,6 +67,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
     <VStack>
       <Pressable
         onPress={async () => {
+          setShoppingList(shoppingList);
           //@ts-ignore
           navigation.navigate("Item", { shoppingList: shoppingList });
         }}

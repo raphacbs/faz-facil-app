@@ -18,7 +18,7 @@ import { useEffect, useState, useTranslation } from "../../hooks";
 import moment from "moment";
 import { formatCurrency } from "../../utils/generic";
 import ActionItem from "./ActionItem";
-import { IShoppingList } from "../../@types/shoppingList";
+import { IShoppingList } from "../../@types/app";
 import { useMutation, useQueryClient } from "react-query";
 import { postOrPutItem } from "../../providers/useItemQuery";
 

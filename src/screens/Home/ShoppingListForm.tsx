@@ -12,11 +12,11 @@ import {
 } from "native-base";
 
 import {
+  useApp,
   useEffect,
   useForm,
   useNavigation,
   useRef,
-  useSupermarket,
   useTranslation,
 } from "../../hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,7 +26,7 @@ import Container from "../../components/Container";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "react-query";
 import { postOrPutShoppingList } from "../../providers/useShoppingList";
-import { IShoppingListPutAndPost } from "../../@types/shoppingList";
+import { IShoppingListPutAndPost } from "../../@types/app";
 
 const ShoppingListForm = ({ route }: any) => {
   const queryClient = useQueryClient();
@@ -43,7 +43,7 @@ const ShoppingListForm = ({ route }: any) => {
 
   const { t } = useTranslation();
   const inputDescription: any = useRef();
-  const { supermarket, updateSupermarket } = useSupermarket();
+  const { currentSupermarket, setSupermarket } = useApp();
   const navigation = useNavigation();
   const { shoppingList } = route.params
     ? route.params
@@ -89,24 +89,24 @@ const ShoppingListForm = ({ route }: any) => {
   }, [register]);
 
   useEffect(() => {
-    if (supermarket) {
-      setValue("supermarket", supermarket.id);
+    if (currentSupermarket) {
+      setValue("supermarket", currentSupermarket.id);
     }
-  }, [supermarket]);
+  }, [currentSupermarket]);
 
   useEffect(() => {
     if (shoppingList) {
       setValue("description", shoppingList.description);
       setValue("supermarket", shoppingList.supermarketId);
       //@ts-ignore
-      updateSupermarket({
+      setSupermarket({
         name: shoppingList.supermarketName,
         id: shoppingList.supermarketId,
       });
     } else {
       setValue("description", "");
       setValue("supermarket", "");
-      updateSupermarket(null);
+      setSupermarket(null);
     }
   }, []);
 
@@ -172,11 +172,11 @@ const ShoppingListForm = ({ route }: any) => {
               bgColor={"white"}
               h={"35%"}
             >
-              {supermarket ? (
+              {currentSupermarket ? (
                 <Badge w={"85%"} variant={"solid"} colorScheme={"success"}>
                   <VStack justifyContent={"flex-start"}>
-                    <Text color={"white"}>{supermarket.name}</Text>
-                    <Text color={"white"}>{supermarket.suburb}</Text>
+                    <Text color={"white"}>{currentSupermarket.name}</Text>
+                    <Text color={"white"}>{currentSupermarket.suburb}</Text>
                   </VStack>
                 </Badge>
               ) : (

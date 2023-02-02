@@ -1,6 +1,6 @@
 import { FlatList, HStack, Icon, Input, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState, useTranslation, useRef, useNavigation } from "../../hooks";
+import { useState, useTranslation, useRef, useApp } from "../../hooks";
 
 import Container from "../../components/Container";
 
@@ -9,10 +9,10 @@ import { useInfiniteQuery, useQueryClient } from "react-query";
 import { fetchItems } from "../../providers/useItemQuery";
 import { IParamsItem } from "../../@types/item";
 import Item from "./Item";
-import { IShoppingList } from "../../@types/shoppingList";
+import { IShoppingList } from "../../@types/app";
 const initialParams: IParamsItem = {
-  pageNo: 0,
-  pageSize: 0,
+  pageNo: 1,
+  pageSize: 10,
   sortBy: "product.description",
   sortDir: "asc",
   shoppingListId: "",
@@ -20,13 +20,14 @@ const initialParams: IParamsItem = {
 };
 
 const ItemSearchScreen = ({ route }: any) => {
+  const { currentShoppingList } = useApp();
   const queryClient = useQueryClient();
   const [params, setParams] = useState<IParamsItem>({
     ...initialParams,
-    shoppingListId: route.params.shoppingListId,
+    shoppingListId: currentShoppingList ? currentShoppingList.id : "",
   });
   const [search, setSearch] = useState("");
-  const navigation = useNavigation();
+
   const {
     data,
     isLoading,
@@ -128,7 +129,7 @@ const ItemSearchScreen = ({ route }: any) => {
             }
             onSubmitEditing={() => {
               if (params.productDesc?.trim() != "") {
-                setSearch(params.productDesc ? params.productDesc : "");
+                setSearch(params.productDesc ? params.productDesc.trim() : "");
               } else {
                 inputSearch.current.focus();
               }

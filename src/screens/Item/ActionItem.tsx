@@ -23,7 +23,7 @@ import LineChart from "react-native-chart-kit/dist/line-chart";
 import { IItem, IItemPutAndPost } from "../../@types/item";
 import ModalInput from "./ModalInput";
 import { Masks } from "react-native-mask-input";
-import { IShoppingList } from "../../@types/shoppingList";
+import { IShoppingList } from "../../@types/app";
 import { useMutation, useQueryClient } from "react-query";
 import { deleteItem, postOrPutItem } from "../../providers/useItemQuery";
 import moment from "moment";

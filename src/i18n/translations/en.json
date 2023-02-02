@@ -102,6 +102,9 @@
     "title": "Search by description",
     "title_supermarket": "Search by supermarkets"
   },
+  "item_search": {
+    "title": "Item Search"
+  },
   "scan": {
     "title": "Scaning product",
     "error_message": "Ocurred when search product",

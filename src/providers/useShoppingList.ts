@@ -1,8 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import {
-  IShoppingListPost,
-  IShoppingListPutAndPost,
-} from "../@types/shoppingList";
+import { IShoppingListPost, IShoppingListPutAndPost } from "../@types/app";
 import api from "../services/api";
 
 const endPoint = "/api/v1/shopping-lists";

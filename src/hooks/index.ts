@@ -29,6 +29,6 @@ export {
 } from "@react-navigation/native";
 export * as secureStore from "../utils/secureStore";
 
-export { useShoppingListContext as useShoppingList } from "../context";
+export { useAppContext as useApp } from "../context";
 export { useSupermarketContext as useSupermarket } from "../context";
 export { useItemContext as useItem } from "../context";

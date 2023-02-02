@@ -4,11 +4,9 @@ import {
   Center,
   FormControl,
   Heading,
-  HStack,
   Text,
   Input,
   VStack,
-  Link,
   WarningOutlineIcon,
   Image,
 } from "native-base";
@@ -17,7 +15,6 @@ import {
   useTranslation,
   useEffect,
   useDispatch,
-  useToast,
   useForm,
   useRef,
   useNavigation,
@@ -32,7 +29,6 @@ const SignInScreen = (props: any) => {
   const { error } = props;
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const toast = useToast();
   const dispatch = useDispatch();
   const inputPassword: any = useRef();
   const [loading, setLoading] = useState(false);

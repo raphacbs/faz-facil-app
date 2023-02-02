@@ -2,22 +2,14 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigator from "../DrawerNavigator";
 import SignIn from "../../screens/SignIn";
-import {
-  useEffect,
-  useDispatch,
-  useAuth,
-  useTranslation,
-  useShoppingList,
-  useItem,
-  useNavigation,
-} from "../../hooks";
+import { useAuth, useTranslation, useNavigation, useApp } from "../../hooks";
 import SignUp from "../../screens/SignUp";
 import SearchScreen from "../../screens/Home/Search";
 import ShoppingListForm from "../../screens/Home/ShoppingListForm";
 import SearchSupermarketScreen from "../../screens/Supermarket/Search";
 import ItemScreen from "../../screens/Item";
-import { Box, HStack, IconButton, ZStack } from "native-base";
-import Filter from "../../screens/Home/Filter";
+import { HStack, IconButton } from "native-base";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import FilterItem from "../../screens/Item/FilterItem";
@@ -28,8 +20,7 @@ import ItemSearchScreen from "../../screens/Item/Search";
 const Stack = createNativeStackNavigator();
 
 const ScreenSnack = (props: any) => {
-  const { shoppingList } = useShoppingList();
-  const { item, loading } = useItem();
+  const { currentShoppingList } = useApp();
   const { isSignedIn } = useAuth();
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -113,10 +104,10 @@ const ScreenSnack = (props: any) => {
             name="Item"
             component={ItemScreen}
             options={{
-              title: shoppingList?.description,
+              title: currentShoppingList?.description,
               headerRight: () => (
                 <HStack justifyContent={"flex-end"}>
-                  <FilterItem />
+                  {/* <FilterItem /> */}
                   <IconButton
                     size={"md"}
                     variant="ghost"
@@ -127,10 +118,8 @@ const ScreenSnack = (props: any) => {
                       color: "white",
                     }}
                     onPress={() => {
-                      if (!loading) {
-                        //@ts-ignore
-                        navigation.navigate("ItemSearch");
-                      }
+                      //@ts-ignore
+                      navigation.navigate("ItemSearch");
                     }}
                   />
                 </HStack>
@@ -178,7 +167,7 @@ const ScreenSnack = (props: any) => {
             name="ItemSearch"
             component={ItemSearchScreen}
             options={{
-              title: `${t("product.title")}`,
+              title: `${t("item_search.title")}`,
               headerStyle: {
                 backgroundColor: "#0099e6",
               },

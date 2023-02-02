@@ -1,4 +1,4 @@
 export * from "./AuthContext";
-export * from "./ShoppingListContext";
+export * from "./AppContext";
 export * from "./SupermarketContext";
 export * from "./ItemContext";
