@@ -41,9 +41,9 @@ const SignInScreen = (props: any) => {
   const fieldValidationSchema = yup.object().shape({
     email: yup
       .string()
-      .required(t("form_messages.message_required"))
-      .email(t("form_messages.email_message_validation")),
-    password: yup.string().required(t("form_messages.message_required")),
+      .required(`${t("form_messages.message_required")}`)
+      .email(`${t("form_messages.email_message_validation")}`),
+    password: yup.string().required(`${t("form_messages.message_required")}`),
   });
 
   const {
@@ -60,7 +60,7 @@ const SignInScreen = (props: any) => {
     await signIn({ email: data.email, password: data.password });
     setLoading(false);
   };
-
+  //@ts-ignore
   const goSignUpScreen = () => navigation.navigate("SignUp");
 
   useEffect(() => {
@@ -117,7 +117,7 @@ const SignInScreen = (props: any) => {
             {t("form_messages.label_email")}
           </FormControl.Label>
           <Input
-            placeholder={t("form_messages.placeholder_email")}
+            placeholder={`${t("form_messages.placeholder_email")}`}
             keyboardType="email-address"
             selectTextOnFocus={true}
             bgColor="white"
@@ -141,7 +141,7 @@ const SignInScreen = (props: any) => {
             {t("form_messages.label_password")}
           </FormControl.Label>
           <Input
-            placeholder={t("form_messages.placeholder_password")}
+            placeholder={`${t("form_messages.placeholder_password")}`}
             secureTextEntry={true}
             bgColor="white"
             onChangeText={(text) => {

@@ -9,7 +9,7 @@ const endPoint = "/api/v1/shopping-lists";
 
 export const fetchShoppingLists = async (
   pageParam: number,
-  description: string
+  description?: string
 ) => {
   //   {
   //   pageParam,
@@ -63,7 +63,7 @@ export const getShoppingListById = (id: string, enabled: boolean) =>
     enabled: enabled,
   });
 
-const useQueryShoppingLists = (description: string) =>
+const useQueryShoppingLists = (description?: string) =>
   useInfiniteQuery(
     ["shoppingLists"],
     ({ pageParam = 1 }) => fetchShoppingLists(pageParam, description),

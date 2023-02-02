@@ -6,6 +6,7 @@ import api, { config } from "../services/api";
 const endPoint = "/api/v1/items";
 
 export const fetchItems = async (pageParam: number, params: IParamsItem) => {
+  //@ts-ignore
   config.headers["shoppingListId"] = params.shoppingListId;
 
   const url = `${endPoint}?pageNo=${params.pageNo}&pageSize=${

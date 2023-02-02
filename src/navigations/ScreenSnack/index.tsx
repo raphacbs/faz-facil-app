@@ -9,6 +9,7 @@ import {
   useTranslation,
   useShoppingList,
   useItem,
+  useNavigation,
 } from "../../hooks";
 import SignUp from "../../screens/SignUp";
 import SearchScreen from "../../screens/Home/Search";
@@ -18,11 +19,12 @@ import ItemScreen from "../../screens/Item";
 import { Box, HStack, IconButton, ZStack } from "native-base";
 import Filter from "../../screens/Home/Filter";
 import { Ionicons } from "@expo/vector-icons";
-import SearchItem from "../../screens/Item/SearchItem";
+
 import FilterItem from "../../screens/Item/FilterItem";
 import ScanScreen from "../../screens/Product/Scan";
 import AddItemScreen from "../../screens/Item/AddItem";
 import ProductSearchScreen from "../../screens/Product/Search";
+import ItemSearchScreen from "../../screens/Item/Search";
 const Stack = createNativeStackNavigator();
 
 const ScreenSnack = (props: any) => {
@@ -30,7 +32,7 @@ const ScreenSnack = (props: any) => {
   const { item, loading } = useItem();
   const { isSignedIn } = useAuth();
   const { t } = useTranslation();
-
+  const navigation = useNavigation();
   return (
     <Stack.Navigator>
       {!isSignedIn ? (
@@ -115,7 +117,22 @@ const ScreenSnack = (props: any) => {
               headerRight: () => (
                 <HStack justifyContent={"flex-end"}>
                   <FilterItem />
-                  <SearchItem />
+                  <IconButton
+                    size={"md"}
+                    variant="ghost"
+                    alignSelf={"center"}
+                    _icon={{
+                      as: Ionicons,
+                      name: "search",
+                      color: "white",
+                    }}
+                    onPress={() => {
+                      if (!loading) {
+                        //@ts-ignore
+                        navigation.navigate("ItemSearch");
+                      }
+                    }}
+                  />
                 </HStack>
               ),
               headerStyle: {
@@ -149,6 +166,17 @@ const ScreenSnack = (props: any) => {
           <Stack.Screen
             name="ProductSearch"
             component={ProductSearchScreen}
+            options={{
+              title: `${t("product.title")}`,
+              headerStyle: {
+                backgroundColor: "#0099e6",
+              },
+              headerTintColor: "#fff",
+            }}
+          />
+          <Stack.Screen
+            name="ItemSearch"
+            component={ItemSearchScreen}
             options={{
               title: `${t("product.title")}`,
               headerStyle: {

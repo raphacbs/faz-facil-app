@@ -10,8 +10,6 @@ import { useEffect, useState, useTranslation } from "../../hooks";
 import { formatCurrency } from "../../utils/generic";
 import Container from "../../components/Container";
 import Item from "./Item";
-import BottomSheetItem from "./BottomSheetItem";
-import FABActions from "../Home/FABAction";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { IParamsItem } from "../../@types/item";
 import useQueryItems from "../../providers/useItemQuery";

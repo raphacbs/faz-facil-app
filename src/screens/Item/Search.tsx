@@ -1,27 +1,32 @@
-import { Center, FlatList, HStack, Icon, Input, VStack } from "native-base";
+import { FlatList, HStack, Icon, Input, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  useShoppingList,
-  useState,
-  useTranslation,
-  useRef,
-  useNavigation,
-} from "../../hooks";
+import { useState, useTranslation, useRef, useNavigation } from "../../hooks";
 
 import Container from "../../components/Container";
-import { TouchableOpacity } from "react-native";
-import ShoppingList from "./ShoppingList";
-import React, { useEffect } from "react";
-import LottieView from "lottie-react-native";
-import { IShoppingList } from "../../@types/shoppingList";
-import { fetchShoppingLists } from "../../providers/useShoppingList";
-import ListFooter from "../../components/ListFooter";
-import { useInfiniteQuery, useMutation, useQueryClient } from "react-query";
 
-const SearchScreen = () => {
+import ListFooter from "../../components/ListFooter";
+import { useInfiniteQuery, useQueryClient } from "react-query";
+import { fetchItems } from "../../providers/useItemQuery";
+import { IParamsItem } from "../../@types/item";
+import Item from "./Item";
+import { IShoppingList } from "../../@types/shoppingList";
+const initialParams: IParamsItem = {
+  pageNo: 0,
+  pageSize: 0,
+  sortBy: "product.description",
+  sortDir: "asc",
+  shoppingListId: "",
+  productDesc: "",
+};
+
+const ItemSearchScreen = ({ route }: any) => {
   const queryClient = useQueryClient();
-  const [description, setDescription] = useState("");
+  const [params, setParams] = useState<IParamsItem>({
+    ...initialParams,
+    shoppingListId: route.params.shoppingListId,
+  });
   const [search, setSearch] = useState("");
+  const navigation = useNavigation();
   const {
     data,
     isLoading,
@@ -32,8 +37,8 @@ const SearchScreen = () => {
     isFetching,
     fetchNextPage,
   } = useInfiniteQuery(
-    ["searchShoppingList", search],
-    ({ pageParam = 1 }) => fetchShoppingLists(pageParam, description),
+    ["itemSearch", search],
+    ({ pageParam = 1 }) => fetchItems(pageParam, params),
     {
       getNextPageParam: (lastPage) => {
         if (!lastPage.last) {
@@ -48,9 +53,24 @@ const SearchScreen = () => {
 
   const { t } = useTranslation();
   const inputSearch: any = useRef();
+  const shoppingList: IShoppingList = {
+    id: params.shoppingListId,
+    description: "",
+    supermarketId: "",
+    supermarketName: "",
+    createdAt: "",
+    updatedAt: "",
+    status: "",
+    itemsInfo: {
+      quantityPlannedProduct: 0,
+      quantityAddedProduct: 0,
+      plannedTotalValue: 0,
+      totalValueAdded: 0,
+    },
+  };
 
   const _renderItem = ({ item }: any) => {
-    return <ShoppingList shoppingList={item} />;
+    return <Item item={item} shoppingList={shoppingList} />;
   };
 
   const loadMore = () => {
@@ -68,16 +88,18 @@ const SearchScreen = () => {
       <VStack h={"6%"}>
         <HStack justifyContent={"center"}>
           <Input
-            placeholder={`${t("form_messages.placeholder_search_list")}`}
+            placeholder={`${t("form_messages.placeholder_product_search")}`}
             width="95%"
             borderRadius="4"
             m={1}
             autoFocus
             returnKeyType="search"
             ref={inputSearch}
-            value={description}
+            value={params.productDesc}
             fontSize="14"
-            onChangeText={setDescription}
+            onChangeText={(text) => {
+              setParams({ ...params, productDesc: text });
+            }}
             InputLeftElement={
               <Icon
                 m="2"
@@ -89,7 +111,8 @@ const SearchScreen = () => {
             }
             //@ts-ignore
             InputRightElement={
-              description.length >= 1 ? (
+              //@ts-ignore
+              params.productDesc.length >= 1 ? (
                 <Icon
                   m="2"
                   mr="3"
@@ -98,14 +121,14 @@ const SearchScreen = () => {
                   as={<MaterialIcons name="close" />}
                   onPress={() => {
                     setSearch("");
-                    setDescription("");
+                    setParams({ ...params, productDesc: "" });
                   }}
                 />
               ) : null
             }
             onSubmitEditing={() => {
-              if (description.trim() != "") {
-                setSearch(description);
+              if (params.productDesc?.trim() != "") {
+                setSearch(params.productDesc ? params.productDesc : "");
               } else {
                 inputSearch.current.focus();
               }
@@ -138,4 +161,4 @@ const SearchScreen = () => {
   );
 };
 
-export default SearchScreen;
+export default ItemSearchScreen;

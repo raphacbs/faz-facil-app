@@ -19,6 +19,7 @@ const DrawerNavigator = () => {
         name="Home"
         component={HomeScreenOld}
         initialParams={{ isArchived: false }}
+        //@ts-ignore
         options={({ navigation }) => ({
           title: t("shopping_list.title"),
           headerStyle: {
