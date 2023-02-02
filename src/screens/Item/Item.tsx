@@ -16,7 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { IItem, IItemPut, IItemPutAndPost } from "../../@types/item";
 import { useEffect, useState, useTranslation } from "../../hooks";
 import moment from "moment";
-import { formatCurrency } from "../../utils/generic";
+import { formatCurrency, formatDate } from "../../utils/generic";
 import ActionItem from "./ActionItem";
 import { IShoppingList } from "../../@types/app";
 import { useMutation, useQueryClient } from "react-query";
@@ -225,6 +225,11 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
               </Center>
             </VStack>
           </HStack>
+          <Text marginLeft={5} w={"90%"}>
+            {t("form_messages.label_last_updated_at", {
+              date: formatDate(item.updatedAt, "DD/MM/YYYY HH:mm"),
+            })}
+          </Text>
         </Stack>
       </Pressable>
       <ActionItem

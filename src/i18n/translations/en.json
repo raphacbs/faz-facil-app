@@ -74,7 +74,8 @@
     "label_expected_total": "Expected total",
     "min_value": "The value must have at least {{min}}",
     "label_delete_message": "Do you want to remove item {{name}}?",
-    "label_add_product": "Add"
+    "label_add_product": "Add",
+    "label_last_updated_at": "Last update at {{date}}"
   },
   "sing_in_screen": {
     "welcome": "Welcome to Faz Feira!",
