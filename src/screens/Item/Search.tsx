@@ -19,9 +19,8 @@ const initialParams: IParamsItem = {
   productDesc: "",
 };
 
-const ItemSearchScreen = ({ route }: any) => {
+const ItemSearchScreen = () => {
   const { currentShoppingList } = useApp();
-  const queryClient = useQueryClient();
   const [params, setParams] = useState<IParamsItem>({
     ...initialParams,
     shoppingListId: currentShoppingList ? currentShoppingList.id : "",

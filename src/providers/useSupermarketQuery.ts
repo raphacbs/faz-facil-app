@@ -14,8 +14,16 @@ function compare(a: any, b: any) {
   return 0;
 }
 
-export const fetchSupermarkets = async (params: IParamsSupermarket) => {
-  const url = `${endPoint}?pageNo=1&pageSize=10&sortBy=name&sortDir=asc&latitude=${params.latitude}&longitude=${params.longitude}&radiusM=5000`;
-  const { data } = await api.get(url);
-  return data.items.sort(compare);
+export const fetchSupermarkets = async (
+  pageParam: number,
+  latitude: number,
+  longitude: number,
+  name?: string
+) => {
+  const url = `${endPoint}?pageNo=${pageParam}&pageSize=10&sortBy=name&sortDir=asc&latitude=${latitude}&longitude=${longitude}&radiusM=5000${
+    name ? "&name=" + name : ""
+  }`;
+  let { data } = await api.get(url);
+  data.items = data.items.sort(compare);
+  return data;
 };

@@ -1,39 +1,82 @@
-import { Center, FlatList, HStack, Icon, Input, VStack } from "native-base";
+import { FlatList, HStack, Icon, Input, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   useState,
   useTranslation,
   useRef,
   useNavigation,
-  useSupermarket,
+  useApp,
+  useEffect,
 } from "../../hooks";
 
 import Container from "../../components/Container";
 
-import React, { useEffect } from "react";
-import LottieView from "lottie-react-native";
-import SupermarketItem from "./SupermarketItem";
+import ListFooter from "../../components/ListFooter";
+import { useInfiniteQuery, useQueryClient } from "react-query";
+import { fetchSupermarkets } from "../../providers/useSupermarketQuery";
 import * as Location from "expo-location";
+import SupermarketItem from "./SupermarketItem";
 
-const SearchSupermarketScreen = ({ route }: any) => {
-  const {
-    supermarkets,
-    get,
-    loading,
-    params,
-    error,
-    updateSupermarket,
-    resetSupermarkets,
-  } = useSupermarket();
+const ProductSearchScreen = ({ route }: any) => {
+  const queryClient = useQueryClient();
+  const [description, setDescription] = useState("");
+  const [search, setSearch] = useState("");
+  const navigation = useNavigation();
   const [location, setLocation] = useState<any>(null);
+  const { setSupermarket } = useApp();
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    fetchNextPage,
+  } = useInfiniteQuery(
+    ["supermarketSearch", search],
+    ({ pageParam = 1 }) =>
+      fetchSupermarkets(
+        pageParam,
+        location.coords.latitude,
+        location.coords.longitude,
+        search
+      ),
+    {
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.last) {
+          return lastPage.pageNo + 1;
+        }
+        return false;
+      },
+
+      enabled: location != null,
+    }
+  );
 
   const { t } = useTranslation();
-  const [name, setName] = useState(params.name ? params.name : "");
   const inputSearch: any = useRef();
-  const navigation = useNavigation();
 
-  const search = async () => {
-    await get({ ...params, pageNo: 1 });
+  const _renderItem = ({ item }: any) => {
+    return (
+      <SupermarketItem
+        onPress={() => {
+          setSupermarket(item);
+          navigation.goBack();
+        }}
+        supermarket={item}
+      />
+    );
+  };
+
+  const loadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const tryAgain = () => {
+    setSearch("");
   };
 
   useEffect(() => {
@@ -46,57 +89,24 @@ const SearchSupermarketScreen = ({ route }: any) => {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      await get({
-        ...params,
-        name: undefined,
-        pageNo: 1,
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
     })();
   }, []);
 
-  const _renderItem = ({ item }: any) => {
-    return (
-      <SupermarketItem
-        onPress={() => {
-          updateSupermarket(item);
-          navigation.goBack();
-        }}
-        supermarket={item}
-      />
-    );
-  };
-
-  const _ListEmptyComponent = () => (
-    <Center>
-      <LottieView
-        source={require("../../../assets/shopping_list_empty.json")}
-        style={{
-          width: 300,
-          height: 300,
-          marginTop: "20%",
-        }}
-        loop={false}
-        progress={100}
-      />
-    </Center>
-  );
-
   return (
     <VStack h={"93%"}>
-      <VStack marginBottom={3} h={"7%"}>
+      <VStack h={"6%"}>
         <HStack justifyContent={"center"}>
           <Input
-            placeholder={`${t("form_messages.placeholder_search_supermarket")}`}
+            placeholder={`${t("form_messages.placeholder_product_search")}`}
             width="95%"
             borderRadius="4"
             m={1}
+            autoFocus
             returnKeyType="search"
             ref={inputSearch}
-            value={name}
+            value={description}
             fontSize="14"
-            onChangeText={setName}
+            onChangeText={setDescription}
             InputLeftElement={
               <Icon
                 m="2"
@@ -106,27 +116,25 @@ const SearchSupermarketScreen = ({ route }: any) => {
                 as={<MaterialIcons name="search" />}
               />
             }
+            //@ts-ignore
             InputRightElement={
-              name.length >= 1 ? (
+              description.length >= 1 ? (
                 <Icon
                   m="2"
                   mr="3"
                   size="6"
                   color="gray.400"
                   as={<MaterialIcons name="close" />}
-                  onPress={() => setName("")}
+                  onPress={() => {
+                    setSearch("");
+                    setDescription("");
+                  }}
                 />
               ) : null
             }
             onSubmitEditing={() => {
-              if (name.trim() != "") {
-                get({
-                  ...params,
-                  name: name.trim(),
-                  pageNo: 1,
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                });
+              if (description.trim() != "") {
+                setSearch(description);
               } else {
                 inputSearch.current.focus();
               }
@@ -134,16 +142,29 @@ const SearchSupermarketScreen = ({ route }: any) => {
           />
         </HStack>
       </VStack>
-      <Container loading={loading} error={error} tryAgain={search}>
-        <FlatList
-          refreshing={false}
-          data={supermarkets}
-          renderItem={_renderItem}
-          ListEmptyComponent={_ListEmptyComponent}
-        />
+      <Container loading={isFetching} error={error} tryAgain={tryAgain}>
+        <VStack>
+          {isSuccess && (
+            <FlatList
+              marginTop={5}
+              h={"97%"}
+              refreshing={false}
+              data={data.pages.map((page) => page.items).flat()}
+              renderItem={_renderItem}
+              ListFooterComponent={
+                <ListFooter
+                  isVisible={hasNextPage}
+                  isLoading={isFetchingNextPage}
+                  handleMore={loadMore}
+                  sizeEmpty={0}
+                />
+              }
+            />
+          )}
+        </VStack>
       </Container>
     </VStack>
   );
 };
 
-export default SearchSupermarketScreen;
+export default ProductSearchScreen;

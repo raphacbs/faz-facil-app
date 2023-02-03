@@ -12,7 +12,7 @@ import {
   Badge,
   Spinner,
 } from "native-base";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { IItem, IItemPut, IItemPutAndPost } from "../../@types/item";
 import { useEffect, useState, useTranslation } from "../../hooks";
 import moment from "moment";
@@ -34,7 +34,7 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
 
   const [priceIcon, setPriceIcon] = useState<any>({
     color: "coolGray.800",
-    icon: "equal-box",
+    icon: "minus",
     diference: 0,
   });
 
@@ -66,9 +66,9 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
       const last = prices[prices.length - 1];
       const diference = (item.perUnit - last.price).toFixed(2);
       if (item.perUnit > last.price) {
-        setPriceIcon({ color: "red.600", icon: "arrow-up-box", diference });
+        setPriceIcon({ color: "red.600", icon: "caretup", diference });
       } else if (item.perUnit < last.price) {
-        setPriceIcon({ color: "green.600", icon: "arrow-down-box", diference });
+        setPriceIcon({ color: "green.600", icon: "caretdown", diference });
       } else {
         setPriceIcon({
           color: "coolGray.800",
@@ -193,7 +193,7 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
                   </Text>
                   <Icon
                     marginTop={1}
-                    as={MaterialCommunityIcons}
+                    as={AntDesign}
                     name={priceIcon.icon}
                     color={priceIcon.color}
                   />

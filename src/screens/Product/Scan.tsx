@@ -141,7 +141,7 @@ const ScanScreen = ({ route }: any) => {
             setIsInputCode(true);
           }}
         >
-          Digitar código
+          {t("form_messages.label_enter_code")}
         </Button>
         <Button
           isDisabled={isFetching}
@@ -149,9 +149,11 @@ const ScanScreen = ({ route }: any) => {
           colorScheme="blue"
           onPress={() => {
             setScanned(true);
+            //@ts-ignore
+            navigation.navigate("ProductSearch", { previousScreen: "scan" });
           }}
         >
-          Buscar por nome
+          {t("form_messages.label_search_name")}
         </Button>
       </HStack>
       <AlertDialog

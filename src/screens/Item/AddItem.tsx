@@ -16,6 +16,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { IItemPutAndPost } from "../../@types/item";
 import {
+  useApp,
   useEffect,
   useForm,
   useNavigation,
@@ -34,7 +35,8 @@ import * as yup from "yup";
 
 const AddItemScreen = ({ route }: any) => {
   const navigation = useNavigation();
-  const { code, shoppingListId } = route.params;
+  const { currentShoppingList } = useApp();
+  const { code, previousScreen } = route.params;
   const {
     data: product,
     isLoading,
@@ -51,7 +53,7 @@ const AddItemScreen = ({ route }: any) => {
       code: code,
     },
     shoppingList: {
-      id: shoppingListId,
+      id: currentShoppingList ? currentShoppingList?.id : "",
     },
   });
   const { t } = useTranslation();
@@ -59,7 +61,6 @@ const AddItemScreen = ({ route }: any) => {
   const {
     mutate: addItem,
     isLoading: isLoadingAdd,
-    isSuccess: isSuccessAdd,
     error: errorAdd,
   } = useMutation({
     mutationFn: (changeItem: IItemPutAndPost) => postOrPutItem(changeItem),
@@ -67,8 +68,13 @@ const AddItemScreen = ({ route }: any) => {
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
       await queryClient.invalidateQueries({ queryKey: ["shoppingListById"] });
-      //@ts-ignore
-      navigation.pop(2);
+      if (previousScreen == "scan") {
+        //@ts-ignore
+        navigation.pop(3);
+      } else {
+        //@ts-ignore
+        navigation.pop(2);
+      }
     },
   });
 

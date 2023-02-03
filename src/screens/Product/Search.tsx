@@ -1,6 +1,12 @@
 import { FlatList, HStack, Icon, Input, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState, useTranslation, useRef, useNavigation } from "../../hooks";
+import {
+  useState,
+  useTranslation,
+  useRef,
+  useNavigation,
+  useApp,
+} from "../../hooks";
 
 import Container from "../../components/Container";
 
@@ -14,6 +20,7 @@ const ProductSearchScreen = ({ route }: any) => {
   const [description, setDescription] = useState("");
   const [search, setSearch] = useState("");
   const navigation = useNavigation();
+  const { currentShoppingList } = useApp();
   const {
     data,
     isLoading,
@@ -49,7 +56,7 @@ const ProductSearchScreen = ({ route }: any) => {
           //@ts-ignore
           navigation.navigate("AddItem", {
             code: product.code,
-            shoppingListId: route.params.shoppingListId,
+            previousScreen: route.previousScreen,
           });
         }}
       />

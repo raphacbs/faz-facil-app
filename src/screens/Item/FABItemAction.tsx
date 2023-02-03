@@ -32,7 +32,7 @@ const FABItemActions: React.FC<Props> = ({ shoppingListId }) => {
           onPress: () =>
             //@ts-ignore
             navigation.navigate("ProductSearch", {
-              shoppingListId: shoppingListId,
+              previousScreen: "shoppingList",
             }),
         },
       ]}
