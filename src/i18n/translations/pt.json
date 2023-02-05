@@ -1,0 +1,139 @@
+{
+  "errors": {
+    "screen_not_found": "Tela não encontrada",
+    "something_went_wrong": "Algo deu errado",
+    "user_or_password_error": "Usuário ou senha incorreto",
+    "email_already": "Email já cadastrado",
+    "alert_title": "Ocorreu um erro",
+    "unknown": "Um erro desconhecido ocorreu"
+  },
+  "form_messages": {
+    "label_new_user": "Novo usuário?",
+    "placeholder_email": "Insira seu email",
+    "label_email": "Email",
+    "label_first_name": "Nome",
+    "label_last_name": "Sobrenome",
+    "email_message_validation": "Email inválido",
+    "message_required": "Este campo é obrigatório",
+    "placeholder_password": "Insira sua senha",
+    "placeholder_first_name": "Insira seu nome",
+    "placeholder_last_name": "Insira seu sobrenome",
+    "placeholder_password_confirm": "Confirme sua senha",
+    "label_password": "Senha",
+    "label_password_confirm": "Confirme senha",
+    "message_password_match": "Senhas devem ser iguais",
+    "message_size_min": "Muito curto, no mínimo {{min}} caracteres",
+    "message_no_compost_name": "Apenas o nome sem espaços",
+    "label_quantity_abbr": "QTD",
+    "label_total": "Total",
+    "label_note": "Observação",
+    "last_lists_label": "Última lista",
+    "label_filter_title": "Filtro",
+    "label_filter_apply": "Aplicar",
+    "label_filter_cancel": "Cancelar",
+    "label_filter_order_by": "Ordenar por",
+    "placeholder_select": "Escolher",
+    "select_option_created_at": "Criado em",
+    "select_option_updated_at": "Atualizado em",
+    "select_option_description": "Descrição",
+    "label_sort_direction": "Ordenar direção",
+    "select_option_status": "Status",
+    "label_is_added": "Adicionar",
+    "label_select_option_off": "Desligado",
+    "label_select_option_true": "Verdadeiro",
+    "label_select_option_false": "Falso",
+    "label_price_per_unit": "Preço por unidade",
+    "label_price_history": "Histórico do preço até a data de adição",
+    "label_quantity": "Quantidade",
+    "label_ascending": "Crescente",
+    "label_descending": "Decrescente",
+    "label_try_again": "Tentar novamente",
+    "label_search": "Pesquisar",
+    "placeholder_search_list": "Pesquisar listas",
+    "placeholder_product_search": "Pesquisar produtos por descrição",
+    "placeholder_search_items": "Pesquisar itens",
+    "placeholder_search_supermarket": "Pesquisar supermercados",
+    "load_more_list": "mais...",
+    "label_description": "Descrição",
+    "label_code": "Código",
+    "placeholder_code": "Insira o código do produto",
+    "label_supermarket": "Supermercado",
+    "placeholder_description": "Insira uma descrição para a lista",
+    "placeholder_product_name": "Insira o nome do produto",
+    "placeholder_product_brand": "Insira a marca do produto",
+    "placeholder_product_code": "Insira o código do produto",
+    "placeholder_supermarket": "Selecione um supermercado",
+    "label_create": "Criar",
+    "label_edit": "Editar",
+    "label_status_to_in_progress": "Começar Lista",
+    "label_status_to_ready": "Finalizar compras",
+    "label_status_ready": "Compras finalizada",
+    "label_cancel": "Cancelar",
+    "label_no": "Não",
+    "label_yes": "Sim",
+    "label_delete": "Remover",
+    "label_apply": "Aplicar",
+    "label_qtd_product": "Qtd produtos",
+    "label_expected_total": "Total esperado",
+    "min_value": "O valor deve ser maior que {{min}}",
+    "label_delete_message": "Confirma a remoção do  {{name}}?",
+    "label_auto_generate_product_code": "Gerar automaticamente código do produto?",
+    "label_add_product": "Adicionar",
+    "label_last_updated_at": "Última atualização em {{date}}",
+    "label_search_name": "Pesquisar por nome",
+    "label_enter_code": "Insira o código"
+  },
+  "sing_in_screen": {
+    "welcome": "Bem vindo ao Faz Feira!",
+    "sub_title": "Faça o login para continuar!",
+    "label_sign_in": "Entrar"
+  },
+  "sing_up_screen": {
+    "label_sign_up": "Cadastrar",
+    "screen_title": "Cadastrar seu usuário"
+  },
+  "drawer_navigator": {
+    "screen_title_my_shopping_list": "Listas de compras",
+    "button_logout_label": "Sair",
+    "hello_user": "Olá"
+  },
+  "shopping_list": {
+    "status_in_planning": "PLANEJANDO",
+    "status_in_progress": "EM ANDAMENTO",
+    "status_ready": "FINALIZADA",
+    "title": "Listas de compras",
+    "registe_title": "Criar uma lista de compras",
+    "edit_title": "Editando sua lista de compras"
+  },
+  "search": {
+    "title": "Pesquisar por descrição",
+    "title_supermarket": "Pesquisar por supermercado"
+  },
+  "item_search": {
+    "title": "Pesquisa de item"
+  },
+  "scan": {
+    "title": "Escanear produto",
+    "error_message": "Ocorreu um erro ao pesquisar o produto",
+    "error_label": "Erro",
+    "button_ok_label": "OK",
+    "alert_header_product_not_found": "Produto não encontrado",
+    "button_add_item": "Adicionar Item",
+    "message_not_found_product": "O produto com o código '{{code}}' não foi encontrado, deseja cadastra-lo?"
+  },
+  "item": {
+    "title": "Itens"
+  },
+
+  "add_item": {
+    "title": "Adicionar Item"
+  },
+  "product": {
+    "title": "Pesquisar Produto"
+  },
+  "fab": {
+    "add_shopping_list": "Lista de compras",
+    "search_product_by_description": "Pesquisar Produto",
+    "search_product_bar_code": "Escanear produto"
+  }
+}

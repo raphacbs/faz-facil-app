@@ -16,7 +16,7 @@ import {
   useRef,
   useState,
   useTranslation,
-} from "../../hooks";
+} from "../../../hooks";
 import { Ionicons } from "@expo/vector-icons";
 
 const Filter = () => {

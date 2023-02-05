@@ -72,7 +72,7 @@ const ItemScreen = ({ route }: any) => {
           <Heading size={"xs"} color={"white"}>
             {t("form_messages.label_quantity")}
           </Heading>
-          {isFetching ? (
+          {isFetching || _shoppingList == undefined ? (
             <Spinner />
           ) : (
             <Heading
@@ -85,7 +85,7 @@ const ItemScreen = ({ route }: any) => {
           <Heading size={"xs"} color={"white"}>
             {t("form_messages.label_total")}
           </Heading>
-          {isFetching ? (
+          {isFetching || _shoppingList == undefined ? (
             <Spinner />
           ) : (
             <Heading size={"xs"} color={"white"}>{`${formatCurrency(
@@ -100,7 +100,7 @@ const ItemScreen = ({ route }: any) => {
         <VStack>
           {isSuccess && (
             <FlatList
-              h={"90%"}
+              h={"95%"}
               backgroundColor="blue.50"
               refreshing={false}
               data={data.pages.map((page) => page.items).flat()}

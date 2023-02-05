@@ -2,6 +2,7 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { Dimensions, StyleSheet } from "react-native";
 import {
   useEffect,
+  useIsFocused,
   useNavigation,
   useRef,
   useState,
@@ -23,14 +24,6 @@ import InputCode from "../Item/InputCode";
 
 const ScanScreen = ({ route }: any) => {
   const { t } = useTranslation();
-  useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
-
-    getBarCodeScannerPermissions();
-  }, []);
 
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
@@ -47,6 +40,7 @@ const ScanScreen = ({ route }: any) => {
   const viewMinX = (width - finderWidth) / 2;
   const viewMinY = (height - finderHeight) / 2;
   const queryClient = useQueryClient();
+  const isFocused = useIsFocused();
 
   const {
     data: product,
@@ -64,15 +58,50 @@ const ScanScreen = ({ route }: any) => {
     console.log("beep");
     await sound.playAsync();
   };
+  useEffect(() => {
+    const getBarCodeScannerPermissions = async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    };
+
+    getBarCodeScannerPermissions();
+  }, []);
+
+  useEffect(() => {
+    setEnabled(false);
+    setScanned(false);
+  }, [isFocused]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      // do something - for example: reset states, ask for camera permission
+      setScanned(false);
+      setEnabled(false);
+      setHasPermission(false);
+      (async () => {
+        const { status } = await BarCodeScanner.requestPermissionsAsync();
+        setHasPermission(status === "granted");
+      })();
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     if (isSuccess) {
       setEnabled(false);
       if (product.items.length > 0) {
+        // //@ts-ignore
+        // navigation.navigate("AddItem", {
+        //   code: code,
+        //   previousScreen: "scan",
+        // });
+
         //@ts-ignore
-        navigation.navigate("AddItem", {
+        navigation.replace("AddItem", {
           code: code,
-          shoppingListId: route.params.shoppingListId,
+          previousScreen: "scan",
         });
       } else {
         setOpenAlert(true);
@@ -97,7 +126,8 @@ const ScanScreen = ({ route }: any) => {
       x >= viewMinX &&
       y >= viewMinY &&
       x <= viewMinX + finderWidth / 2 &&
-      y <= viewMinY + finderHeight / 2
+      y <= viewMinY + finderHeight / 2 &&
+      !scanned
     ) {
       setScanned(true);
       await playBeep();
@@ -120,7 +150,7 @@ const ScanScreen = ({ route }: any) => {
       }}
     >
       <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarCodeScanned={handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
         barCodeTypes={["ean13", "ean8", "code128"]}
       >
@@ -150,7 +180,12 @@ const ScanScreen = ({ route }: any) => {
           onPress={() => {
             setScanned(true);
             //@ts-ignore
-            navigation.navigate("ProductSearch", { previousScreen: "scan" });
+            // navigation.navigate("ProductSearch");
+            //@ts-ignore
+            navigation.replace("ProductSearch", {
+              code: code,
+              previousScreen: "scan",
+            });
           }}
         >
           {t("form_messages.label_search_name")}
@@ -177,7 +212,12 @@ const ScanScreen = ({ route }: any) => {
               </Button>
               <Button
                 onPress={() => {
-                  console.log("got to registe product");
+                  setOpenAlert(false);
+                  //@ts-ignore
+                  navigation.replace("AddItem", {
+                    code: null,
+                    previousScreen: "scan",
+                  });
                 }}
               >
                 {t("form_messages.label_apply")}

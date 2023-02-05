@@ -1,10 +1,10 @@
 import { FlatList, Heading, VStack } from "native-base";
 import { useTranslation, useState } from "../../hooks";
-import ShoppingList from "./ShoppingList";
+import ShoppingList from "./components/ShoppingList";
 import React from "react";
 import Container from "../../components/Container";
 import ListFooter from "../../components/ListFooter";
-import FABActions from "./FABAction";
+import FABActions from "./components/FABAction";
 import useQueryShoppingLists from "../../providers/useShoppingList";
 
 const HomeScreen = () => {

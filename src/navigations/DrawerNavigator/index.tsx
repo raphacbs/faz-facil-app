@@ -2,7 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreenOld from "../../screens/Home";
 import { useTranslation } from "../../hooks";
-import Filter from "../../screens/Home/Filter";
+import Filter from "../../screens/Home/components/Filter";
 import { HStack, IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import SidebarMenu from "../../components/SideBarMenu";

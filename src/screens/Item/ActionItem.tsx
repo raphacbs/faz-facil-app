@@ -17,7 +17,7 @@ import {
 } from "native-base";
 import { useEffect, useRef, useState, useTranslation } from "../../hooks";
 import { Dimensions, Switch } from "react-native";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { compareDate, formatCurrency, formatDate } from "../../utils/generic";
 import LineChart from "react-native-chart-kit/dist/line-chart";
 import { IItem, IItemPutAndPost } from "../../@types/item";
@@ -70,28 +70,24 @@ const ActionItem: React.FC<Props> = ({
   });
   const [priceIcon, setPriceIcon] = useState<any>({
     color: "coolGray.800",
-    icon: "equal-box",
+    icon: "minus",
     diference: 0,
   });
   const actionItemRef = useRef(null);
 
-  function compare(a: any, b: any) {
-    if (
-      moment(a.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000").isSameOrAfter(
-        moment(b.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000")
-      )
-    ) {
-      return 1;
-    } else {
-      return -1;
-    }
-  }
-
   const getHistData = () => {
     if (item) {
       let prices = item?.product.priceHistories;
+
       if (prices.length > 0) {
-        prices = prices.sort(compareDate);
+        prices = prices
+          .sort(compareDate)
+          .filter((x: any) =>
+            moment(x.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000").isBefore(
+              moment(item.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000")
+            )
+          );
+
         const _labels = prices.map((x: any) =>
           formatDate(x.updatedAt, "DD/MM/YY")
         );
@@ -114,20 +110,18 @@ const ActionItem: React.FC<Props> = ({
   const verifyIfPriceUp = () => {
     let prices = item.product.priceHistories;
 
-    prices = prices.sort(compare);
-
     if (prices.length > 0) {
-      const last = prices[prices.length - 1];
+      const last = prices[0];
       setLastHist(last);
       const diference = (item.perUnit - last.price).toFixed(2);
       if (item.perUnit > last.price) {
-        setPriceIcon({ color: "red.600", icon: "arrow-up-box", diference });
+        setPriceIcon({ color: "red.600", icon: "caretup", diference });
       } else if (item.perUnit < last.price) {
-        setPriceIcon({ color: "green.600", icon: "arrow-down-box", diference });
+        setPriceIcon({ color: "green.600", icon: "caretdown", diference });
       } else {
         setPriceIcon({
           color: "coolGray.800",
-          icon: "equal-box",
+          icon: "minus",
           diference: 0,
         });
       }
@@ -252,7 +246,7 @@ const ActionItem: React.FC<Props> = ({
                     <HStack space={2}>
                       <Icon
                         marginTop={1}
-                        as={MaterialCommunityIcons}
+                        as={AntDesign}
                         name={priceIcon.icon}
                         color={priceIcon.color}
                       />

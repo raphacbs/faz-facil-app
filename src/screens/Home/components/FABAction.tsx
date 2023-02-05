@@ -1,5 +1,5 @@
 import { FAB } from "react-native-paper";
-import { useNavigation, useState, useTranslation } from "../../hooks";
+import { useNavigation, useState, useTranslation } from "../../../hooks";
 
 const FABActions = () => {
   const [openFab, setOpenFab] = useState<boolean>(false);
@@ -25,6 +25,7 @@ const FABActions = () => {
         {
           icon: "shopping",
           label: `${t("fab.add_shopping_list")}`,
+          //@ts-ignore
           onPress: () => navigation.navigate("ShoppingListRegister"),
         },
       ]}

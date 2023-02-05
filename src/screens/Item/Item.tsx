@@ -12,10 +12,9 @@ import {
   Badge,
   Spinner,
 } from "native-base";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { IItem, IItemPut, IItemPutAndPost } from "../../@types/item";
 import { useEffect, useState, useTranslation } from "../../hooks";
-import moment from "moment";
 import { formatCurrency, formatDate } from "../../utils/generic";
 import ActionItem from "./ActionItem";
 import { IShoppingList } from "../../@types/app";
@@ -45,23 +44,8 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
   const [isOpenAction, setOpenAction] = useState<boolean>(false);
   const { t } = useTranslation();
 
-  function compare(a: any, b: any) {
-    if (
-      moment(a.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000").isSameOrAfter(
-        moment(b.updatedAt, "YYYY-MM-DD-THH:mm:ss.00000")
-      )
-    ) {
-      return 1;
-    } else {
-      return -1;
-    }
-  }
-
   const verifyIfPriceUp = () => {
     let prices = item.product.priceHistories;
-
-    prices = prices.sort(compare);
-
     if (prices.length > 0) {
       const last = prices[prices.length - 1];
       const diference = (item.perUnit - last.price).toFixed(2);
@@ -72,7 +56,7 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
       } else {
         setPriceIcon({
           color: "coolGray.800",
-          icon: "equal-box",
+          icon: "minus",
           diference: 0,
         });
       }

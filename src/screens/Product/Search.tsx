@@ -56,7 +56,7 @@ const ProductSearchScreen = ({ route }: any) => {
           //@ts-ignore
           navigation.navigate("AddItem", {
             code: product.code,
-            previousScreen: route.previousScreen,
+            previousScreen: "productSearch",
           });
         }}
       />

@@ -8,20 +8,6 @@ export const fetchShoppingLists = async (
   pageParam: number,
   description?: string
 ) => {
-  //   {
-  //   pageParam,
-  //   pageSize,
-  //   sortBy,
-  //   sortDir,
-  //   status,
-  //   description,
-  //   supermarketId,
-  // }: IParamsShoppingList) => {
-  // const url = `${endPoint}?pageNo=${pageParam}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}${
-  //   status ? "&status=" + status : ""
-  // }${description ? "&description=" + description : ""}${
-  //   supermarketId ? "&supermarketId=" + supermarketId : ""
-  // }`;
   const url = `${endPoint}?pageNo=${pageParam}&pageSize=10&sortBy=updatedAt&sortDir=desc${
     description ? "&description=" + description : ""
   }`;

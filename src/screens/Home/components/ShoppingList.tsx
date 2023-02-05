@@ -12,19 +12,24 @@ import {
   Actionsheet,
   Badge,
 } from "native-base";
-import { IShoppingList } from "../../@types/app";
-import { useApp, useNavigation, useState, useTranslation } from "../../hooks";
+import { IShoppingList } from "../../../@types/app";
+import {
+  useApp,
+  useNavigation,
+  useState,
+  useTranslation,
+} from "../../../hooks";
 import {
   convertStatusShoppingList,
   convertStatusShoppingListColorSchema,
-} from "../../utils/converter";
+} from "../../../utils/converter";
 import {
   FontAwesome,
   MaterialIcons,
   Zocial,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { calculateProgress, formatCurrency } from "../../utils/generic";
+import { calculateProgress, formatCurrency } from "../../../utils/generic";
 import moment from "moment";
 
 type Props = {
@@ -113,7 +118,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
                   }}
                 />
               </HStack>
-              <HStack>
+              {/* <HStack>
                 <Badge
                   variant={"solid"}
                   colorScheme={convertStatusShoppingListColorSchema(
@@ -122,7 +127,7 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
                 >
                   {t(convertStatusShoppingList(shoppingList.status))}
                 </Badge>
-              </HStack>
+              </HStack> */}
               <HStack space={2} justifyContent="space-between">
                 <HStack>
                   <Icon
@@ -189,14 +194,14 @@ const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
       <Center>
         <Actionsheet isOpen={open} onClose={onClose}>
           <Actionsheet.Content>
-            <Actionsheet.Item
+            {/* <Actionsheet.Item
               startIcon={
                 <Icon as={MaterialIcons} size="6" name={getDesIcon()} />
               }
               onPress={() => {}}
             >
               {messageStatus()}
-            </Actionsheet.Item>
+            </Actionsheet.Item> */}
             <Actionsheet.Item
               startIcon={
                 <Icon

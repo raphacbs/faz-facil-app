@@ -9,7 +9,7 @@ export const fetchItems = async (pageParam: number, params: IParamsItem) => {
   //@ts-ignore
   config.headers["shoppingListId"] = params.shoppingListId;
 
-  const url = `${endPoint}?pageNo=${params.pageNo}&pageSize=${
+  const url = `${endPoint}?pageNo=${pageParam}&pageSize=${
     params.pageSize
   }&sortBy=${params.sortBy}&sortDir=${params.sortDir}${
     params.isAdded != undefined ? "&isAdded=" + params.isAdded : ""

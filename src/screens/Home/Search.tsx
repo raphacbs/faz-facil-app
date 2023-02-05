@@ -4,7 +4,7 @@ import { useState, useTranslation, useRef } from "../../hooks";
 
 import Container from "../../components/Container";
 import { TouchableOpacity } from "react-native";
-import ShoppingList from "./ShoppingList";
+import ShoppingList from "./components/ShoppingList";
 import React, { useEffect } from "react";
 import LottieView from "lottie-react-native";
 import { IShoppingList } from "../../@types/app";

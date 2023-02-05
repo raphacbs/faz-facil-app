@@ -21,7 +21,7 @@ const ProductHistory: React.FC<Props> = ({ product }) => {
   const [hist, setHist] = useState(initialHist);
   const [priceIcon, setPriceIcon] = useState<any>({
     color: "coolGray.800",
-    icon: "equal-box",
+    icon: "minus",
     diference: 0,
   });
   const [lastHist, setLastHist] = useState({

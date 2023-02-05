@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from "react-query";
 import { IItemPost, IItemPutAndPost, IParamsItem } from "../@types/item";
-import { IProduct } from "../@types/product";
+import { IProduct, IProductPost } from "../@types/product";
 
 import api, { config } from "../services/api";
 
@@ -25,16 +25,12 @@ export const fetchProducts = async (pageParam: number, description: string) => {
   return data;
 };
 
-// export const postOrPutItem = async (item: IItemPutAndPost) => {
-//   const url = `${endPoint}`;
-//   if (item.id) {
-//     const { data } = await api.put(url, item);
-//     return data;
-//   } else {
-//     const { data } = await api.post(url, item);
-//     return data;
-//   }
-// };
+export const postProduct = async (product: IProductPost) => {
+  const url = `${endPoint}`;
+
+  const { data } = await api.post(url, product);
+  return data;
+};
 
 // export const putShoppingList = async (shoppingList: IShoppingListPost) => {
 //   const url = `${endPoint}`;
