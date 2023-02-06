@@ -6,6 +6,12 @@ import Container from "../../components/Container";
 import ListFooter from "../../components/ListFooter";
 import FABActions from "./components/FABAction";
 import useQueryShoppingLists from "../../providers/useShoppingList";
+import {
+  AppOpenAd,
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 const HomeScreen = () => {
   const [params, setParams] = useState({
@@ -36,30 +42,44 @@ const HomeScreen = () => {
       fetchNextPage();
     }
   };
+  const adUnitId = __DEV__
+    ? TestIds.APP_OPEN
+    : "ca-app-pub-7365840623551942/8728556154";
 
   return (
-    <VStack h={"100%"}>
-      <Container loading={isLoading} error={error} tryAgain={fetchNextPage}>
-        <VStack>
-          {isSuccess && (
-            <FlatList
-              h={"100%"}
-              refreshing={false}
-              data={data.pages.map((page) => page.items).flat()}
-              renderItem={_renderItem}
-              ListFooterComponent={
-                <ListFooter
-                  isVisible={hasNextPage}
-                  isLoading={isFetchingNextPage}
-                  handleMore={loadMore}
-                  sizeEmpty={70}
-                />
-              }
-            />
-          )}
-        </VStack>
-      </Container>
-      <FABActions />
+    <VStack flex={1}>
+      <VStack flex={8}>
+        <Container loading={isLoading} error={error} tryAgain={fetchNextPage}>
+          <VStack>
+            {isSuccess && (
+              <FlatList
+                refreshing={false}
+                data={data.pages.map((page) => page.items).flat()}
+                renderItem={_renderItem}
+                ListFooterComponent={
+                  <ListFooter
+                    isVisible={hasNextPage}
+                    isLoading={isFetchingNextPage}
+                    handleMore={loadMore}
+                    sizeEmpty={70}
+                  />
+                }
+              />
+            )}
+            <FABActions />
+          </VStack>
+        </Container>
+      </VStack>
+      <VStack flex={1}>
+        <BannerAd
+          unitId={adUnitId}
+          onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+          size={BannerAdSize.FULL_BANNER}
+        />
+      </VStack>
     </VStack>
   );
 };

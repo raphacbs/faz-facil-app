@@ -16,6 +16,12 @@ import useQueryItems from "../../providers/useItemQuery";
 import ListFooter from "../../components/ListFooter";
 import { getShoppingListById } from "../../providers/useShoppingList";
 import FABItemActions from "./FABItemAction";
+import {
+  AppOpenAd,
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 const initialParams = {
   pageNo: 1,
@@ -60,65 +66,78 @@ const ItemScreen = ({ route }: any) => {
       fetchNextPage();
     }
   };
+  const adUnitId = __DEV__
+    ? TestIds.APP_OPEN
+    : "ca-app-pub-7365840623551942/7844280518";
 
   return (
-    <VStack h={"100%"}>
-      <HStack
-        justifyContent={"space-between"}
-        bgColor={"theme.principal"}
-        h={"5%"}
-      >
-        <Center marginRight={2} marginLeft={2} justifyContent={"center"}>
-          <Heading size={"xs"} color={"white"}>
-            {t("form_messages.label_quantity")}
-          </Heading>
-          {isFetching || _shoppingList == undefined ? (
-            <Spinner />
-          ) : (
-            <Heading
-              size={"xs"}
-              color={"white"}
-            >{`${_shoppingList?.itemsInfo.quantityAddedProduct}/${_shoppingList?.itemsInfo.quantityPlannedProduct}`}</Heading>
-          )}
-        </Center>
-        <Center marginRight={2} marginLeft={2} justifyContent={"center"}>
-          <Heading size={"xs"} color={"white"}>
-            {t("form_messages.label_total")}
-          </Heading>
-          {isFetching || _shoppingList == undefined ? (
-            <Spinner />
-          ) : (
-            <Heading size={"xs"} color={"white"}>{`${formatCurrency(
-              _shoppingList?.itemsInfo.totalValueAdded
-            )}/${formatCurrency(
-              _shoppingList?.itemsInfo.plannedTotalValue
-            )}`}</Heading>
-          )}
-        </Center>
-      </HStack>
-      <Container loading={isLoading} error={error} tryAgain={() => {}}>
-        <VStack>
-          {isSuccess && (
-            <FlatList
-              h={"95%"}
-              backgroundColor="blue.50"
-              refreshing={false}
-              data={data.pages.map((page) => page.items).flat()}
-              renderItem={_renderItem}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                <ListFooter
-                  isVisible={hasNextPage}
-                  isLoading={isFetchingNextPage}
-                  handleMore={loadMore}
-                  sizeEmpty={70}
-                />
-              }
-            />
-          )}
-        </VStack>
-      </Container>
-      <FABItemActions shoppingListId={shoppingList.id} />
+    <VStack flex={1}>
+      <VStack flex={4}>
+        <HStack
+          justifyContent={"space-between"}
+          bgColor={"theme.principal"}
+          h={"10%"}
+        >
+          <Center marginRight={2} marginLeft={2} justifyContent={"center"}>
+            <Heading size={"xs"} color={"white"}>
+              {t("form_messages.label_quantity")}
+            </Heading>
+            {isFetching || _shoppingList == undefined ? (
+              <Spinner />
+            ) : (
+              <Heading
+                size={"xs"}
+                color={"white"}
+              >{`${_shoppingList?.itemsInfo.quantityAddedProduct}/${_shoppingList?.itemsInfo.quantityPlannedProduct}`}</Heading>
+            )}
+          </Center>
+          <Center marginRight={2} marginLeft={2} justifyContent={"center"}>
+            <Heading size={"xs"} color={"white"}>
+              {t("form_messages.label_total")}
+            </Heading>
+            {isFetching || _shoppingList == undefined ? (
+              <Spinner />
+            ) : (
+              <Heading size={"xs"} color={"white"}>{`${formatCurrency(
+                _shoppingList?.itemsInfo.totalValueAdded
+              )}/${formatCurrency(
+                _shoppingList?.itemsInfo.plannedTotalValue
+              )}`}</Heading>
+            )}
+          </Center>
+        </HStack>
+        <Container loading={isLoading} error={error} tryAgain={() => {}}>
+          <VStack>
+            {isSuccess && (
+              <FlatList
+                refreshing={false}
+                data={data.pages.map((page) => page.items).flat()}
+                renderItem={_renderItem}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={
+                  <ListFooter
+                    isVisible={hasNextPage}
+                    isLoading={isFetchingNextPage}
+                    handleMore={loadMore}
+                    sizeEmpty={70}
+                  />
+                }
+              />
+            )}
+            <FABItemActions shoppingListId={shoppingList.id} />
+          </VStack>
+        </Container>
+      </VStack>
+      <VStack flex={1}>
+        <BannerAd
+          unitId={adUnitId}
+          onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+          size={BannerAdSize.FULL_BANNER}
+        />
+      </VStack>
     </VStack>
   );
 };

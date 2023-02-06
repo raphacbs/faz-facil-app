@@ -13,10 +13,11 @@ import AppProvider from "./src/providers/AppProvider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AuthProvider } from "./src/providers/AuthProvider";
-
+import "expo-dev-client";
 export default function App() {
   i18n;
   const queryClient = new QueryClient();
+
   return (
     <Provider store={store}>
       <SafeAreaProvider>

@@ -16,7 +16,7 @@ const Container = (props: Props) => {
   const { t } = useTranslation();
 
   return (
-    <Stack w={"100%"} h={"100%"}>
+    <Stack>
       {loading ? (
         <Center h={"80%"}>
           <VStack>
