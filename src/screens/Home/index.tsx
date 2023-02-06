@@ -48,9 +48,9 @@ const HomeScreen = () => {
 
   return (
     <VStack flex={1}>
-      <VStack flex={8}>
+      <VStack flex={1}>
         <Container loading={isLoading} error={error} tryAgain={fetchNextPage}>
-          <VStack>
+          <VStack h={"95%"}>
             {isSuccess && (
               <FlatList
                 refreshing={false}
@@ -70,7 +70,7 @@ const HomeScreen = () => {
           </VStack>
         </Container>
       </VStack>
-      <VStack flex={1}>
+      <VStack flex={0.01}>
         <BannerAd
           unitId={adUnitId}
           onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}

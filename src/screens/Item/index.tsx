@@ -72,7 +72,7 @@ const ItemScreen = ({ route }: any) => {
 
   return (
     <VStack flex={1}>
-      <VStack flex={4}>
+      <VStack flex={1}>
         <HStack
           justifyContent={"space-between"}
           bgColor={"theme.principal"}
@@ -107,7 +107,7 @@ const ItemScreen = ({ route }: any) => {
           </Center>
         </HStack>
         <Container loading={isLoading} error={error} tryAgain={() => {}}>
-          <VStack>
+          <VStack h={"95%"}>
             {isSuccess && (
               <FlatList
                 refreshing={false}
@@ -128,7 +128,7 @@ const ItemScreen = ({ route }: any) => {
           </VStack>
         </Container>
       </VStack>
-      <VStack flex={1}>
+      <VStack flex={0.1}>
         <BannerAd
           unitId={adUnitId}
           onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
