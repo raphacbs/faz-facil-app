@@ -77,7 +77,7 @@ const ShoppingListForm = ({ route }: any) => {
       id: shoppingList ? shoppingList.id : undefined,
       description: data.description,
       //@ts-ignore
-      supermarketId: supermarket?.id,
+      supermarketId: currentSupermarket?.id,
       status: shoppingList ? shoppingList.status : "IN_PLANNING",
     };
     createShoppingList(toSave);

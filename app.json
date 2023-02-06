@@ -2,7 +2,7 @@
   "expo": {
     "name": "Faz Feira",
     "slug": "faz-feira",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.raphacbs.fazfeira"
+      "package": "com.raphacbs.fazfeira",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
