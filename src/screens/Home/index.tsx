@@ -43,14 +43,14 @@ const HomeScreen = () => {
     }
   };
   const adUnitId = __DEV__
-    ? TestIds.APP_OPEN
+    ? TestIds.BANNER
     : "ca-app-pub-7365840623551942/8728556154";
 
   return (
     <VStack flex={1}>
       <VStack flex={1}>
         <Container loading={isLoading} error={error} tryAgain={fetchNextPage}>
-          <VStack h={"95%"}>
+          <VStack h={"100%"}>
             {isSuccess && (
               <FlatList
                 refreshing={false}
@@ -70,14 +70,14 @@ const HomeScreen = () => {
           </VStack>
         </Container>
       </VStack>
-      <VStack flex={0.01}>
+      <VStack flex={0.1}>
         <BannerAd
           unitId={adUnitId}
           onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
-          size={BannerAdSize.FULL_BANNER}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         />
       </VStack>
     </VStack>

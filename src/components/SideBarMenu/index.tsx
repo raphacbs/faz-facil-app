@@ -1,11 +1,12 @@
 import React from "react";
 import { SafeAreaView } from "react-native";
-import { Avatar, Box, Button, Center, Heading } from "native-base";
+import { Avatar, Box, Button, Center, Heading, Text } from "native-base";
 import { useTranslation, useNavigation, useAuth } from "../../hooks";
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+import Constants from "expo-constants";
 
 const SidebarMenu = (props: any) => {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ const SidebarMenu = (props: any) => {
         >
           {t("drawer_navigator.button_logout_label")}
         </Button>
+        <Text>{`${t("version_label")}:${Constants.expoConfig?.version}`}</Text>
       </Center>
     </SafeAreaView>
   );

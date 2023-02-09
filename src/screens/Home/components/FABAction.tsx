@@ -18,11 +18,6 @@ const FABActions = () => {
       }}
       actions={[
         {
-          icon: "barcode-scan",
-          label: `${t("fab.search_product_bar_code")}`,
-          onPress: () => console.log("Go screen add product"),
-        },
-        {
           icon: "shopping",
           label: `${t("fab.add_shopping_list")}`,
           //@ts-ignore

@@ -29,7 +29,6 @@ const ItemSearchScreen = () => {
 
   const {
     data,
-    isLoading,
     isSuccess,
     error,
     hasNextPage,

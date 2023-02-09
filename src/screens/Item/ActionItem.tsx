@@ -137,6 +137,7 @@ const ActionItem: React.FC<Props> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
+      await queryClient.invalidateQueries({ queryKey: ["itemSearch"] });
       await queryClient.invalidateQueries({ queryKey: ["shoppingListById"] });
     },
   });
@@ -151,6 +152,7 @@ const ActionItem: React.FC<Props> = ({
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["searchShoppingList"] });
       await queryClient.invalidateQueries({ queryKey: ["shoppingListById"] });
+      await queryClient.invalidateQueries({ queryKey: ["itemSearch"] });
       setOpenDelete(false);
     },
   });

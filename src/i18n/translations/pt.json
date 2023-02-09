@@ -1,4 +1,5 @@
 {
+  "version_label": "Versão",
   "errors": {
     "screen_not_found": "Tela não encontrada",
     "something_went_wrong": "Algo deu errado",

@@ -16,6 +16,7 @@ import {
   Spinner,
   HStack,
   Actionsheet,
+  Heading,
 } from "native-base";
 import BarcodeMask from "react-native-barcode-mask";
 import { getProductByCode } from "../../providers/useProduct";
@@ -92,12 +93,6 @@ const ScanScreen = ({ route }: any) => {
     if (isSuccess) {
       setEnabled(false);
       if (product.items.length > 0) {
-        // //@ts-ignore
-        // navigation.navigate("AddItem", {
-        //   code: code,
-        //   previousScreen: "scan",
-        // });
-
         //@ts-ignore
         navigation.replace("AddItem", {
           code: code,
@@ -203,7 +198,9 @@ const ScanScreen = ({ route }: any) => {
             {t("scan.alert_header_product_not_found")}
           </AlertDialog.Header>
           <AlertDialog.Body>
-            {t("scan.message_not_found_product", { code: code })}
+            <Heading size={"sm"}>
+              {t("scan.message_not_found_product", { code: code })}
+            </Heading>
           </AlertDialog.Body>
           <AlertDialog.Footer>
             <Button.Group space={2}>
@@ -216,6 +213,7 @@ const ScanScreen = ({ route }: any) => {
                   //@ts-ignore
                   navigation.replace("AddItem", {
                     code: null,
+                    searchCode: code,
                     previousScreen: "scan",
                   });
                 }}

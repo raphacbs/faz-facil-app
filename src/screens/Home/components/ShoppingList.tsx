@@ -31,12 +31,19 @@ import {
 } from "@expo/vector-icons";
 import { calculateProgress, formatCurrency } from "../../../utils/generic";
 import moment from "moment";
+import i18n from "../../../i18n/index";
+import "moment/locale/pt-br";
 
 type Props = {
   shoppingList: IShoppingList;
 };
 
 const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
+  console.log(moment.locales());
+  const language = i18n.language;
+  moment.locale(language.toLowerCase());
+  console.log(moment.locale());
+
   const { t } = useTranslation();
   const { setShoppingList } = useApp();
   const [open, setOpen] = useState(false);

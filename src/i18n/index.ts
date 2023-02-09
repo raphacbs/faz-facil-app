@@ -6,6 +6,7 @@ import languageDetector from "./languageDetector";
 // Add more resources here
 const RESOURCES = {
   en: require("./translations/en.json"),
+  pt: require("./translations/pt.json"),
 };
 
 const resources = Object.fromEntries(

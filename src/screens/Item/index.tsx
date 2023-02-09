@@ -17,7 +17,6 @@ import ListFooter from "../../components/ListFooter";
 import { getShoppingListById } from "../../providers/useShoppingList";
 import FABItemActions from "./FABItemAction";
 import {
-  AppOpenAd,
   BannerAd,
   BannerAdSize,
   TestIds,
@@ -67,8 +66,8 @@ const ItemScreen = ({ route }: any) => {
     }
   };
   const adUnitId = __DEV__
-    ? TestIds.APP_OPEN
-    : "ca-app-pub-7365840623551942/7844280518";
+    ? TestIds.BANNER
+    : "ca-app-pub-7365840623551942/8728556154";
 
   return (
     <VStack flex={1}>
@@ -131,11 +130,11 @@ const ItemScreen = ({ route }: any) => {
       <VStack flex={0.1}>
         <BannerAd
           unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
           onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
-          size={BannerAdSize.FULL_BANNER}
         />
       </VStack>
     </VStack>
