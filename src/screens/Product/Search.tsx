@@ -57,6 +57,7 @@ const ProductSearchScreen = ({ route }: any) => {
           navigation.navigate("AddItem", {
             code: product.code,
             previousScreen: "productSearch",
+            searchCode: product.code,
           });
         }}
       />

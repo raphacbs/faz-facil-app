@@ -390,6 +390,11 @@ const AddItemScreen = ({ route }: any) => {
                   w="100%"
                   maxW="300px"
                 >
+                  <FormControl.Label _text={{ color: "black" }}>
+                    {item.perUnit > 0
+                      ? t("form_messages.label_confirm_up_date_price")
+                      : t("form_messages.label_enter_price")}
+                  </FormControl.Label>
                   <MaskInput
                     autoFocus={code != null}
                     value={formatCurrency(item.perUnit)}

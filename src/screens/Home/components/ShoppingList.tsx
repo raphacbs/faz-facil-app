@@ -10,7 +10,6 @@ import {
   Icon,
   Progress,
   Actionsheet,
-  Badge,
 } from "native-base";
 import { IShoppingList } from "../../../@types/app";
 import {
@@ -19,10 +18,6 @@ import {
   useState,
   useTranslation,
 } from "../../../hooks";
-import {
-  convertStatusShoppingList,
-  convertStatusShoppingListColorSchema,
-} from "../../../utils/converter";
 import {
   FontAwesome,
   MaterialIcons,
@@ -39,10 +34,8 @@ type Props = {
 };
 
 const ShoppingList: React.FC<Props> = ({ shoppingList }) => {
-  console.log(moment.locales());
   const language = i18n.language;
   moment.locale(language.toLowerCase());
-  console.log(moment.locale());
 
   const { t } = useTranslation();
   const { setShoppingList } = useApp();

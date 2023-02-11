@@ -82,7 +82,11 @@
     "label_add_product": "Add",
     "label_last_updated_at": "Last update at {{date}}",
     "label_search_name": "Search by name",
-    "label_enter_code": "Enter code"
+    "label_enter_code": "Enter code",
+    "label_no_access_camera": "No access to camera",
+    "label_requesting_camera_permission": "Requesting for camera permission",
+    "label_confirm_up_date_price": "Confirm that the price is up to date",
+    "label_enter_price": "Enter product price"
   },
   "sing_in_screen": {
     "welcome": "Welcome to Faz Feira!",

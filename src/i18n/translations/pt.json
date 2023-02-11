@@ -82,7 +82,11 @@
     "label_add_product": "Adicionar",
     "label_last_updated_at": "Última atualização em {{date}}",
     "label_search_name": "Pesquisar por nome",
-    "label_enter_code": "Insira o código"
+    "label_enter_code": "Insira o código",
+    "label_no_access_camera": "Sem acesso a camera",
+    "label_requesting_camera_permission": "Solicitando acesso a camera",
+    "label_confirm_up_date_price": "Confirme se o preço está atualizado",
+    "label_enter_price": "Insira o preço do produto"
   },
   "sing_in_screen": {
     "welcome": "Bem vindo ao Faz Feira!",

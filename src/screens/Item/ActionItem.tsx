@@ -28,6 +28,11 @@ import { useMutation, useQueryClient } from "react-query";
 import { deleteItem, postOrPutItem } from "../../providers/useItemQuery";
 import moment from "moment";
 import AlertYesOrNo from "../../components/Alert";
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 type Props = {
   shoppingList: IShoppingList;
@@ -51,6 +56,9 @@ const ActionItem: React.FC<Props> = ({
   isOpen,
   onClose,
 }) => {
+  const adUnitId = __DEV__
+    ? TestIds.BANNER
+    : "ca-app-pub-7365840623551942/6011699377";
   const { t } = useTranslation();
   const [priceModal, setPriceModal] = useState(false);
   const [quantityModal, setQuantityModal] = useState(false);
@@ -375,6 +383,18 @@ const ActionItem: React.FC<Props> = ({
               >
                 {t("form_messages.label_delete")}
               </Button>
+              <VStack alignSelf={"flex-end"}>
+                <BannerAd
+                  unitId={adUnitId}
+                  onAdFailedToLoad={(error) =>
+                    console.log("AdFailed to load", error)
+                  }
+                  requestOptions={{
+                    requestNonPersonalizedAdsOnly: true,
+                  }}
+                  size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                />
+              </VStack>
               <ModalInput
                 isOpen={quantityModal}
                 isTextArea={false}

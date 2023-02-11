@@ -17,6 +17,7 @@ import {
   HStack,
   Actionsheet,
   Heading,
+  Text,
 } from "native-base";
 import BarcodeMask from "react-native-barcode-mask";
 import { getProductByCode } from "../../providers/useProduct";
@@ -135,6 +136,21 @@ const ScanScreen = ({ route }: any) => {
     setScanned(false);
   };
 
+  if (hasPermission === null) {
+    return (
+      <Heading justifyContent={"center"}>
+        {t("form_messages.label_requesting_camera_permission")}
+      </Heading>
+    );
+  }
+  if (hasPermission === false) {
+    return (
+      <Heading justifyContent={"center"}>
+        {t("form_messages.label_no_access_camera")}
+      </Heading>
+    );
+  }
+
   return (
     <VStack
       style={{
@@ -145,7 +161,7 @@ const ScanScreen = ({ route }: any) => {
       }}
     >
       <BarCodeScanner
-        onBarCodeScanned={handleBarCodeScanned}
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
         barCodeTypes={["ean13", "ean8", "code128"]}
       >
