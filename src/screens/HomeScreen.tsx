@@ -43,6 +43,10 @@ const HomeScreen = () => {
   const handleSubmit = (values: Record<string, string>) => {
     console.log("Form submitted with values:", values);
     setSearchValue(values.search);
+    dispatch({
+      type: "SET_SEARCH_TERM",
+      payload: values.search,
+    });
     //@ts-ignore
     navigation.navigate("ProductList", { searchTerm: values.search });
   };
@@ -52,7 +56,8 @@ const HomeScreen = () => {
   // }, [data]);
 
   function handleBarcodePress(): void {
-    console.log("Function not implemented.");
+    //@ts-ignore
+    navigation.navigate("BarCodeScannerScreen");
   }
 
   return (

@@ -13,9 +13,14 @@ import { Product } from "../types/Product";
 interface Props {
   products: Product[];
   onPressItem: (item: Product) => void;
+  handleNextPage: () => void;
 }
 
-const ProductList: React.FC<Props> = ({ products, onPressItem }) => {
+const ProductList: React.FC<Props> = ({
+  products,
+  onPressItem,
+  handleNextPage,
+}) => {
   const renderItem = ({ item }: { item: Product }) => {
     // Busca o último preço do produto ordenado por updateAt de forma decrescente
     const latestPrice = item.priceHistories?.sort((a, b) =>
@@ -50,18 +55,20 @@ const ProductList: React.FC<Props> = ({ products, onPressItem }) => {
           </Text>
         </View>
         {latestPrice ? (
-          <View style={styles.price}>
-            <Text>Último preço</Text>
-            <Text
-              style={styles.priceTitle}
-            >{`${latestPrice.price.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}`}</Text>
+          <>
+            <View style={styles.price}>
+              <Text>Último preço</Text>
+              <Text
+                style={styles.priceTitle}
+              >{`${latestPrice.price.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}`}</Text>
+            </View>
             <Text
               style={styles.priceSubtitle}
             >{`Supermercado: ${latestPrice.supermarket.name}`}</Text>
-          </View>
+          </>
         ) : (
           <Text style={styles.noPrice}>Sem preço</Text>
         )}
@@ -78,6 +85,7 @@ const ProductList: React.FC<Props> = ({ products, onPressItem }) => {
       renderItem={renderItem}
       keyExtractor={(item) => item.code}
       contentContainerStyle={styles.container}
+      onEndReached={handleNextPage}
     />
   );
 };
@@ -107,10 +115,13 @@ const styles = StyleSheet.create({
   },
   price: {
     marginTop: 16,
+    flexDirection: "row",
   },
   priceTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    color: myTheme.colors.success,
+    marginLeft: 10,
   },
   priceSubtitle: {
     fontSize: 14,

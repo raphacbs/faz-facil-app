@@ -1,42 +1,41 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import ProductList from "../../src/components/ProductList";
 import { Product } from "../../src/types/Product";
 import { useSelector } from "react-redux";
 import { searchProducts } from "../../src/services/api";
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { useDispatch } from "react-redux";
-
-interface Props {}
 
 const ProductListScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
+
   const dispatch = useDispatch();
   //@ts-ignore
-  const searchTerm = route.params?.searchTerm as string;
-  const { data, isLoading, isError, error } = useQuery(
-    ["products", searchTerm],
-    () => searchProducts(searchTerm),
-    {
-      enabled: searchTerm != "",
-    }
-  );
+  const searchTerm = useSelector((state) => state.product.searchTerm);
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
+    useInfiniteQuery(
+      ["products", searchTerm],
+      ({ pageParam = 1 }) => searchProducts(pageParam, searchTerm),
+      {
+        getNextPageParam: (lastPage) => {
+          if (!lastPage.last) {
+            return lastPage.pageNo + 1;
+          }
+          return false;
+        },
+        enabled: searchTerm != "",
+      }
+    );
 
   useEffect(() => {
-    if (data?.items) {
+    if (data?.pages) {
       navigation.setOptions({
-        headerTitle: `Produtos (${data?.items.length})`,
+        headerTitle: `Produtos (${
+          data.pages.map((page) => page.items).flat().length
+        })`,
       });
-      console.log("setOptions");
     }
   }, [data]);
 
@@ -46,9 +45,14 @@ const ProductListScreen = () => {
         <ActivityIndicator size={80} style={styles.loading} />
       ) : (
         <>
-          {data?.items && (
+          {data?.pages && (
             <ProductList
-              products={data?.items}
+              products={data.pages.map((page) => page.items).flat()}
+              handleNextPage={() => {
+                if (hasNextPage) {
+                  fetchNextPage();
+                }
+              }}
               onPressItem={async (item: Product) => {
                 await dispatch({
                   type: "SET_PRODUCT_DETAILS",

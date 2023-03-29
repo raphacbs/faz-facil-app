@@ -9,6 +9,7 @@ import { myTheme } from "../../src/theme/theme";
 import { createStackNavigator } from "@react-navigation/stack";
 import ProductListScreen from "../../src/screens/ProductListScreen";
 import ProductDetailsScreen from "../../src/screens/ProductDetailScreen";
+import BarCodeScannerScreen from "../screens/BarCodeScannerScreen";
 
 // import {useTheme} from '../../hooks';
 
@@ -16,31 +17,6 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: "Home", headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductList"
-        component={ProductListScreen}
-        options={{ title: "Home", headerTitle: "Produtos" }}
-      />
-      <Stack.Screen
-        name="ProductDetailsScreen"
-        component={ProductDetailsScreen}
-        options={{
-          title: "Detalhes do Produto",
-          headerTitle: "Detalhes do Produto",
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const MainTabScreen = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -50,7 +26,7 @@ const MainTabScreen = () => {
     >
       <Tab.Screen
         name="TabHome"
-        component={HomeStack}
+        component={HomeScreen}
         options={{
           tabBarLabel: "Home",
           headerShown: false,
@@ -80,6 +56,77 @@ const MainTabScreen = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const MainTabScreen = () => {
+  return (
+    // <Tab.Navigator
+    //   initialRouteName="Home"
+    //   screenOptions={{
+    //     tabBarActiveTintColor: myTheme.colors.primary,
+    //   }}
+    // >
+    //   <Tab.Screen
+    //     name="TabHome"
+    //     component={HomeStack}
+    //     options={{
+    //       tabBarLabel: "Home",
+    //       headerShown: false,
+    //       tabBarIcon: ({ color, size }) => (
+    //         <Icon name="barcode" color={color} size={size} />
+    //       ),
+    //     }}
+    //   />
+    //   <Tab.Screen
+    //     name="Minhas Listas"
+    //     component={ListsScreen}
+    //     options={{
+    //       tabBarLabel: "Minhas Listas",
+    //       tabBarIcon: ({ color, size }) => (
+    //         <Icon name="bars" color={color} size={size} />
+    //       ),
+    //     }}
+    //   />
+    //   <Tab.Screen
+    //     name="Configurações"
+    //     component={SettingsScreen}
+    //     options={{
+    //       tabBarLabel: "Configurações",
+    //       tabBarIcon: ({ color, size }) => (
+    //         <Icon name="setting" color={color} size={size} />
+    //       ),
+    //     }}
+    //   />
+    // </Tab.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeStack}
+        options={{ title: "Home", headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductList"
+        component={ProductListScreen}
+        options={{ title: "Home", headerTitle: "Produtos" }}
+      />
+      <Stack.Screen
+        name="ProductDetailsScreen"
+        component={ProductDetailsScreen}
+        options={{
+          title: "Detalhes do Produto",
+          headerTitle: "Detalhes do Produto",
+        }}
+      />
+      <Stack.Screen
+        name="BarCodeScannerScreen"
+        component={BarCodeScannerScreen}
+        options={{
+          title: "Leitura de código",
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
   );
 };
 export default MainTabScreen;

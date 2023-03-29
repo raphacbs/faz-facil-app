@@ -1,21 +1,21 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: 'http://192.168.1.9:8080',
+  baseURL: "http://192.168.1.9:8080",
   headers: {
     Authorization:
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImY2MDEwNDY0LTFlMGItNDNkNC1iYjlkLWI0YTBmYTE0YzExNCIsImVtYWlsIjoicmFwaGFlbGNvZWxAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiUmFwaGFlbCIsImxhc3ROYW1lIjoiQ29lbGhvIn0.pze8GjKV0gL0ePcLib3QHbJbTZkdHTSDn1FfyB9KIBc',
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImY2MDEwNDY0LTFlMGItNDNkNC1iYjlkLWI0YTBmYTE0YzExNCIsImVtYWlsIjoicmFwaGFlbGNvZWxAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiUmFwaGFlbCIsImxhc3ROYW1lIjoiQ29lbGhvIn0.pze8GjKV0gL0ePcLib3QHbJbTZkdHTSDn1FfyB9KIBc",
   },
 });
 
-export const searchProducts = async (searchTerm: string) => {
+export const searchProducts = async (pageParam: number, searchTerm: string) => {
   const params = {
-    pageNo: 1,
-    pageSize: 10,
-    sortBy: 'description',
-    sortDir: 'asc',
+    pageNo: pageParam,
+    pageSize: 4,
+    sortBy: "description",
+    sortDir: "asc",
   };
-  let search = '';
+  let search = "";
   if (/^\d+$/.test(searchTerm)) {
     search = `code=${searchTerm}`;
   } else {

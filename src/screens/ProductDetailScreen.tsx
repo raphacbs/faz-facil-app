@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { InitialState, Product } from "../../src/types/Product";
 import { useSelector } from "react-redux";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ProductDetailScreen = () => {
   //@ts-ignore
