@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
-import { useQuery } from "react-query";
+import { StyleSheet, Text, View } from "react-native";
 import * as Yup from "yup";
 import Form, { Field } from "../../src/components/Form";
-import { searchProducts } from "../../src/services/api";
 import { useDispatch } from "react-redux";
 import BarcodeButton from "../../src/components/BarcodeButton";
 import { useNavigation } from "@react-navigation/native";
