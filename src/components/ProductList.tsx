@@ -21,9 +21,21 @@ const ProductList: React.FC<Props> = ({
   onPressItem,
   handleNextPage,
 }) => {
+  const renderPrice = (price: string) => {
+    const [integerPart, decimalPart] = price.split(",");
+    return (
+      <>
+        <Text>
+          <Text style={styles.integerPrice}>{integerPart}</Text>
+          <Text style={styles.decimalPrice}>,{decimalPart}</Text>
+        </Text>
+      </>
+    );
+  };
+
   const renderItem = ({ item }: { item: Product }) => {
     // Busca o último preço do produto ordenado por updateAt de forma decrescente
-    const latestPrice = item.priceHistories?.sort((a, b) =>
+    const latestHistory = item.priceHistories?.sort((a, b) =>
       b.updatedAt.localeCompare(a.updatedAt)
     )[0];
 
@@ -54,20 +66,23 @@ const ProductList: React.FC<Props> = ({
             {item.brand}
           </Text>
         </View>
-        {latestPrice ? (
+        {latestHistory ? (
           <>
             <View style={styles.price}>
               <Text>Último preço</Text>
-              <Text
-                style={styles.priceTitle}
-              >{`${latestPrice.price.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}`}</Text>
+
+              <Text style={styles.priceTitle}>
+                {renderPrice(
+                  latestHistory.price.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })
+                )}
+              </Text>
             </View>
             <Text
               style={styles.priceSubtitle}
-            >{`Supermercado: ${latestPrice.supermarket.name}`}</Text>
+            >{`Supermercado: ${latestHistory.supermarket.name}`}</Text>
           </>
         ) : (
           <Text style={styles.noPrice}>Sem preço</Text>
@@ -116,10 +131,9 @@ const styles = StyleSheet.create({
   price: {
     marginTop: 16,
     flexDirection: "row",
+    justifyContent: "space-between",
   },
   priceTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
     color: myTheme.colors.success,
     marginLeft: 10,
   },
@@ -144,6 +158,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "bold",
+  },
+  integerPrice: {
+    fontSize: 24, // tamanho da fonte para a parte inteira do preço
+    fontWeight: "bold", // peso da fonte para a parte inteira do preço
+  },
+  decimalPrice: {
+    fontSize: 14, // tamanho da fonte para a parte inteira do preço
   },
 });
 
