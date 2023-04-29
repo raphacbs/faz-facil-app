@@ -9,18 +9,22 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { myTheme } from "../theme/theme";
 import { Product } from "../types/Product";
+import { useMoment } from "../hooks/useMoment";
 
 interface Props {
   products: Product[];
   onPressItem: (item: Product) => void;
   handleNextPage: () => void;
+  onAddPrice: (item: Product) => void;
 }
 
 const ProductList: React.FC<Props> = ({
   products,
   onPressItem,
   handleNextPage,
+  onAddPrice,
 }) => {
+  const moment = useMoment();
   const renderPrice = (price: string) => {
     const [integerPart, decimalPart] = price.split(",");
     return (
@@ -70,7 +74,6 @@ const ProductList: React.FC<Props> = ({
           <>
             <View style={styles.price}>
               <Text>Último preço</Text>
-
               <Text style={styles.priceTitle}>
                 {renderPrice(
                   latestHistory.price.toLocaleString("pt-BR", {
@@ -80,6 +83,11 @@ const ProductList: React.FC<Props> = ({
                 )}
               </Text>
             </View>
+            <View style={styles.price}>
+              <Text>
+                Atualizado {moment(latestHistory.createdAt).fromNow()}
+              </Text>
+            </View>
             <Text
               style={styles.priceSubtitle}
             >{`Supermercado: ${latestHistory.supermarket.name}`}</Text>
@@ -87,9 +95,13 @@ const ProductList: React.FC<Props> = ({
         ) : (
           <Text style={styles.noPrice}>Sem preço</Text>
         )}
-        <TouchableOpacity style={styles.updatePriceButton}>
+        <TouchableOpacity
+          style={styles.updatePriceButton}
+          onPress={() => onAddPrice(item)}
+        >
           <Text style={styles.updatePriceButtonText}>Atualizar Preço</Text>
         </TouchableOpacity>
+        {/* //TODO Adicionar botão para adicionar o produto na lista */}
       </TouchableOpacity>
     );
   };
@@ -115,6 +127,8 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: "#fff",
+    borderColor: "#eeeee4",
+    borderWidth: 1,
     borderRadius: 8,
     marginBottom: 16,
     padding: 16,
@@ -134,7 +148,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   priceTitle: {
-    color: myTheme.colors.success,
+    color: myTheme.colors.light,
+    backgroundColor: myTheme.colors.success,
+    borderRadius: 10,
+    padding: 5,
     marginLeft: 10,
   },
   priceSubtitle: {

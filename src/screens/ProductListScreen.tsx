@@ -7,6 +7,10 @@ import { useSelector } from "react-redux";
 import { searchProducts } from "../../src/services/api";
 import { useInfiniteQuery, useQuery } from "react-query";
 import { useDispatch } from "react-redux";
+import {
+  setProductDetails,
+  setSearchResults,
+} from "../store/actions/productActions";
 
 const ProductListScreen = () => {
   const navigation = useNavigation();
@@ -36,6 +40,7 @@ const ProductListScreen = () => {
           data.pages.map((page) => page.items).flat().length
         })`,
       });
+      dispatch(setSearchResults(data.pages.map((page) => page.items).flat()));
     }
   }, [data]);
 
@@ -54,12 +59,18 @@ const ProductListScreen = () => {
                 }
               }}
               onPressItem={async (item: Product) => {
-                await dispatch({
-                  type: "SET_PRODUCT_DETAILS",
-                  payload: item,
-                });
+                await dispatch(setProductDetails(item));
+                // await dispatch({
+                //   type: "SET_PRODUCT_DETAILS",
+                //   payload: item,
+                // });
                 //@ts-ignore
                 navigation.navigate("ProductDetailsScreen");
+              }}
+              onAddPrice={async (item: Product) => {
+                await dispatch(setProductDetails(item));
+                //@ts-ignore
+                navigation.navigate("PriceInputScreen");
               }}
             />
           )}

@@ -1,27 +1,39 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Clipboard,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import PriceHistoryList from "../components/PriceHistoryList";
 import PriceHistoryChart from "../components/PriceHistoryChart";
+import CustomButton from "../components/Button";
+import { useNavigation } from "@react-navigation/native";
+// import Clipboard from "@react-native-clipboard/clipboard";
 
 const Tab = createMaterialTopTabNavigator();
 
 const ProductDetailScreen = () => {
   //@ts-ignore
   const product = useSelector((state) => state.product.productDetails);
-  console.log("product", product);
   const priceHistories = (product && product.priceHistories) || [];
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    console.log("product-useEffect", product);
-  }, [product]);
+  useEffect(() => {}, [product]);
+
+  const copyToClipboard = (text: string) => {
+    Clipboard.setString(text);
+  };
 
   return (
     product && (
       <Tab.Navigator>
         <Tab.Screen
-          name="Produto"
+          name="Detalhes"
           options={{
             //@ts-ignore
             tabBarButton: () => null,
@@ -31,7 +43,11 @@ const ProductDetailScreen = () => {
             <View style={styles.container}>
               <View style={styles.product}>
                 <View style={styles.detail}>
-                  <Text style={styles.code}>{product.code}</Text>
+                  <TouchableOpacity
+                    onPress={() => copyToClipboard(product.code)}
+                  >
+                    <Text style={styles.code}>{product.code}</Text>
+                  </TouchableOpacity>
                   <Text
                     numberOfLines={5}
                     ellipsizeMode="tail"
@@ -50,6 +66,18 @@ const ProductDetailScreen = () => {
                     }}
                     style={styles.thumbnail}
                   />
+                  {priceHistories.length > 0 && (
+                    <CustomButton
+                      style={styles.buttonAddPrice}
+                      isLoading={false}
+                      title={"Add Preço"}
+                      schema={"principal"}
+                      onPress={() => {
+                        //@ts-ignore
+                        navigation.navigate("PriceInputScreen");
+                      }}
+                    />
+                  )}
                 </View>
               </View>
               <View style={styles.priceHistoryContainer}>
@@ -61,13 +89,13 @@ const ProductDetailScreen = () => {
             </View>
           )}
         </Tab.Screen>
-        <Tab.Screen name="Gráfico">
+        {/* <Tab.Screen name="Gráfico">
           {(props) => (
             <View style={{ flex: 1 }}>
               <PriceHistoryChart priceHistories={priceHistories} />
             </View>
           )}
-        </Tab.Screen>
+        </Tab.Screen> */}
       </Tab.Navigator>
     )
   );
@@ -93,6 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   priceHistoryContainer: {
+    flex: 1,
     marginTop: 16,
   },
   priceHistoryTitle: {
@@ -116,6 +145,9 @@ const styles = StyleSheet.create({
   product: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  buttonAddPrice: {
+    marginTop: 10,
   },
 });
 

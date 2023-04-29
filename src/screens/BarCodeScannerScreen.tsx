@@ -14,7 +14,6 @@ const BarCodeScannerScreen = () => {
   };
 
   const onScannerCode = (code: string) => {
-    console.log("code", code);
     dispatch({
       type: "SET_SEARCH_TERM",
       payload: code,

@@ -33,7 +33,6 @@ const HomeScreen = () => {
   // );
 
   const handleSubmit = (values: Record<string, string>) => {
-    console.log("Form submitted with values:", values);
     setSearchValue(values.search);
     dispatch({
       type: "SET_SEARCH_TERM",

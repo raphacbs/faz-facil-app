@@ -1,26 +1,47 @@
 import { myTheme } from "../theme/theme";
-import { PriceHistories } from "@/types/PriceHistories";
+
 import moment from "moment";
 import "moment/locale/pt";
 import React from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
+import Button from "../components/Button";
+import { useNavigation } from "@react-navigation/native";
+import { PriceHistory } from "../types/PriceHistories";
 
 type Props = {
-  priceHistories: Array<PriceHistories>;
+  priceHistories: Array<PriceHistory>;
 };
 
 const PriceHistoryList = ({ priceHistories }: Props) => {
   moment.locale("pt-br");
-  const sortedHistories: Array<PriceHistories> = priceHistories.sort(
+  const navigation = useNavigation();
+  const sortedHistories: Array<PriceHistory> = priceHistories.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+  const renderEmptyHistory = () => {
+    return (
+      <View style={styles.contentEmptyHistory}>
+        <Text style={styles.textEmptyHistory}>Sem preços </Text>
+        <Button
+          isLoading={false}
+          title={"Add Preço"}
+          schema={"principal"}
+          size="m"
+          onPress={function (): void {
+            //@ts-ignore
+            navigation.navigate("PriceInputScreen");
+          }}
+        />
+      </View>
+    );
+  };
 
   const renderItem = ({
     item,
     index,
   }: {
-    item: PriceHistories;
+    item: PriceHistory;
     index: number;
   }) => {
     const price = item.price.toLocaleString("pt-BR", {
@@ -46,7 +67,7 @@ const PriceHistoryList = ({ priceHistories }: Props) => {
           })}`
         : "";
     const [integerPart, decimalPart] = price.split(",");
-    console.log(integerPart, decimalPart);
+    // console.log(integerPart, decimalPart);
     return (
       <View style={styles.priceHistoryItem}>
         <View>
@@ -102,6 +123,7 @@ const PriceHistoryList = ({ priceHistories }: Props) => {
       keyExtractor={(_, index) => index.toString()}
       renderItem={renderItem}
       contentContainerStyle={styles.listContentContainer}
+      ListEmptyComponent={renderEmptyHistory}
     />
   );
 };
@@ -116,10 +138,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
     backgroundColor: myTheme.colors.light,
-    borderRadius: 8,
+    borderRadius: 10,
+    padding: 20,
   },
   supermarketName: {
     fontWeight: "bold",
+  },
+  textEmptyHistory: {
+    fontWeight: "bold",
+    justifyContent: "center",
+    margin: 5,
+  },
+  contentEmptyHistory: {
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: 70,
   },
   priceHistoryMarket: {
     flex: 3,

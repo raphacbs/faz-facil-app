@@ -10,7 +10,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ProductListScreen from "../../src/screens/ProductListScreen";
 import ProductDetailsScreen from "../../src/screens/ProductDetailScreen";
 import BarCodeScannerScreen from "../screens/BarCodeScannerScreen";
-
+import MyTransition from "../navigation/MyTransition";
+import PriceInputScreen from "../../src/screens/PriceInputScreen";
+import SupermarketListScreen from "../../src/screens/SupermarketListScreen";
 // import {useTheme} from '../../hooks';
 
 const Tab = createBottomTabNavigator();
@@ -99,7 +101,22 @@ const MainTabScreen = () => {
     //     }}
     //   />
     // </Tab.Navigator>
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+
+        cardStyle: { backgroundColor: "#fff" },
+        transitionSpec: {
+          //@ts-ignore
+          open: MyTransition.transitionSpec,
+          //@ts-ignore
+          close: MyTransition.transitionSpec,
+        },
+        cardStyleInterpolator: MyTransition.cardStyleInterpolator,
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={HomeStack}
@@ -114,8 +131,8 @@ const MainTabScreen = () => {
         name="ProductDetailsScreen"
         component={ProductDetailsScreen}
         options={{
-          title: "Detalhes do Produto",
-          headerTitle: "Detalhes do Produto",
+          title: "Produto",
+          headerTitle: "Produto",
         }}
       />
       <Stack.Screen
@@ -123,6 +140,23 @@ const MainTabScreen = () => {
         component={BarCodeScannerScreen}
         options={{
           title: "Leitura de código",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PriceInputScreen"
+        component={PriceInputScreen}
+        options={{
+          title: "Add preço",
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="SupermarketListScreen"
+        component={SupermarketListScreen}
+        options={{
+          title: "Supermercados",
           headerShown: false,
         }}
       />

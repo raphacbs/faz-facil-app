@@ -1,4 +1,4 @@
-import {PriceHistories} from './PriceHistories';
+import { PriceHistory } from "./PriceHistories";
 
 export interface Product {
   code: string;
@@ -8,7 +8,7 @@ export interface Product {
   createdAt: string;
   updateAt: string;
   unit?: null | string;
-  priceHistories?: PriceHistories[] | null;
+  priceHistories?: PriceHistory[] | null;
 }
 
 export interface InitialState {

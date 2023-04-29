@@ -49,8 +49,8 @@ export default function BarCodeScan({
       setScanned(true);
       onScannerCode(data);
     } else {
-      console.log("xy", x, y);
-      console.log("data", data);
+      // console.log("xy", x, y);
+      // console.log("data", data);
     }
   };
 

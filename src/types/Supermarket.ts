@@ -16,4 +16,5 @@ export interface Supermarket {
   latitude: number;
   address: string;
   placeId: string;
+  distance: number;
 }

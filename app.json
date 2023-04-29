@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "com.raphacbs.fazfeira",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -19,10 +20,21 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.raphacbs.fazfeiraapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5dee3b8c-e988-4978-80f9-0980cfcf8218"
+      },
+      "googleSignIn": {
+        "androidClientId": "44441057218-kdf86o25q9hnq142cg7sa8u0ueomngak.apps.googleusercontent.com",
+        "expoClientId": "44441057218-am9cvl3t8tv880pblatp8dln5nqto3eo.apps.googleusercontent.com"
+      },
+      "apiUrl": "http://192.168.1.16:8080"
     },
     "plugins": [
       [
