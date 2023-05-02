@@ -18,3 +18,7 @@ export interface Supermarket {
   placeId: string;
   distance: number;
 }
+
+export interface InitialState {
+  supermarketSelected: Supermarket | null;
+}

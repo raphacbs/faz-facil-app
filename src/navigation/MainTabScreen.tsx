@@ -13,6 +13,7 @@ import BarCodeScannerScreen from "../screens/BarCodeScannerScreen";
 import MyTransition from "../navigation/MyTransition";
 import PriceInputScreen from "../../src/screens/PriceInputScreen";
 import SupermarketListScreen from "../../src/screens/SupermarketListScreen";
+import PriceHistoryResumeScreen from "../screens/PriceHistoryResumeScreen";
 // import {useTheme} from '../../hooks';
 
 const Tab = createBottomTabNavigator();
@@ -123,7 +124,7 @@ const MainTabScreen = () => {
         options={{ title: "Home", headerShown: false }}
       />
       <Stack.Screen
-        name="ProductList"
+        name="ProductListScreen"
         component={ProductListScreen}
         options={{ title: "Home", headerTitle: "Produtos" }}
       />
@@ -158,6 +159,14 @@ const MainTabScreen = () => {
         options={{
           title: "Supermercados",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PriceHistoryResumeScreen"
+        component={PriceHistoryResumeScreen}
+        options={{
+          title: "Resumo",
+          headerShown: true,
         }}
       />
     </Stack.Navigator>

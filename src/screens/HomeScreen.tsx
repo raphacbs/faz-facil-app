@@ -39,7 +39,7 @@ const HomeScreen = () => {
       payload: values.search,
     });
     //@ts-ignore
-    navigation.navigate("ProductList", { searchTerm: values.search });
+    navigation.navigate("ProductListScreen", { searchTerm: values.search });
   };
 
   // useEffect(() => {

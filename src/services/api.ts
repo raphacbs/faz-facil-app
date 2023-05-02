@@ -3,7 +3,7 @@ import { useEnv } from "../hooks/useEnv";
 //url dev : https://faz-feira-hml.herokuapp.com
 // url local: http://192.168.1.16:8080
 const api = axios.create({
-  baseURL: "http://192.168.1.16:8080",
+  baseURL: "https://faz-feira-hml.herokuapp.com",
   headers: {
     Authorization:
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImY2MDEwNDY0LTFlMGItNDNkNC1iYjlkLWI0YTBmYTE0YzExNCIsImVtYWlsIjoicmFwaGFlbGNvZWxAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiUmFwaGFlbCIsImxhc3ROYW1lIjoiQ29lbGhvIn0.pze8GjKV0gL0ePcLib3QHbJbTZkdHTSDn1FfyB9KIBc",

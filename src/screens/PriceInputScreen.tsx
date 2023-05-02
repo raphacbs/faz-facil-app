@@ -10,7 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import Price from "../components/PriceText";
 import {
-  addPriceHistory,
+  savePriceHistory,
   setPriceHistoryToSave,
 } from "../store/actions/priceHistoryAction";
 import { PriceHistoryPost } from "@/types/PriceHistories";
@@ -28,24 +28,9 @@ const PriceInputScreen = () => {
   const products = useSelector((state) => state.product.searchResults);
   const navigation = useNavigation();
 
-  const queryClient = useQueryClient();
-
-  const {
-    mutate: createPriceHistory,
-    isLoading,
-    error,
-    isError,
-  } = useMutation({
-    mutationFn: (priceHistoryToSave: PriceHistoryPost) =>
-      addPriceHistory(priceHistoryToSave),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["products"] });
-      navigation.goBack();
-    },
-  });
-
-  const handleAddPrice = (priceHistory: PriceHistoryPost) => {
+  const handleAddPrice = async (priceHistory: PriceHistoryPost) => {
     // createPriceHistory(priceHistory);
+    dispatch(setPriceHistoryToSave(priceHistory));
     //@ts-ignore
     navigation.navigate("SupermarketListScreen");
   };
@@ -61,13 +46,13 @@ const PriceInputScreen = () => {
       </Text>
       <View style={styles.priceContainer}>
         <Price
-          isLoading={isLoading}
+          isLoading={false}
           submitPriceHistory={handleAddPrice}
           productCode={product.code}
           supermarketId={"b4d11663-26cd-4d2a-a660-d4ede3c90469"}
         />
       </View>
-      <Loading active={isLoading} />
+      <Loading active={false} />
     </View>
   );
 };
