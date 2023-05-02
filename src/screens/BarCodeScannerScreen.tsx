@@ -19,7 +19,7 @@ const BarCodeScannerScreen = () => {
       payload: code,
     });
     //@ts-ignore
-    navigation.replace("ProductList");
+    navigation.replace("ProductListScreen");
   };
   const onPressCancel = () => {
     navigation.goBack();

@@ -1,7 +1,7 @@
 import { myTheme } from "../theme/theme";
 
 import moment from "moment";
-import "moment/locale/pt";
+// import "moment/locale/pt";
 import React from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const PriceHistoryList = ({ priceHistories }: Props) => {
-  moment.locale("pt-br");
+  // moment.locale("pt-br");
   const navigation = useNavigation();
   const sortedHistories: Array<PriceHistory> = priceHistories.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Faz Feira",
-    "slug": "faz-feira-app",
+    "slug": "faz-feira",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,23 +12,33 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.raphacbs.fazfeiraapp"
+      "package": "com.raphacbs.fazfeiraapp",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "5dee3b8c-e988-4978-80f9-0980cfcf8218"
+        "projectId": "24784022-2fe9-4f30-9f2e-0251b6b16edb"
       },
       "googleSignIn": {
         "androidClientId": "44441057218-kdf86o25q9hnq142cg7sa8u0ueomngak.apps.googleusercontent.com",
@@ -49,6 +59,7 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
       ]
-    ]
+    ],
+    "owner": "raphacbs"
   }
 }
