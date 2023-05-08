@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Yup from "yup";
-import Form, { Field } from "../../src/components/Form";
+import Form, { Field } from "../components/Form";
 import { useDispatch } from "react-redux";
-import BarcodeButton from "../../src/components/BarcodeButton";
+import BarcodeButton from "../components/BarcodeButton";
 import { useNavigation } from "@react-navigation/native";
 
-const HomeScreen = () => {
+const SearchScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default SearchScreen;

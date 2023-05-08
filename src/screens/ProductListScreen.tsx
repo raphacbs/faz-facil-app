@@ -12,20 +12,7 @@ import {
   setSearchResults,
 } from "../store/actions/productActions";
 
-import { logger, fileAsyncTransport } from "react-native-logs";
 import * as FileSystem from "expo-file-system";
-
-const config = {
-  transport: fileAsyncTransport,
-  transportOptions: {
-    FS: FileSystem,
-    fileName: `log.txt`,
-  },
-};
-
-var log = logger.createLogger(config);
-
-log.debug("Debug message");
 
 const ProductListScreen = () => {
   const navigation = useNavigation();
@@ -49,8 +36,6 @@ const ProductListScreen = () => {
     );
 
   useEffect(() => {
-    log.debug("Debug message - data ", data);
-    log.info("Print this string to a file");
     if (data?.pages) {
       navigation.setOptions({
         headerTitle: `Produtos (${

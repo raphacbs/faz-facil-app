@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "../../src/screens/HomeScreen";
-import ListsScreen from "../../src/screens/ListsScreen";
+import SearchScreen from "../screens/SearchScreen";
+import AuthScreen from "../screens/AuthScreen";
 import SettingsScreen from "../../src/screens/SettingsScreen";
 import Icon from "react-native-vector-icons/AntDesign";
 import { myTheme } from "../../src/theme/theme";
@@ -28,23 +28,24 @@ const HomeStack = () => {
       }}
     >
       <Tab.Screen
-        name="TabHome"
-        component={HomeScreen}
+        name="Search"
+        component={SearchScreen}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: "Pesquisar",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Icon name="barcode" color={color} size={size} />
+            <Icon name="search1" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="Minhas Listas"
-        component={ListsScreen}
+        name="Home"
+        component={AuthScreen}
         options={{
-          tabBarLabel: "Minhas Listas",
+          tabBarLabel: "Home",
+          title: "Faz Feira",
           tabBarIcon: ({ color, size }) => (
-            <Icon name="bars" color={color} size={size} />
+            <Icon name="home" color={color} size={size} />
           ),
         }}
       />
@@ -103,7 +104,7 @@ const MainTabScreen = () => {
     //   />
     // </Tab.Navigator>
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="Main"
       screenOptions={{
         gestureEnabled: true,
         gestureDirection: "horizontal",
@@ -119,7 +120,7 @@ const MainTabScreen = () => {
       }}
     >
       <Stack.Screen
-        name="Home"
+        name="Main"
         component={HomeStack}
         options={{ title: "Home", headerShown: false }}
       />
