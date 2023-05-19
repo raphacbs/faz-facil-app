@@ -1,9 +1,10 @@
+import { Env } from "../Env";
 import axios from "axios";
 
-export async function auth(token: string) {
+export async function authGoogle(token: string) {
   try {
     let userInfoResponse = await axios(
-      "http://192.168.1.12:8085/api/v1/user/login/google",
+      `${Env.API_AUTH_BASE_URL}api/v1/user/login/google`,
       {
         headers: { token: token },
         method: "GET",
@@ -19,19 +20,21 @@ export async function auth(token: string) {
   }
 }
 
-export async function getUserData(accessToken: string) {
+export async function authFacebook(token: string) {
   try {
     let userInfoResponse = await axios(
-      "https://www.googleapis.com/userinfo/v2/me",
+      `${Env.API_AUTH_BASE_URL}api/v1/user/login/facebook`,
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { token: token },
         method: "GET",
       }
     );
-    console.log("userGoogle", userInfoResponse.data);
+
+    console.log("userFacebook", userInfoResponse.data);
     return userInfoResponse.data;
-  } catch {
-    console.error("Error to get user data in Google");
-    throw Error("Error to get user data in Google");
+  } catch (error) {
+    console.error("Error to get user data in Facebook");
+    console.error(JSON.stringify(error));
+    throw Error("Error to get user data in Facebook");
   }
 }

@@ -20,6 +20,7 @@ import {
   setSupermarketSelected,
 } from "../store/actions/supermarketActions";
 import { useNavigation } from "@react-navigation/native";
+import Container from "../components/Container";
 
 const DISTANCES = [
   { id: "1km", value: 1000 },
@@ -29,6 +30,7 @@ const DISTANCES = [
 
 const SupermarketListScreen = () => {
   const [location, setLocation] = useState<LocationObject>();
+  const [isLoadingLocation, setLoadingLocation] = useState<boolean>(true);
   const [searchText, setSearchText] = useState("");
   const [inputText, setInputText] = useState("");
   const [distance, setDistance] = useState(DISTANCES[0]);
@@ -104,35 +106,37 @@ const SupermarketListScreen = () => {
 
       let location: LocationObject = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      setLoadingLocation(false);
     })();
   }, []);
 
-  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    [
-      "supermarkets",
-      location?.coords.latitude,
-      location?.coords.longitude,
-      distance,
-      searchText,
-    ],
-    ({ pageParam = 1 }) =>
-      searchSupermarket(
-        pageParam,
+  const { data, isLoading, fetchNextPage, hasNextPage, error } =
+    useInfiniteQuery(
+      [
+        "supermarkets",
         location?.coords.latitude,
         location?.coords.longitude,
-        distance.value,
-        searchText
-      ),
-    {
-      getNextPageParam: (lastPage) => {
-        if (!lastPage.last) {
-          return lastPage.pageNo + 1;
-        }
-        return false;
-      },
-      enabled: location != null,
-    }
-  );
+        distance,
+        searchText,
+      ],
+      ({ pageParam = 1 }) =>
+        searchSupermarket(
+          pageParam,
+          location?.coords.latitude,
+          location?.coords.longitude,
+          distance.value,
+          searchText
+        ),
+      {
+        getNextPageParam: (lastPage) => {
+          if (!lastPage.last) {
+            return lastPage.pageNo + 1;
+          }
+          return false;
+        },
+        enabled: location != null,
+      }
+    );
 
   useEffect(() => {
     if (data?.pages) {
@@ -141,7 +145,12 @@ const SupermarketListScreen = () => {
   }, [data]);
 
   return (
-    <View style={styles.container}>
+    <Container
+      style={styles.container}
+      isLoading={isLoadingLocation}
+      error={error}
+      loadingMessage="Carregando sua localização"
+    >
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -197,7 +206,64 @@ const SupermarketListScreen = () => {
           </>
         )
       )}
-    </View>
+    </Container>
+    // <View style={styles.container}>
+    //   <View style={styles.searchContainer}>
+    //     <TextInput
+    //       style={styles.searchInput}
+    //       onChangeText={handleInputChange}
+    //       value={inputText}
+    //       placeholder="Pesquisar supermercados"
+    //     />
+    //     {showClearIcon && (
+    //       <TouchableOpacity
+    //         style={styles.clearButton}
+    //         onPress={handleClearInput}
+    //       >
+    //         <Icon name="close" size={24} color="#000" />
+    //       </TouchableOpacity>
+    //     )}
+    //     <TouchableOpacity onPress={handlerSearch} style={styles.searchButton}>
+    //       <Text style={styles.searchButtonText}>Buscar</Text>
+    //     </TouchableOpacity>
+    //   </View>
+    //   <View style={styles.distanceContainer}>
+    //     {DISTANCES.map((d) => (
+    //       <TouchableOpacity
+    //         key={d.id}
+    //         style={[
+    //           styles.distanceButton,
+    //           distance.value === d.value && styles.distanceButtonActive,
+    //         ]}
+    //         onPress={() => handleDistanceChange(d)}
+    //       >
+    //         <Text style={styles.distanceButtonText}>{d.id}</Text>
+    //       </TouchableOpacity>
+    //     ))}
+    //   </View>
+    //   {isLoading ? (
+    //     <ActivityIndicator size={80} style={styles.loading} />
+    //   ) : (
+    //     data?.pages && (
+    //       <>
+    //         <FlatList
+    //           data={data.pages.map((page) => page.items).flat()}
+    //           renderItem={renderItem}
+    //           keyExtractor={(item) => item.id}
+    //           style={styles.list}
+    //         />
+    //         {showNextButton && (
+    //           <TouchableOpacity
+    //             style={styles.nextButton}
+    //             onPress={() => setSupermarket(selectedSupermarket)}
+    //           >
+    //             <Text style={styles.nextButtonText}>Avançar</Text>
+    //           </TouchableOpacity>
+    //         )}
+    //       </>
+    //     )
+    //   )}
+    // </View>
   );
 };
 

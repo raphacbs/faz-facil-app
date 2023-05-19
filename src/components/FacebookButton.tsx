@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as Google from "expo-auth-session/providers/google";
+import * as Facebook from "expo-auth-session/providers/facebook";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import Constants from "expo-constants";
 import { useDispatch, useSelector } from "react-redux";
-import { authWithGoogle } from "../store/actions/userAction";
+import { authWithFacebook, authWithGoogle, setUserInfoLogged } from "../store/actions/userAction";
 import { Env } from "../Env";
 
-interface GoogleButtonProps {
-  // onPress: () => void;
+interface FacebookButtonProps {
   title: string;
 }
 
@@ -25,25 +24,29 @@ const REDIRECT_PARAMS =
     ? EXPO_REDIRECT_PARAMS
     : NATIVE_REDIRECT_PARAMS;
 
-const GoogleButton = ({ title }: GoogleButtonProps) => {
+const FacebookButton = ({ title }: FacebookButtonProps) => {
   const [accessToken, setAccessToken] = useState<string>();
   //@ts-ignore
-  const userInfoLogged = useSelector((state) => state.userInfo.userInfoLogged);
+  const userInfo = useSelector((state) => state.userInfo.userInfoLogged);
   const redirectUri = AuthSession.makeRedirectUri(REDIRECT_PARAMS);
   const dispatch = useDispatch();
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: Env.GOOGLE_CREDENTIALS.ANDROID_CLIENT_ID,
-    iosClientId: Env.GOOGLE_CREDENTIALS.IOS_CLIENT_ID,
-    expoClientId: Env.GOOGLE_CREDENTIALS.EXPO_CLIENT_ID,
-    webClientId: Env.GOOGLE_CREDENTIALS.WEB_CLIENT_ID,
-    redirectUri,
+  const [request, response, promptAsync] = Facebook.useAuthRequest({
+    clientId: Env.FACEBOOK_APP_ID, //"635889885070244",
   });
+
+  if (request) {
+    console.log(
+      "You need to add this url to your authorized redirect urls on your Facebook app: " +
+        request.redirectUri
+    );
+    console.log("request " + JSON.stringify(request));
+  }
 
   const handleUserInfo = async () => {
     if (accessToken == undefined || accessToken == null) {
       //@ts-ignore
-      await promptAsync(REDIRECT_PARAMS);
+      await promptAsync();
     }
   };
 
@@ -51,8 +54,10 @@ const GoogleButton = ({ title }: GoogleButtonProps) => {
     console.log("response", response);
     async function getUser() {
       if (response?.type == "success" && response.authentication) {
-        setAccessToken(response.authentication.accessToken);
-        dispatch(authWithGoogle(response.authentication.accessToken));
+        // setAccessToken(response.authentication.accessToken);
+        dispatch(authWithFacebook(response.authentication.accessToken));
+        console.log("userInfo", userInfo);
+        console.log(response.authentication.accessToken);
       }
     }
     getUser();
@@ -60,7 +65,7 @@ const GoogleButton = ({ title }: GoogleButtonProps) => {
 
   return (
     <TouchableOpacity style={styles.button} onPress={handleUserInfo}>
-      <Ionicons name="logo-google" size={24} color="white" />
+      <Ionicons name="logo-facebook" size={24} color="white" />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
@@ -70,15 +75,16 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#DB4437",
+    backgroundColor: "#1877f2",
     padding: 10,
     borderRadius: 5,
   },
   text: {
     marginLeft: 10,
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: "bold",
     color: "white",
   },
 });
 
-export default GoogleButton;
+export default FacebookButton;

@@ -3,16 +3,18 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "start-local": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start",
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start --android",
+    "ios": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start --ios",
+    "web": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start --web"
   },
   "dependencies": {
     "@expo/webpack-config": "^18.0.1",
     "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/hooks": "^3.0.0",
+    "@react-native-firebase/app": "^17.4.3",
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/material-top-tabs": "^6.6.2",
@@ -30,10 +32,12 @@
     "expo-dev-client": "~2.2.1",
     "expo-file-system": "~15.2.2",
     "expo-location": "~15.1.1",
+    "expo-secure-store": "~12.1.1",
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",
     "expo-web-browser": "~12.1.1",
+    "firebase": "^9.21.0",
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -41,6 +45,8 @@
     "react-native": "0.71.7",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-currency-formatter": "^1.0.3",
+    "react-native-dotenv": "^3.4.8",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-pager-view": "6.1.2",
@@ -59,6 +65,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.0.27",
+    "cross-env": "^7.0.3",
     "typescript": "^4.9.4"
   },
   "private": true

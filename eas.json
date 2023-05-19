@@ -8,15 +8,30 @@
       "distribution": "internal",
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "API_BASE_URL": "http://192.168.1.12:8080/",
+        "API_AUTH_BASE_URL": "http://192.168.1.12:8085/"
       }
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "API_BASE_URL": "http://192.168.1.12:8080/",
+        "API_AUTH_BASE_URL": "http://192.168.1.12:8085/"
       }
     },
-    "production": {}
+    "production": {
+      "channel": "production",
+      "env": {
+        "API_BASE_URL": "https://faz-feira-hml.herokuapp.com/",
+        "API_AUTH_BASE_URL": "https://auth-faz-feira-hml.herokuapp.com/"
+      }
+    }
   },
   "submit": {
     "production": {}

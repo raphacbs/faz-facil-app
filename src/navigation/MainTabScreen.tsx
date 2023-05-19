@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SearchScreen from "../screens/SearchScreen";
 import AuthScreen from "../screens/AuthScreen";
@@ -14,15 +14,27 @@ import MyTransition from "../navigation/MyTransition";
 import PriceInputScreen from "../../src/screens/PriceInputScreen";
 import SupermarketListScreen from "../../src/screens/SupermarketListScreen";
 import PriceHistoryResumeScreen from "../screens/PriceHistoryResumeScreen";
+import HomeScreen from "../screens/HomeScreen";
+import { getUserLogged } from "../store/actions/userAction";
 // import {useTheme} from '../../hooks';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isLogged = async () => {
+      const _isUserLogged = (await getUserLogged()) != null;
+      setUserLoggedIn(_isUserLogged);
+    };
+    isLogged();
+  }, []);
+
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName={userLoggedIn ? "Home" : "Search"}
       screenOptions={{
         tabBarActiveTintColor: myTheme.colors.primary,
       }}
@@ -38,17 +50,32 @@ const HomeStack = () => {
           ),
         }}
       />
-      <Tab.Screen
-        name="Home"
-        component={AuthScreen}
-        options={{
-          tabBarLabel: "Home",
-          title: "Faz Feira",
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" color={color} size={size} />
-          ),
-        }}
-      />
+      {userLoggedIn ? (
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarLabel: "Home",
+            title: "Faz Feira",
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="home" color={color} size={size} />
+            ),
+          }}
+        />
+      ) : (
+        <Tab.Screen
+          name="Auth"
+          component={AuthScreen}
+          options={{
+            tabBarLabel: "Auth",
+            title: "Authentication",
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="user" color={color} size={size} />
+            ),
+          }}
+        />
+      )}
+
       <Tab.Screen
         name="Configurações"
         component={SettingsScreen}
@@ -168,6 +195,14 @@ const MainTabScreen = () => {
         options={{
           title: "Resumo",
           headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          title: "Resumo",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

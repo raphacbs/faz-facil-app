@@ -1,24 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-} from "react-native";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import Price from "../components/PriceText";
-import {
-  savePriceHistory,
-  setPriceHistoryToSave,
-} from "../store/actions/priceHistoryAction";
-import { PriceHistoryPost } from "@/types/PriceHistories";
-import { useMutation, useQueryClient } from "react-query";
-import ErrorAlert from "../components/ErrorAlert";
-import { setProductDetails } from "../store/actions/productActions";
-import { InitialState, Product } from "../types/Product";
-import Loading from "../components/Loading";
+import { setPriceHistoryToSave } from "../store/actions/priceHistoryAction";
+import { PriceHistoryPost } from "../types/PriceHistories";
+import Container from "../components/Container";
 
 const PriceInputScreen = () => {
   const dispatch = useDispatch();
@@ -36,7 +23,7 @@ const PriceInputScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Container style={styles.container} isLoading={false} error={undefined}>
       <Text
         numberOfLines={5}
         ellipsizeMode="tail"
@@ -52,8 +39,25 @@ const PriceInputScreen = () => {
           supermarketId={"b4d11663-26cd-4d2a-a660-d4ede3c90469"}
         />
       </View>
-      <Loading active={false} />
-    </View>
+    </Container>
+    // <View style={styles.container}>
+    //   <Text
+    //     numberOfLines={5}
+    //     ellipsizeMode="tail"
+    //     style={styles.productDescription}
+    //   >
+    //     {product.description}
+    //   </Text>
+    //   <View style={styles.priceContainer}>
+    //     <Price
+    //       isLoading={false}
+    //       submitPriceHistory={handleAddPrice}
+    //       productCode={product.code}
+    //       supermarketId={"b4d11663-26cd-4d2a-a660-d4ede3c90469"}
+    //     />
+    //   </View>
+    //   <Loading active={false} />
+    // </View>
   );
 };
 

@@ -16,4 +16,5 @@ export type UserInfo = {
 
 export interface InitialState {
   userInfoLogged: UserInfo;
+  isLogged: boolean;
 }

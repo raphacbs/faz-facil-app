@@ -5,6 +5,7 @@ import Form, { Field } from "../components/Form";
 import { useDispatch } from "react-redux";
 import BarcodeButton from "../components/BarcodeButton";
 import { useNavigation } from "@react-navigation/native";
+import Container from "../components/Container";
 
 const SearchScreen = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const SearchScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <Container style={styles.container} isLoading={false} error={undefined}>
       <Text style={styles.label}>
         Digite o nome do produto ou código de barras
       </Text>
@@ -64,7 +65,7 @@ const SearchScreen = () => {
       />
       <Text style={styles.label}>Ou faça a leitura do código de barras</Text>
       <BarcodeButton onPress={handleBarcodePress} />
-    </View>
+    </Container>
   );
 };
 

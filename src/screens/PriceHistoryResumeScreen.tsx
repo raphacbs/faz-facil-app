@@ -7,6 +7,7 @@ import { PriceHistoryPost } from "../types/PriceHistories";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Supermarket } from "../types/Supermarket";
 import { Product } from "../types/Product";
+import Container from "../components/Container";
 
 const PriceHistoryResumeScreen = () => {
   //@ts-ignore
@@ -64,7 +65,12 @@ const PriceHistoryResumeScreen = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <Container
+      style={styles.container}
+      isLoading={isLoading}
+      error={error}
+      loadingMessage="Enviando o preço"
+    >
       <Text style={styles.productDescription}>{product.description}</Text>
       <Text style={styles.productCode}>{product.code}</Text>
       <Text style={styles.price}>{`R$ ${priceHistory.price}`}</Text>
@@ -80,7 +86,24 @@ const PriceHistoryResumeScreen = () => {
         onPress={submitPriceHistory}
         size="x"
       />
-    </View>
+    </Container>
+    // <View style={styles.container}>
+    //   <Text style={styles.productDescription}>{product.description}</Text>
+    //   <Text style={styles.productCode}>{product.code}</Text>
+    //   <Text style={styles.price}>{`R$ ${priceHistory.price}`}</Text>
+    //   <Text style={styles.supermarketName}>{supermarket.name}</Text>
+    //   <Text
+    //     style={styles.supermarketDetails}
+    //   >{`${supermarket.distance} KM | ${supermarket.address}`}</Text>
+    //   <CustomButton
+    //     style={styles.button}
+    //     isLoading={isLoading}
+    //     title={"Confirmar"}
+    //     schema={"principal"}
+    //     onPress={submitPriceHistory}
+    //     size="x"
+    //   />
+    // </View>
   );
 };
 

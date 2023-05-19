@@ -72,7 +72,7 @@ const PriceHistoryList = ({ priceHistories }: Props) => {
       <View style={styles.priceHistoryItem}>
         <View>
           <Text style={styles.supermarketName}>{item.supermarket.name}</Text>
-          <Text style={styles.priceHistoryMarket}>
+          <Text ellipsizeMode="middle" style={styles.priceHistoryMarket}>
             {item.supermarket.street}
           </Text>
         </View>

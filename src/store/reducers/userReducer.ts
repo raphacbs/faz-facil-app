@@ -1,3 +1,4 @@
+import useConstants from "../../hooks/useConstants";
 import { InitialState } from "../../types/UserInfo";
 
 const initialState: InitialState = {
@@ -16,12 +17,19 @@ const initialState: InitialState = {
       expiredAt: "",
     },
   },
+  isLogged: false,
 };
+
+const { SET_USER_INFO_LOGGED } = useConstants();
 
 const reducer = (state = initialState, action: { type: any; payload: any }) => {
   switch (action.type) {
-    case "SET_USER_INFO_LOGGED":
-      return { ...state, userInfoLogged: action.payload };
+    case SET_USER_INFO_LOGGED:
+      return {
+        ...state,
+        userInfoLogged: action.payload,
+        isLogged: action.payload ? true : false,
+      };
     default:
       return state;
   }
