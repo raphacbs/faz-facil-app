@@ -5,10 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Container from "../components/Container";
 
 const AuthScreen = () => {
-  //@ts-ignore
-  const userInfo = useSelector((state) => state.userInfo.userInfoLogged);
   return (
-    <Container isLoading={false} error={null} style={styles.container}>
+    <Container
+      isLogged={false}
+      isLoading={false}
+      error={null}
+      style={styles.container}
+    >
       <Text style={styles.infoText}>
         Para utilizar esta funcionalidade, é necessário realizar o login.
       </Text>

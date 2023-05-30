@@ -1,16 +1,25 @@
 /* eslint-disable prettier/prettier */
 import BarCodeScan from "../components/BarCodeScanner";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
+import { setSearchCode } from "../store/actions/productActions";
+import Container from "../components/Container";
+import useConstants from "../hooks/useConstants";
+import { useQueryClient } from "react-query";
 
 const BarCodeScannerScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { SET_PRODUCT_DETAILS } = useConstants();
   const dispatch = useDispatch();
+  const [code, setCode] = useState<string>("");
+  const queryClient = useQueryClient();
 
   const onPressInsertCode = () => {
-    navigation.goBack();
+    //@ts-ignore
+    navigation.replace("SearchScreen");
   };
 
   const onScannerCode = (code: string) => {
@@ -18,19 +27,47 @@ const BarCodeScannerScreen = () => {
       type: "SET_SEARCH_TERM",
       payload: code,
     });
+
+    dispatch(setSearchCode(code));
+
     //@ts-ignore
-    navigation.replace("ProductListScreen");
+    if (route.params?.previousScreen) {
+      //@ts-ignore
+      navigation.replace("PriceInputScreen", {
+        //@ts-ignore
+        previousScreen: route.params?.previousScreen
+          ? //@ts-ignore
+            route.params?.previousScreen
+          : "BarCodeScannerScreen",
+      });
+    } else {
+      //@ts-ignore
+      navigation.replace("ProductListScreen", {
+        //@ts-ignore
+        previousScreen: route.params?.previousScreen
+          ? //@ts-ignore
+            route.params?.previousScreen
+          : "BarCodeScannerScreen",
+      });
+    }
+    setCode(code);
   };
   const onPressCancel = () => {
     navigation.goBack();
   };
 
   return (
-    <BarCodeScan
-      onScannerCode={onScannerCode}
-      onPressInsertCode={onPressInsertCode}
-      onPressCancel={onPressCancel}
-    />
+    <Container
+      isLoading={false}
+      error={undefined}
+      loadingMessage="Buscando produto"
+    >
+      <BarCodeScan
+        onScannerCode={onScannerCode}
+        onPressInsertCode={onPressInsertCode}
+        onPressCancel={onPressCancel}
+      />
+    </Container>
   );
 };
 

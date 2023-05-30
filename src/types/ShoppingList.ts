@@ -15,3 +15,15 @@ export interface ItemsInfo {
   plannedTotalValue: number;
   totalValueAdded: number;
 }
+
+export interface ShoppingListPost {
+  description: string;
+  supermarketId: string;
+  status: string;
+}
+
+export interface InitialState {
+  shoppingListToSave: ShoppingListPost;
+  selectedShoppingList: ShoppingList;
+  shoppingLists: Array<ShoppingList>;
+}

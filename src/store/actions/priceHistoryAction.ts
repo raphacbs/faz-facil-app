@@ -28,7 +28,6 @@ export const setPriceHistoryToSave: any = (priceHistory: PriceHistoryPost) => {
 // };
 
 export const savePriceHistory = async (priceHistoryPost: PriceHistoryPost) => {
-  console.log(priceHistoryPost);
   const { data } = await api.post(endPoint, priceHistoryPost);
   return data;
 };

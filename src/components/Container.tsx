@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,13 +6,20 @@ import {
   ActivityIndicator,
   StyleSheet,
   ViewStyle,
+  SafeAreaView,
 } from "react-native";
 import { myTheme } from "../../src/theme/theme";
+import { useSelector } from "react-redux";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import AuthScreen from "../screens/AuthScreen";
+import GoogleButton from "./GoogleButton";
 
 interface ContainerProps {
   isLoading: boolean;
   error: any;
   children: ReactNode;
+  isLogged?: boolean;
+  showButtonAuth?: boolean;
   style?: ViewStyle;
   loadingMessage?: string;
   tryAgain?: () => void;
@@ -23,8 +30,26 @@ const Container: React.FC<ContainerProps> = ({
   error,
   style,
   loadingMessage,
+  isLogged = true,
+  showButtonAuth = true,
   tryAgain,
 }) => {
+  useEffect(() => {}, [isLogged]);
+  if (!showButtonAuth) {
+    return <></>;
+  }
+
+  if (!isLogged) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.infoText}>
+          Para utilizar esta funcionalidade, é necessário realizar o login.
+        </Text>
+        <GoogleButton title={"Login com o Google"} />
+      </View>
+    );
+  }
+
   if (isLoading) {
     // Exibe um spinner no centro da tela enquanto está carregando
     return (
@@ -51,11 +76,11 @@ const Container: React.FC<ContainerProps> = ({
   }
 
   return (
-    <View style={[styles.containerChildren, style]}>
+    <SafeAreaView style={[styles.containerChildren, style]}>
       {React.Children.map(children, (child) => {
         return child;
       })}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -84,6 +109,12 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  infoText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20,
   },
 });
 

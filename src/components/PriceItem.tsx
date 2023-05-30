@@ -6,22 +6,19 @@ import {
   useWindowDimensions,
   View,
   TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import units from "../mocks/units";
 import { Unit } from "../types/Unit";
 import CustomButton from "./Button";
 import { PriceHistoryPost } from "../types/PriceHistories";
-import { ItemPost } from "../types/Item";
+import { Item, ItemPost } from "../types/Item";
+import { useSelector } from "react-redux";
 
 interface PriceProps {
-  submitPriceHistory?: (priceHistoryPost: PriceHistoryPost) => void;
-  submitItem?: (itemPost: ItemPost) => void;
-  productCode: string;
-  supermarketId: string;
-  shoppingListId: string;
-  addItem?: boolean;
-  isLoading: boolean;
+  item: Item;
+  style?: ViewStyle;
+  onChange: (item: Item) => void;
 }
 
 type FontSizeConfig = {
@@ -29,36 +26,36 @@ type FontSizeConfig = {
   size: number;
 };
 
-const Price: React.FC<PriceProps> = ({
-  submitPriceHistory,
-  submitItem,
-  productCode,
-  supermarketId,
-  shoppingListId,
-  addItem = false,
-  isLoading,
+const PriceItem: React.FC<PriceProps> = ({
+  item,
+  style,
+  onChange,
 }: PriceProps) => {
+  //@ts-ignore
+  const units = useSelector((state) => state.unit.units);
   const { width } = useWindowDimensions(); // obter largura da tela do dispositivo
   const fontRatio = width / 375; // proporção da largura da tela (375 é a largura do iPhone 11)
   const [selectedLanguage, setSelectedLanguage] = useState(
-    units.find((x) => x.id != null)?.id
+    units.find((x: Unit) => x.id != null)?.id
   );
-  const [quantity, setQuantity] = useState<number>(1);
-  const [value, setValue] = useState<number>(0);
-  const selectedUnit = units.find((unit) => unit.id === selectedLanguage);
+  const [quantity, setQuantity] = useState<number>(item.quantity);
+  const [value, setValue] = useState<number>(item.perUnit);
+  const selectedUnit = units.find((unit: Unit) => unit.id === selectedLanguage);
   const [isDecimalUnit, setDecimalUnit] = useState<boolean>(
     selectedUnit?.type === "decimal"
   );
   const [isDisableButtonSave, setDisableButtonSave] = useState<boolean>(true);
-  const [formattedQuantity, setFormattedQuantity] = useState<string>("1");
+  const [formattedQuantity, setFormattedQuantity] = useState<string>(
+    item.quantity + ""
+  );
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const inputPrice = useRef<TextInput>(null);
 
   const FONT_SIZE_CONFIGS: FontSizeConfig[] = [
-    { limit: 1000, size: 80 },
-    { limit: 10000, size: 50 },
-    { limit: Infinity, size: 30 },
+    { limit: 1000, size: 50 },
+    { limit: 10000, size: 20 },
+    { limit: Infinity, size: 10 },
   ];
 
   const formattedValue =
@@ -84,23 +81,39 @@ const Price: React.FC<PriceProps> = ({
     const newPrice = Number(onlyDigits) / 100;
     if (newPrice > 1000000000) {
       // Se o valor for maior que 1000000000, define o valor máximo permitido
-      setValue(1000000000);
+      // setValue(1000000000);
+      handleOnChangePrice(1000000000);
     } else {
-      setValue(newPrice);
+      // setValue(newPrice);
+      handleOnChangePrice(newPrice);
     }
   };
 
   const fontSize = getFontSize(value);
 
+  const handleOnChangePrice = (price: number) => {
+    setValue(price);
+    onChange({ ...item, perUnit: price });
+  };
+
+  const handleOnChangeQuantity = (quantity: number) => {
+    setQuantity(quantity);
+    onChange({ ...item, quantity });
+  };
+
   useEffect(() => {
-    const unit = units.find((u) => u.id === selectedLanguage) as Unit;
+    const unit = units.find(
+      (unit: Unit) => unit.id === selectedLanguage
+    ) as Unit;
     if (unit.type == "integer") {
       setDecimalUnit(false);
-      setQuantity(1);
-      setFormattedQuantity("1");
+      // setQuantity(1);
+      handleOnChangeQuantity(item.quantity);
+      setFormattedQuantity(item.quantity.toString());
     } else {
       setDecimalUnit(true);
-      setQuantity(0.1);
+      // setQuantity(0.1);
+      handleOnChangeQuantity(0.1);
       setFormattedQuantity(
         (0.1).toLocaleString("pt-BR", {
           minimumFractionDigits: 3,
@@ -110,30 +123,34 @@ const Price: React.FC<PriceProps> = ({
   }, [selectedLanguage]);
 
   useEffect(() => {
-    if (addItem && quantity > 0 && value > 0) {
+    if (quantity > 0 && value > 0) {
       let result = (quantity * value).toFixed(2);
       setTotalPrice(parseFloat(result));
       setDisableButtonSave(false);
     } else {
       setDisableButtonSave(true);
     }
-    if (addItem == false && value > 0) {
+    if (value > 0) {
       setDisableButtonSave(false);
     }
   }, [quantity, value]);
 
   const handleQuantityChange = (text: string) => {
     if (selectedLanguage) {
-      const unit = units.find((u) => u.id === selectedLanguage) as Unit;
+      const unit = units.find(
+        (unit: Unit) => unit.id === selectedLanguage
+      ) as Unit;
       if (unit) {
         if (unit.type == "integer") {
           // unidade do tipo inteiro
           const intValue = parseInt(text, 10);
           if (!isNaN(intValue)) {
-            setQuantity(intValue);
+            // setQuantity(intValue)
+            handleOnChangeQuantity(intValue);
             setFormattedQuantity(intValue.toString());
           } else {
-            setQuantity(0);
+            // setQuantity(0);
+            handleOnChangeQuantity(0);
             setFormattedQuantity("");
           }
         } else {
@@ -143,9 +160,11 @@ const Price: React.FC<PriceProps> = ({
           const newQty = Number(onlyDigits) / 1000;
           if (newQty > 999) {
             // Se o valor for maior que 1000000000, define o valor máximo permitido
-            setQuantity(999);
+            // setQuantity(999);
+            handleOnChangeQuantity(999);
           } else {
-            setQuantity(newQty);
+            // setQuantity(newQty);
+            handleOnChangeQuantity(newQty);
           }
 
           // // unidade do tipo decimal
@@ -154,32 +173,29 @@ const Price: React.FC<PriceProps> = ({
             // setFormattedQuantity(newQty.toLocaleString("pt-BR"));
             setFormattedQuantity(newQty.toFixed(3).replace(".", ","));
           } else {
-            setQuantity(0);
+            // setQuantity(0);
+            handleOnChangeQuantity(0);
             setFormattedQuantity("");
           }
         }
       }
     }
-    // // Define o valor do TextInput
-    // inputPrice.current?.setNativeProps({ text });
-    // // Define a posição do cursor no final do texto
-    // inputPrice.current?.setNativeProps({
-    //   selection: { start: text.length, end: text.length },
-    // });
   };
 
   const handleSubtract = () => {
     if (typeof quantity === "number") {
       if (selectedLanguage) {
-        const unit = units.find((unit) => unit.id === selectedLanguage);
+        const unit = units.find((unit: Unit) => unit.id === selectedLanguage);
         if (unit) {
           if (unit.type === "integer") {
             let newQuantity = Math.max(quantity - 1, 1);
-            setQuantity(newQuantity);
+            // setQuantity(newQuantity);
+            handleOnChangeQuantity(newQuantity);
             setFormattedQuantity(newQuantity.toString());
           } else {
             let newQuantity = Math.max(quantity - 0.1, 0.1);
-            setQuantity(newQuantity);
+            // setQuantity(newQuantity);
+            handleOnChangeQuantity(newQuantity);
             setFormattedQuantity(
               newQuantity.toLocaleString("pt-BR", { minimumFractionDigits: 3 })
             );
@@ -192,13 +208,15 @@ const Price: React.FC<PriceProps> = ({
   const handleAdd = () => {
     if (typeof quantity === "number") {
       if (selectedLanguage) {
-        const unit = units.find((unit) => unit.id === selectedLanguage);
+        const unit = units.find((unit: Unit) => unit.id === selectedLanguage);
         if (unit) {
           if (unit.type === "integer") {
-            setQuantity(quantity + 1);
+            // setQuantity(quantity + 1);
+            handleOnChangeQuantity(quantity + 1);
             setFormattedQuantity((quantity + 1).toString());
           } else {
-            setQuantity(quantity + 0.1);
+            // setQuantity(quantity + 0.1);
+            handleOnChangeQuantity(quantity + 1);
             setFormattedQuantity(
               (quantity + 0.1).toLocaleString("pt-BR", {
                 minimumFractionDigits: 3,
@@ -219,46 +237,41 @@ const Price: React.FC<PriceProps> = ({
   }
 
   return (
-    <View style={styles.priceContainer}>
-      {addItem && (
-        <>
-          <Picker
-            style={styles.picker}
-            selectedValue={selectedLanguage}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedLanguage(itemValue)
-            }
-          >
-            {units.map((unit) => (
-              <Picker.Item
-                key={unit.id}
-                label={`${unit.description} (${unit.initials})`}
-                value={unit.id}
-              />
-            ))}
-          </Picker>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity
-              style={styles.quantityButton}
-              onPress={handleSubtract}
-            >
-              <Text style={styles.quantityButtonText}>-</Text>
-            </TouchableOpacity>
-            <TextInput
-              style={styles.quantityInput}
-              keyboardType={isDecimalUnit ? "numeric" : "number-pad"}
-              placeholder="1"
-              placeholderTextColor="#BDBDBD"
-              onChangeText={handleQuantityChange}
-              selectTextOnFocus
-              value={formattedQuantity}
-            />
-            <TouchableOpacity style={styles.quantityButton} onPress={handleAdd}>
-              <Text style={styles.quantityButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
+    <View style={[styles.priceContainer, style]}>
+      <Picker
+        style={styles.picker}
+        selectedValue={selectedLanguage}
+        onValueChange={(itemValue, itemIndex) => setSelectedLanguage(itemValue)}
+      >
+        {units.map((unit: Unit) => (
+          <Picker.Item
+            key={unit.id}
+            label={`${unit.description} (${unit.initials})`}
+            value={unit.id}
+          />
+        ))}
+      </Picker>
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity
+          style={styles.quantityButton}
+          onPress={handleSubtract}
+        >
+          <Text style={styles.quantityButtonText}>-</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={styles.quantityInput}
+          keyboardType={isDecimalUnit ? "numeric" : "number-pad"}
+          placeholder="0"
+          placeholderTextColor="#BDBDBD"
+          onChangeText={handleQuantityChange}
+          selectTextOnFocus
+          value={formattedQuantity}
+        />
+        <TouchableOpacity style={styles.quantityButton} onPress={handleAdd}>
+          <Text style={styles.quantityButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+
       <TextInput
         style={[styles.text, { fontSize }]}
         keyboardType="numeric"
@@ -266,11 +279,10 @@ const Price: React.FC<PriceProps> = ({
         placeholderTextColor="#BDBDBD"
         onChangeText={handlePriceChange}
         value={formattedValue}
-        autoFocus
         onFocus={handleFocus}
         ref={inputPrice}
       />
-      {addItem && quantity > 0 && value > 0 && (
+      {quantity > 0 && value > 0 && (
         <Text style={styles.totalPriceText}>
           Valor total:{" "}
           {`R$ ${totalPrice
@@ -279,41 +291,6 @@ const Price: React.FC<PriceProps> = ({
             .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`}
         </Text>
       )}
-      <CustomButton
-        isLoading={isDisableButtonSave || isLoading}
-        title={"Adicionar"}
-        schema={"principal"}
-        size="x"
-        onPress={() => {
-          if (addItem) {
-            const itemPost: ItemPost = {
-              note: "",
-              quantity: quantity,
-              price: totalPrice,
-              perUnit: value,
-              added: false,
-              product: {
-                code: productCode,
-              },
-              shoppingList: {
-                id: shoppingListId,
-              },
-            };
-            submitItem && submitItem(itemPost);
-          } else {
-            const priceHistoryPost: PriceHistoryPost = {
-              price: value,
-              product: {
-                code: productCode,
-              },
-              supermarket: {
-                id: supermarketId,
-              },
-            };
-            submitPriceHistory && submitPriceHistory(priceHistoryPost);
-          }
-        }}
-      />
     </View>
   );
 };
@@ -324,8 +301,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   picker: {
-    flex: 1,
-    height: 50,
+    height: 10,
     alignSelf: "stretch",
     margin: 20,
     backgroundColor: "#F2F2F2",
@@ -370,4 +346,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Price;
+export default PriceItem;

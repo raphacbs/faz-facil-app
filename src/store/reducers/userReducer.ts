@@ -20,7 +20,7 @@ const initialState: InitialState = {
   isLogged: false,
 };
 
-const { SET_USER_INFO_LOGGED } = useConstants();
+const { SET_USER_INFO_LOGGED, SET_IS_LOGGED } = useConstants();
 
 const reducer = (state = initialState, action: { type: any; payload: any }) => {
   switch (action.type) {
@@ -29,6 +29,12 @@ const reducer = (state = initialState, action: { type: any; payload: any }) => {
         ...state,
         userInfoLogged: action.payload,
         isLogged: action.payload ? true : false,
+      };
+    case SET_IS_LOGGED:
+      return {
+        ...state,
+        isLogged: action.payload,
+        userInfoLogged: initialState,
       };
     default:
       return state;

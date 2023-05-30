@@ -10,8 +10,6 @@ export async function authGoogle(token: string) {
         method: "GET",
       }
     );
-
-    console.log("userGoogle", userInfoResponse.data);
     return userInfoResponse.data;
   } catch (error) {
     console.error("Error to get user data in Google");
@@ -30,7 +28,6 @@ export async function authFacebook(token: string) {
       }
     );
 
-    console.log("userFacebook", userInfoResponse.data);
     return userInfoResponse.data;
   } catch (error) {
     console.error("Error to get user data in Facebook");

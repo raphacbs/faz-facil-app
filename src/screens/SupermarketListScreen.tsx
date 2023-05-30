@@ -19,8 +19,9 @@ import {
   searchSupermarket,
   setSupermarketSelected,
 } from "../store/actions/supermarketActions";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Container from "../components/Container";
+import Button from "../components/Button";
 
 const DISTANCES = [
   { id: "1km", value: 1000 },
@@ -40,6 +41,8 @@ const SupermarketListScreen = () => {
   const [showNextButton, setShowNextButton] = useState(false);
 
   const navigation = useNavigation();
+  const route = useRoute();
+
   const dispatch = useDispatch();
 
   const handleInputChange = (text: string) => {
@@ -65,7 +68,7 @@ const SupermarketListScreen = () => {
     if (item != null) {
       dispatch(setSupermarketSelected(item));
       //@ts-ignore
-      navigation.navigate("PriceHistoryResumeScreen");
+      navigation.navigate(route.params?.nextScreen);
     }
   };
 
@@ -99,12 +102,14 @@ const SupermarketListScreen = () => {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+
       if (status !== "granted") {
         console.log("Permission to access location was denied");
         return;
       }
 
       let location: LocationObject = await Location.getCurrentPositionAsync({});
+
       setLocation(location);
       setLoadingLocation(false);
     })();
@@ -137,12 +142,6 @@ const SupermarketListScreen = () => {
         enabled: location != null,
       }
     );
-
-  useEffect(() => {
-    if (data?.pages) {
-      console.log(data.pages);
-    }
-  }, [data]);
 
   return (
     <Container
@@ -196,12 +195,13 @@ const SupermarketListScreen = () => {
               style={styles.list}
             />
             {showNextButton && (
-              <TouchableOpacity
-                style={styles.nextButton}
+              <Button
+                title="Avançar"
                 onPress={() => setSupermarket(selectedSupermarket)}
-              >
-                <Text style={styles.nextButtonText}>Avançar</Text>
-              </TouchableOpacity>
+                style={styles.button}
+                isLoading={false}
+                schema="success"
+              />
             )}
           </>
         )
@@ -272,7 +272,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
-    marginTop: "10%",
   },
   clearButton: {
     padding: 8,
@@ -372,6 +371,11 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  button: {
+    width: 200,
+    marginBottom: 15,
+    alignSelf: "center",
   },
 });
 

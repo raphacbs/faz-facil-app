@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SearchScreen from "../screens/SearchScreen";
 import AuthScreen from "../screens/AuthScreen";
-import SettingsScreen from "../../src/screens/SettingsScreen";
-import Icon from "react-native-vector-icons/AntDesign";
+import ProfileScreen from "../../src/screens/ProfileScreen";
+
 import { myTheme } from "../../src/theme/theme";
 import { createStackNavigator } from "@react-navigation/stack";
 import ProductListScreen from "../../src/screens/ProductListScreen";
@@ -15,26 +15,100 @@ import PriceInputScreen from "../../src/screens/PriceInputScreen";
 import SupermarketListScreen from "../../src/screens/SupermarketListScreen";
 import PriceHistoryResumeScreen from "../screens/PriceHistoryResumeScreen";
 import HomeScreen from "../screens/HomeScreen";
-import { getUserLogged } from "../store/actions/userAction";
-// import {useTheme} from '../../hooks';
+import { signIn } from "../store/actions/userAction";
+import { useDispatch } from "react-redux";
+import CreateShoppingListScreen from "../screens/CreateShoppingListScreen";
+import ShoppingListResumeScreen from "../screens/ShoppingListResumeScreen";
+import { useIsFocused } from "@react-navigation/native";
+import MyShoppingListsScreen from "../screens/MyShoppingListsScreen";
+import ShoppingListScreen from "../screens/ShoppingListScreen";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { Unit } from "../types/Unit";
+import { setUnits } from "../store/actions/unitAction";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const HomeStack = () => {
-  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+interface Props {
+  units: Array<Unit>;
+}
 
+const HomeStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Main"
+      screenOptions={{
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+
+        cardStyle: { backgroundColor: "#fff" },
+        transitionSpec: {
+          //@ts-ignore
+          open: MyTransition.transitionSpec,
+          //@ts-ignore
+          close: MyTransition.transitionSpec,
+        },
+        cardStyleInterpolator: MyTransition.cardStyleInterpolator,
+      }}
+    >
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          title: "Resumo",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="MyShoppingListsScreen"
+        component={MyShoppingListsScreen}
+        options={{
+          title: "Minhas Listas",
+          headerTitle: "Minhas Listas",
+        }}
+      />
+      <Stack.Screen
+        name="ShoppingListScreen"
+        component={ShoppingListScreen}
+        options={{
+          title: "Resumo",
+          headerStyle: {
+            backgroundColor: myTheme.colors.primary,
+          },
+          headerTitleStyle: {
+            color: myTheme.colors.light,
+          },
+          headerTintColor: myTheme.colors.light,
+          headerRight: () => (
+            <Ionicons
+              name="ios-search"
+              size={24}
+              color={myTheme.colors.light}
+              style={{ marginRight: 10 }}
+              onPress={() => {
+                // Lógica para lidar com o clique na lupa
+              }}
+            />
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const TabStack = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
     const isLogged = async () => {
-      const _isUserLogged = (await getUserLogged()) != null;
-      setUserLoggedIn(_isUserLogged);
+      // await getUserLogged();
+      await dispatch(signIn());
     };
     isLogged();
   }, []);
 
   return (
     <Tab.Navigator
-      initialRouteName={userLoggedIn ? "Home" : "Search"}
+      initialRouteName={"Home"}
       screenOptions={{
         tabBarActiveTintColor: myTheme.colors.primary,
       }}
@@ -46,43 +120,35 @@ const HomeStack = () => {
           tabBarLabel: "Pesquisar",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Icon name="search1" color={color} size={size} />
+            <AntDesign name="search1" color={color} size={size} />
           ),
         }}
       />
-      {userLoggedIn ? (
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            tabBarLabel: "Home",
-            title: "Faz Feira",
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="home" color={color} size={size} />
-            ),
-          }}
-        />
-      ) : (
-        <Tab.Screen
-          name="Auth"
-          component={AuthScreen}
-          options={{
-            tabBarLabel: "Auth",
-            title: "Authentication",
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="user" color={color} size={size} />
-            ),
-          }}
-        />
-      )}
-
       <Tab.Screen
-        name="Configurações"
-        component={SettingsScreen}
+        name="Home"
+        component={HomeStack}
         options={{
-          tabBarLabel: "Configurações",
+          tabBarLabel: "Home",
+          title: "Faz Feira",
+          headerTitleStyle: { color: myTheme.colors.light },
+          headerStyle: {
+            backgroundColor: myTheme.colors.primary,
+            // borderBottomLeftRadius: 20,
+            // borderBottomRightRadius: 20,
+          },
           tabBarIcon: ({ color, size }) => (
-            <Icon name="setting" color={color} size={size} />
+            <AntDesign name="home" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Perfil"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: "Perfil",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="setting" color={color} size={size} />
           ),
         }}
       />
@@ -90,46 +156,11 @@ const HomeStack = () => {
   );
 };
 
-const MainTabScreen = () => {
+const MainTabScreen: React.FC<Props> = ({ units }) => {
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+  dispatch(setUnits(units));
   return (
-    // <Tab.Navigator
-    //   initialRouteName="Home"
-    //   screenOptions={{
-    //     tabBarActiveTintColor: myTheme.colors.primary,
-    //   }}
-    // >
-    //   <Tab.Screen
-    //     name="TabHome"
-    //     component={HomeStack}
-    //     options={{
-    //       tabBarLabel: "Home",
-    //       headerShown: false,
-    //       tabBarIcon: ({ color, size }) => (
-    //         <Icon name="barcode" color={color} size={size} />
-    //       ),
-    //     }}
-    //   />
-    //   <Tab.Screen
-    //     name="Minhas Listas"
-    //     component={ListsScreen}
-    //     options={{
-    //       tabBarLabel: "Minhas Listas",
-    //       tabBarIcon: ({ color, size }) => (
-    //         <Icon name="bars" color={color} size={size} />
-    //       ),
-    //     }}
-    //   />
-    //   <Tab.Screen
-    //     name="Configurações"
-    //     component={SettingsScreen}
-    //     options={{
-    //       tabBarLabel: "Configurações",
-    //       tabBarIcon: ({ color, size }) => (
-    //         <Icon name="setting" color={color} size={size} />
-    //       ),
-    //     }}
-    //   />
-    // </Tab.Navigator>
     <Stack.Navigator
       initialRouteName="Main"
       screenOptions={{
@@ -148,7 +179,7 @@ const MainTabScreen = () => {
     >
       <Stack.Screen
         name="Main"
-        component={HomeStack}
+        component={TabStack}
         options={{ title: "Home", headerShown: false }}
       />
       <Stack.Screen
@@ -180,13 +211,27 @@ const MainTabScreen = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{
+          title: "Add preço",
+          headerShown: false,
+        }}
+      />
 
       <Stack.Screen
         name="SupermarketListScreen"
         component={SupermarketListScreen}
         options={{
-          title: "Supermercados",
-          headerShown: false,
+          title: "Selecione o supermercado",
+          headerStyle: {
+            backgroundColor: myTheme.colors.primary,
+          },
+          headerTitleStyle: {
+            color: myTheme.colors.light,
+          },
+          headerTintColor: myTheme.colors.light,
         }}
       />
       <Stack.Screen
@@ -194,16 +239,58 @@ const MainTabScreen = () => {
         component={PriceHistoryResumeScreen}
         options={{
           title: "Resumo",
-          headerShown: true,
+          headerStyle: {
+            backgroundColor: myTheme.colors.primary,
+          },
+          headerTitleStyle: {
+            color: myTheme.colors.light,
+          },
+          headerTintColor: myTheme.colors.light,
         }}
       />
       <Stack.Screen
+        name="ShoppingListResumeScreen"
+        component={ShoppingListResumeScreen}
+        options={{
+          title: "Resumo",
+          headerStyle: {
+            backgroundColor: myTheme.colors.primary,
+          },
+          headerTitleStyle: {
+            color: myTheme.colors.light,
+          },
+          headerTintColor: myTheme.colors.light,
+        }}
+      />
+      {/* <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={{
           title: "Resumo",
           headerShown: false,
         }}
+      /> */}
+      <Stack.Screen
+        name="AuthScreen"
+        component={AuthScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CreateShoppingListScreen"
+        component={CreateShoppingListScreen}
+        options={({ navigation }) => ({
+          title: "Insira o nome da lista",
+          headerStyle: {
+            backgroundColor: myTheme.colors.primary,
+          },
+          headerTitleStyle: {
+            color: myTheme.colors.light,
+          },
+          headerTintColor: myTheme.colors.light,
+          tabBarVisible: isFocused, // Adicione essa linha para exibir as abas
+        })}
       />
     </Stack.Navigator>
   );

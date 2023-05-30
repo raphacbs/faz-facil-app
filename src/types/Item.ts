@@ -27,3 +27,9 @@ export type ItemPost = {
     id: string;
   };
 };
+
+export interface InitialState {
+  itemToSave: ItemPost;
+  selectedItem: Item;
+  items: Array<Item>;
+}

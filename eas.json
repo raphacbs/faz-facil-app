@@ -10,8 +10,8 @@
         "simulator": true
       },
       "env": {
-        "API_BASE_URL": "http://192.168.1.12:8080/",
-        "API_AUTH_BASE_URL": "http://192.168.1.12:8085/"
+        "API_BASE_URL": "https://faz-feira-dev.herokuapp.com/",
+        "API_AUTH_BASE_URL": "https://faz-feira-dev.herokuapp.com/"
       }
     },
     "preview": {

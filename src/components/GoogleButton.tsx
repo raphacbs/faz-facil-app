@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
@@ -8,6 +13,7 @@ import Constants from "expo-constants";
 import { useDispatch, useSelector } from "react-redux";
 import { authWithGoogle } from "../store/actions/userAction";
 import { Env } from "../Env";
+import { myTheme } from "../theme/theme";
 
 interface GoogleButtonProps {
   // onPress: () => void;
@@ -27,8 +33,8 @@ const REDIRECT_PARAMS =
 
 const GoogleButton = ({ title }: GoogleButtonProps) => {
   const [accessToken, setAccessToken] = useState<string>();
-  //@ts-ignore
-  const userInfoLogged = useSelector((state) => state.userInfo.userInfoLogged);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   const redirectUri = AuthSession.makeRedirectUri(REDIRECT_PARAMS);
   const dispatch = useDispatch();
 
@@ -42,23 +48,26 @@ const GoogleButton = ({ title }: GoogleButtonProps) => {
 
   const handleUserInfo = async () => {
     if (accessToken == undefined || accessToken == null) {
+      setLoading(true);
       //@ts-ignore
       await promptAsync(REDIRECT_PARAMS);
     }
   };
 
   useEffect(() => {
-    console.log("response", response);
     async function getUser() {
       if (response?.type == "success" && response.authentication) {
         setAccessToken(response.authentication.accessToken);
-        dispatch(authWithGoogle(response.authentication.accessToken));
+        await dispatch(authWithGoogle(response.authentication.accessToken));
+        setLoading(false);
       }
     }
     getUser();
   }, [response]);
 
-  return (
+  return isLoading ? (
+    <ActivityIndicator size={80} color={myTheme.colors.primary} />
+  ) : (
     <TouchableOpacity style={styles.button} onPress={handleUserInfo}>
       <Ionicons name="logo-google" size={24} color="white" />
       <Text style={styles.text}>{title}</Text>

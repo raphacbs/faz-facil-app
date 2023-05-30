@@ -35,9 +35,9 @@ export const searchProducts = async (pageParam: number, searchTerm: string) => {
   } else {
     search = `description=${searchTerm}`;
   }
-  console.log("env::", Env.API_BASE_URL);
+
   const url = `/api/v1/products?pageNo=${params.pageNo}&pageSize=${params.pageSize}&${search}&sortBy=${params.sortBy}&sortDir=${params.sortDir}`;
-  console.log("url", url);
+
   const response = await api.get(url);
   return response.data;
 };
@@ -58,8 +58,7 @@ export const getShoppingList = async (
   }
   const url = `${Env.API_BASE_URL}api/v1/shopping-lists?pageNo=${params.pageNo}&pageSize=${params.pageSize}${query}&sortBy=${params.sortBy}&sortDir=${params.sortDir}`;
   const userLogged: UserInfo = await getUserLogged();
-  console.log("token", userLogged);
-  console.log("url shopping list", url);
+
   const shoppingListResponse = await axios(url, {
     headers: {
       Authorization: `Bearer ${userLogged.tokenDto.token}`,

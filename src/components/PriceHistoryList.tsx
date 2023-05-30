@@ -67,7 +67,6 @@ const PriceHistoryList = ({ priceHistories }: Props) => {
           })}`
         : "";
     const [integerPart, decimalPart] = price.split(",");
-    // console.log(integerPart, decimalPart);
     return (
       <View style={styles.priceHistoryItem}>
         <View>

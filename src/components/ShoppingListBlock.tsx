@@ -69,9 +69,7 @@ const ShoppingListHorizontal: React.FC<Props> = ({
     return (
       <TouchableOpacity
         style={[styles.moreBlock, styles.moreBlock]}
-        onPress={() => {
-          console.log("Clique no bloco 'mais'");
-        }}
+        onPress={() => {}}
         key="more"
       >
         <Text style={styles.moreBlockText}>Mais</Text>
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   integerPartText: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "bold",
   },
   decimalPartText: {

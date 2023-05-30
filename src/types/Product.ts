@@ -15,4 +15,5 @@ export interface InitialState {
   searchTerm: string;
   searchResults: Array<Product>;
   productDetails: Product;
+  codeSearched: "";
 }

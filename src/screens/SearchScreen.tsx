@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import BarcodeButton from "../components/BarcodeButton";
 import { useNavigation } from "@react-navigation/native";
 import Container from "../components/Container";
+import { setSearchTerm } from "../store/actions/productActions";
 
 const SearchScreen = () => {
   const dispatch = useDispatch();
@@ -35,10 +36,7 @@ const SearchScreen = () => {
 
   const handleSubmit = (values: Record<string, string>) => {
     setSearchValue(values.search);
-    dispatch({
-      type: "SET_SEARCH_TERM",
-      payload: values.search,
-    });
+    dispatch(setSearchTerm(values.search));
     //@ts-ignore
     navigation.navigate("ProductListScreen", { searchTerm: values.search });
   };
@@ -53,7 +51,12 @@ const SearchScreen = () => {
   }
 
   return (
-    <Container style={styles.container} isLoading={false} error={undefined}>
+    <Container
+      isLogged={true}
+      style={styles.container}
+      isLoading={false}
+      error={undefined}
+    >
       <Text style={styles.label}>
         Digite o nome do produto ou código de barras
       </Text>

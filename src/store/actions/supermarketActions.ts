@@ -38,7 +38,6 @@ export const searchSupermarket = async (
   }longitude=${longitude}&radiusM=${radius}&sortBy=${params.sortBy}&sortDir=${
     params.sortDir
   }`;
-  console.log("url", url);
   const response = await api.get(url);
   return response.data;
 };

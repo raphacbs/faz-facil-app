@@ -9,9 +9,16 @@ import Container from "../components/Container";
 import { ShoppingList } from "../types/ShoppingList";
 import ShoppingListBlock from "../components/ShoppingListBlock";
 import { useQuery } from "react-query";
-import { getShoppingList } from "../services/api";
+
 import { FAB } from "react-native-elements";
 import { myTheme } from "../theme/theme";
+import { useDispatch, useSelector } from "react-redux";
+import Icon from "react-native-vector-icons/AntDesign";
+import { useNavigation } from "@react-navigation/native";
+import {
+  getShoppingList,
+  setSelectedShoppingList,
+} from "../store/actions/shoppingListAction";
 
 const mockShoppingLists: ShoppingList[] = [
   {
@@ -92,60 +99,90 @@ const mockShoppingLists: ShoppingList[] = [
 ];
 
 const HomeScreen = () => {
+  //@ts-ignore
+  const isLogged = useSelector((state) => state.userInfo.isLogged);
+  const navigation = useNavigation();
   const {
     data,
     isLoading: loadingShoppingList,
     isError,
     error,
   } = useQuery({
-    queryKey: ["shoppingListHome"],
+    queryKey: ["shoppingLists"],
     queryFn: () => getShoppingList(1, null),
+    enabled: isLogged,
   });
+
+  const dispatch = useDispatch();
 
   return (
     <ScrollView style={styles.block}>
-      <Container
-        style={styles.container}
-        isLoading={loadingShoppingList}
-        error={error}
-      >
-        <View style={styles.title}>
-          <Text style={styles.shoppingListBlock}>Minhas Listas</Text>
-          <TouchableOpacity
-            onPress={() => {
-              console.log("Ir para a tela de listas");
-            }}
+      {isLogged ? (
+        <>
+          <Container
+            style={styles.container}
+            isLoading={loadingShoppingList}
+            error={error}
+            isLogged={isLogged}
           >
-            <Text style={styles.textLink}>Ver todas</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.title}>
+              <Text style={styles.shoppingListBlock}>Minhas Listas</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  //@ts-ignore
+                  navigation.navigate("MyShoppingListsScreen");
+                }}
+                style={styles.textAllShoppingLists}
+              >
+                <Text style={styles.textLink}>Ver todas</Text>
+                <Icon
+                  name="arrowright"
+                  size={20}
+                  color={myTheme.colors.primary}
+                />
+              </TouchableOpacity>
+            </View>
 
-        <ShoppingListBlock
-          shoppingLists={data ? data.items : []}
-          onPressShoppingList={function (item: ShoppingList): void {
-            console.log("Function not implemented.");
-          }}
-          onCreateList={function (): void {
-            console.log("Function not implemented.");
-          }}
-        />
-      </Container>
-      <Container
-        style={styles.container}
-        isLoading={loadingShoppingList}
-        error={error}
-      >
-        <Text style={styles.shoppingListBlock}>Últimos preços</Text>
-        <ShoppingListBlock
-          shoppingLists={data ? data.items : []}
-          onPressShoppingList={function (item: ShoppingList): void {
-            console.log("Function not implemented.");
-          }}
-          onCreateList={function (): void {
-            console.log("Function not implemented.");
-          }}
-        />
-      </Container>
+            <ShoppingListBlock
+              shoppingLists={data ? data.items : []}
+              onPressShoppingList={async (item) => {
+                await dispatch(setSelectedShoppingList(item));
+                //@ts-ignore
+                navigation.navigate("ShoppingListScreen");
+              }}
+              onCreateList={function (): void {
+                //@ts-ignore
+                navigation.navigate({ name: "CreateShoppingListScreen" });
+              }}
+            />
+          </Container>
+          <Container
+            style={styles.container}
+            isLoading={loadingShoppingList}
+            error={error}
+          >
+            <Text style={styles.shoppingListBlock}>Últimos preços</Text>
+            <ShoppingListBlock
+              shoppingLists={data ? data.items : []}
+              onPressShoppingList={function (item: ShoppingList): void {
+                console.log("Function not implemented.");
+              }}
+              onCreateList={function (): void {
+                console.log("Function not implemented.");
+              }}
+            />
+          </Container>
+        </>
+      ) : (
+        <Container
+          style={styles.container}
+          isLoading={loadingShoppingList}
+          error={error}
+          isLogged={isLogged}
+        >
+          <></>
+        </Container>
+      )}
     </ScrollView>
   );
 };
@@ -175,6 +212,10 @@ const styles = StyleSheet.create({
   textLink: {
     color: myTheme.colors.primary,
     margin: 3,
+  },
+  textAllShoppingLists: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 export default HomeScreen;

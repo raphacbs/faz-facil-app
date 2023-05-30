@@ -46,17 +46,6 @@ const PriceHistoryResumeScreen = () => {
       savePriceHistory(priceHistoryToSave),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["products"] });
-
-      //@ts-ignore
-      //   const previousScreen = navigation.getPrevious()?.name;
-      //   console.log("screenName", previousScreen?.name);
-      //   if (previousScreen?.name == "ProductListScreen") {
-      //     //@ts-ignore
-      //     navigation.pop(2);
-      //   } else {
-      //     //@ts-ignore
-      //     navigation.pop(3);
-      //   }
       //@ts-ignore
       navigation.pop(3);
       //@ts-ignore

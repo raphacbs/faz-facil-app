@@ -4,3 +4,7 @@ export interface Unit {
   initials: string;
   type: "integer" | "decimal";
 }
+
+export interface InitialState {
+  units: Array<Unit>;
+}

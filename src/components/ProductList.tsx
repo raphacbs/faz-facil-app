@@ -16,6 +16,7 @@ interface Props {
   onPressItem: (item: Product) => void;
   handleNextPage: () => void;
   onAddPrice: (item: Product) => void;
+  previousScreen: string;
 }
 
 const ProductList: React.FC<Props> = ({
@@ -23,8 +24,10 @@ const ProductList: React.FC<Props> = ({
   onPressItem,
   handleNextPage,
   onAddPrice,
+  previousScreen,
 }) => {
   const moment = useMoment();
+
   const renderPrice = (price: string) => {
     const [integerPart, decimalPart] = price.split(",");
     return (
