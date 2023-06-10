@@ -16,6 +16,7 @@ const useConstants = () => {
   const SET_SEARCH_TERM = "@SET_SEARCH_TERM";
   const SET_SEARCH_RESULTS = "@SET_SEARCH_RESULTS";
   const SET_UNITS = "@SET_UNITS";
+  const CHANGE_ITEM_IN_ITEMS = "@CHANGE_ITEM_IN_ITEMS";
 
   return {
     USER_LOGGER,
@@ -32,6 +33,7 @@ const useConstants = () => {
     SET_SEARCH_TERM,
     SET_SEARCH_RESULTS,
     SET_UNITS,
+    CHANGE_ITEM_IN_ITEMS,
   };
 };
 

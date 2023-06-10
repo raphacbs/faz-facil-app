@@ -8,11 +8,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import units from "../mocks/units";
 import { Unit } from "../types/Unit";
 import CustomButton from "./Button";
 import { PriceHistoryPost } from "../types/PriceHistories";
 import { ItemPost } from "../types/Item";
+import { useSelector } from "react-redux";
 
 interface PriceProps {
   submitPriceHistory?: (priceHistoryPost: PriceHistoryPost) => void;
@@ -38,16 +38,20 @@ const Price: React.FC<PriceProps> = ({
   addItem = false,
   isLoading,
 }: PriceProps) => {
+  //@ts-ignore
+  const units = useSelector((state) => state.unit.units);
+
   const { width } = useWindowDimensions(); // obter largura da tela do dispositivo
   const fontRatio = width / 375; // proporção da largura da tela (375 é a largura do iPhone 11)
   const [selectedLanguage, setSelectedLanguage] = useState(
-    units.find((x) => x.id != null)?.id
+    units.find((x: Unit) => x.id != null)?.id &&
+      units.find((x: Unit) => x.initials == "UND")?.id
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [value, setValue] = useState<number>(0);
-  const selectedUnit = units.find((unit) => unit.id === selectedLanguage);
+  const selectedUnit = units.find((unit: Unit) => unit.id === selectedLanguage);
   const [isDecimalUnit, setDecimalUnit] = useState<boolean>(
-    selectedUnit?.type === "decimal"
+    selectedUnit ? selectedUnit.integerType : false
   );
   const [isDisableButtonSave, setDisableButtonSave] = useState<boolean>(true);
   const [formattedQuantity, setFormattedQuantity] = useState<string>("1");
@@ -93,8 +97,8 @@ const Price: React.FC<PriceProps> = ({
   const fontSize = getFontSize(value);
 
   useEffect(() => {
-    const unit = units.find((u) => u.id === selectedLanguage) as Unit;
-    if (unit.type == "integer") {
+    const unit = units.find((u: Unit) => u.id === selectedLanguage) as Unit;
+    if (unit.integerType) {
       setDecimalUnit(false);
       setQuantity(1);
       setFormattedQuantity("1");
@@ -124,9 +128,9 @@ const Price: React.FC<PriceProps> = ({
 
   const handleQuantityChange = (text: string) => {
     if (selectedLanguage) {
-      const unit = units.find((u) => u.id === selectedLanguage) as Unit;
+      const unit = units.find((u: Unit) => u.id === selectedLanguage) as Unit;
       if (unit) {
-        if (unit.type == "integer") {
+        if (unit.integerType) {
           // unidade do tipo inteiro
           const intValue = parseInt(text, 10);
           if (!isNaN(intValue)) {
@@ -171,14 +175,16 @@ const Price: React.FC<PriceProps> = ({
   const handleSubtract = () => {
     if (typeof quantity === "number") {
       if (selectedLanguage) {
-        const unit = units.find((unit) => unit.id === selectedLanguage);
+        const unit = units.find((unit: Unit) => unit.id === selectedLanguage);
         if (unit) {
-          if (unit.type === "integer") {
+          if (unit.integerType) {
             let newQuantity = Math.max(quantity - 1, 1);
             setQuantity(newQuantity);
             setFormattedQuantity(newQuantity.toString());
           } else {
-            let newQuantity = Math.max(quantity - 0.1, 0.1);
+            let newQuantity = parseFloat(
+              Math.max(quantity - 0.1, 0.1).toFixed(3)
+            );
             setQuantity(newQuantity);
             setFormattedQuantity(
               newQuantity.toLocaleString("pt-BR", { minimumFractionDigits: 3 })
@@ -192,15 +198,16 @@ const Price: React.FC<PriceProps> = ({
   const handleAdd = () => {
     if (typeof quantity === "number") {
       if (selectedLanguage) {
-        const unit = units.find((unit) => unit.id === selectedLanguage);
+        const unit = units.find((unit: Unit) => unit.id === selectedLanguage);
         if (unit) {
-          if (unit.type === "integer") {
+          if (unit.integerType) {
             setQuantity(quantity + 1);
             setFormattedQuantity((quantity + 1).toString());
           } else {
-            setQuantity(quantity + 0.1);
+            let quantityTemp = parseFloat((quantity + 0.1).toFixed(3));
+            setQuantity(quantityTemp);
             setFormattedQuantity(
-              (quantity + 0.1).toLocaleString("pt-BR", {
+              quantityTemp.toLocaleString("pt-BR", {
                 minimumFractionDigits: 3,
               })
             );
@@ -229,7 +236,7 @@ const Price: React.FC<PriceProps> = ({
               setSelectedLanguage(itemValue)
             }
           >
-            {units.map((unit) => (
+            {units.map((unit: Unit) => (
               <Picker.Item
                 key={unit.id}
                 label={`${unit.description} (${unit.initials})`}
@@ -291,12 +298,15 @@ const Price: React.FC<PriceProps> = ({
               quantity: quantity,
               price: totalPrice,
               perUnit: value,
-              added: false,
+              added: true,
               product: {
                 code: productCode,
               },
               shoppingList: {
                 id: shoppingListId,
+              },
+              unit: {
+                id: selectedUnit.id,
               },
             };
             submitItem && submitItem(itemPost);

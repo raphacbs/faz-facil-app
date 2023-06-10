@@ -7,18 +7,22 @@ import {
   FlatList,
 } from "react-native";
 import { ShoppingList } from "../types/ShoppingList";
+import { useDispatch, useSelector } from "react-redux";
+import { setShoppingLists } from "../store/actions/shoppingListAction";
 
 interface Props {
-  shoppingLists: ShoppingList[];
   onPressShoppingList: (item: ShoppingList) => void;
   onCreateList: () => void;
 }
 
 const ShoppingListHorizontal: React.FC<Props> = ({
-  shoppingLists,
   onPressShoppingList,
   onCreateList,
 }) => {
+  const shoppingLists: ShoppingList[] = useSelector(
+    //@ts-ignore
+    (state) => state.shoppingList.shoppingLists
+  );
   const truncateString = (text: string, maxLength: number) => {
     if (text.length <= maxLength) {
       return text;

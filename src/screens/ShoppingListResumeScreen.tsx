@@ -41,6 +41,7 @@ const ShoppingListResumeScreen = () => {
       createShoppingList(shoppingListToSave),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
+      await queryClient.invalidateQueries({ queryKey: ["home-shoppingLists"] });
       //@ts-ignore
       navigation.pop(3);
       // //@ts-ignore

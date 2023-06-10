@@ -1,5 +1,5 @@
 import useConstants from "../../hooks/useConstants";
-import { InitialState } from "../../types/ShoppingList";
+import { InitialState, ShoppingList } from "../../types/ShoppingList";
 
 const initialState: InitialState = {
   shoppingListToSave: {
@@ -23,6 +23,7 @@ const initialState: InitialState = {
     },
   },
   shoppingLists: [],
+  homeShoppingLists: [],
 };
 
 const {
@@ -36,6 +37,18 @@ const reducer = (state = initialState, action: { type: any; payload: any }) => {
     case SET_SHOPPING_LIST_TO_SAVE:
       return { ...state, shoppingListToSave: action.payload };
     case SET_SHOPPING_LISTS:
+      let selectedShoppingList = { ...state }.selectedShoppingList;
+      if (selectedShoppingList.id != "") {
+        selectedShoppingList = action.payload.find(
+          (shoppingList: ShoppingList) =>
+            shoppingList.id === selectedShoppingList.id
+        );
+        return {
+          ...state,
+          shoppingLists: action.payload,
+          selectedShoppingList: selectedShoppingList,
+        };
+      }
       return { ...state, shoppingLists: action.payload };
     case SET_SELECTED_SHOPPING_LIST:
       return { ...state, selectedShoppingList: action.payload };

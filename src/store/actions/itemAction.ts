@@ -10,13 +10,31 @@ import { Item, ItemPost } from "../../types/Item";
 
 const endPoint = "/api/v1/shopping-lists";
 
-const { SET_ITEM_TO_SAVE, SET_ITEMS } = useConstants();
+const { SET_ITEM_TO_SAVE, SET_ITEMS, SET_SELECTED_ITEM, CHANGE_ITEM_IN_ITEMS } =
+  useConstants();
 
 export const setItemToSave: any = (itemToSave: ItemPost) => {
   return (dispatch: any) => {
     dispatch({
       type: SET_ITEM_TO_SAVE,
       payload: itemToSave,
+    });
+  };
+};
+
+export const setSelectedItem: any = (selectedItem: ItemPost) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: SET_SELECTED_ITEM,
+      payload: selectedItem,
+    });
+  };
+};
+export const changeItemFromItems: any = (item: ItemPost) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: CHANGE_ITEM_IN_ITEMS,
+      payload: item,
     });
   };
 };
@@ -33,12 +51,12 @@ export const setItems: any = (items: Array<Item>) => {
 export const addItem = async (itemPost: ItemPost) => {
   const userLogged: UserInfo | undefined = await getUserLogged();
   const url = `${Env.API_BASE_URL}api/v1/items`;
+  console.log(itemPost);
   const itemResponse = await axios.post(url, itemPost, {
     headers: {
       Authorization: `Bearer ${userLogged?.tokenDto.token}`,
     },
   });
-
   return itemResponse.data;
 };
 export const updateItem = async (itemPost: ItemPost) => {

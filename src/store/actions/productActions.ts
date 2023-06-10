@@ -48,6 +48,7 @@ export const searchProductByCode = (code: string) => {
 const getProductByCode = async (code: string) => {
   try {
     const url = `/api/v1/products/${code}`;
+
     const response = await api.get(url);
     return response.data;
   } catch (error: any) {

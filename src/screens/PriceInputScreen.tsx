@@ -48,6 +48,7 @@ const PriceInputScreen = () => {
     mutationFn: (item: ItemPost) => addItem(item),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
+      await queryClient.invalidateQueries({ queryKey: ["home-shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["items"] });
       await queryClient.invalidateQueries({ queryKey: ["products"] });
 

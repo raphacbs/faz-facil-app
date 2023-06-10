@@ -34,7 +34,9 @@ const CustomButton = ({
         isLoading && { backgroundColor: myTheme.colors.secondary },
         style,
       ]}
-      onPress={onPress}
+      onPress={() => {
+        onPress();
+      }}
     >
       <Text style={[styles.textButton, sizeStyles[size]]}>{title}</Text>
     </TouchableOpacity>

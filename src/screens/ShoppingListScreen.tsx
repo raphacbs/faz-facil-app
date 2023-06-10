@@ -2,13 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import Container from "../components/Container";
 import { ShoppingList } from "../types/ShoppingList";
 import { View, Text, StyleSheet } from "react-native";
-import { useInfiniteQuery } from "react-query";
-import { getItems, setItems } from "../store/actions/itemAction";
+import { useInfiniteQuery, useQueryClient } from "react-query";
+import {
+  getItems,
+  setItems,
+  setSelectedItem,
+} from "../store/actions/itemAction";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import ItemList from "../components/ItemList";
 import { Item } from "../types/Item";
 import { FAB } from "react-native-paper";
+import ShoppingListInfo from "../components/ShoppingListInfo";
 
 const ShoppingListScreen = () => {
   const selectedShoppingList: ShoppingList = useSelector(
@@ -21,6 +26,7 @@ const ShoppingListScreen = () => {
   );
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const [state, setState] = useState({ open: false });
 
   const onStateChange = ({ open }: any) => setState({ open });
@@ -76,14 +82,12 @@ const ShoppingListScreen = () => {
       }
     };
     refreshData();
+    console.log("useEffect in ShoppingList to update items");
   }, [data]);
 
-  function setSelectedItem(item: Item): any {
-    throw new Error("Function not implemented.");
-  }
-
   return (
-    <Container isLoading={isLoading || isFetching} error={error}>
+    <Container isLoading={isLoading} error={error}>
+      <ShoppingListInfo />
       {data?.pages && (
         <ItemList
           items={items}

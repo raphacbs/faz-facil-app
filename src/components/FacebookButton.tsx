@@ -6,7 +6,11 @@ import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import Constants from "expo-constants";
 import { useDispatch, useSelector } from "react-redux";
-import { authWithFacebook, authWithGoogle, setUserInfoLogged } from "../store/actions/userAction";
+import {
+  authWithFacebook,
+  authWithGoogle,
+  setUserInfoLogged,
+} from "../store/actions/userAction";
 import { Env } from "../Env";
 
 interface FacebookButtonProps {
@@ -40,7 +44,6 @@ const FacebookButton = ({ title }: FacebookButtonProps) => {
       "You need to add this url to your authorized redirect urls on your Facebook app: " +
         request.redirectUri
     );
-    console.log("request " + JSON.stringify(request));
   }
 
   const handleUserInfo = async () => {

@@ -40,6 +40,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onPressItem }) => {
     mutationFn: (item: Item) => updateItem(item),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
+      await queryClient.invalidateQueries({ queryKey: ["home-shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["items"] });
     },
   });
@@ -144,7 +145,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onPressItem }) => {
             <View style={styles.unitPrice}>
               <Entypo name="colours" size={20} color={myTheme.colors.dark} />
               <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-                {localItem.quantity}
+                {localItem.quantity} {localItem.unit.initials}
               </Text>
             </View>
             <View style={styles.unitPrice}>

@@ -51,6 +51,7 @@ const MyShoppingListsScreen = () => {
       }
     };
     refreshData();
+    console.log("useEffect in MyShoppingList to update shoppingList");
   }, [data]);
 
   const tryAgain = () => {

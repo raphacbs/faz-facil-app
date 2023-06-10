@@ -8,7 +8,7 @@ import {
 import Container from "../components/Container";
 import { ShoppingList } from "../types/ShoppingList";
 import ShoppingListBlock from "../components/ShoppingListBlock";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 import { FAB } from "react-native-elements";
 import { myTheme } from "../theme/theme";
@@ -18,7 +18,9 @@ import { useNavigation } from "@react-navigation/native";
 import {
   getShoppingList,
   setSelectedShoppingList,
+  setShoppingLists,
 } from "../store/actions/shoppingListAction";
+import { useEffect } from "react";
 
 const mockShoppingLists: ShoppingList[] = [
   {
@@ -101,19 +103,31 @@ const mockShoppingLists: ShoppingList[] = [
 const HomeScreen = () => {
   //@ts-ignore
   const isLogged = useSelector((state) => state.userInfo.isLogged);
+
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
   const {
-    data,
+    data: dataShoppingList,
     isLoading: loadingShoppingList,
     isError,
     error,
   } = useQuery({
-    queryKey: ["shoppingLists"],
+    queryKey: ["home-shoppingLists"],
     queryFn: () => getShoppingList(1, null),
     enabled: isLogged,
   });
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const refreshData = async () => {
+      if (dataShoppingList) {
+        console.log("useEffect in HomeScreen to update SHoppingLists");
+        await dispatch(setShoppingLists(dataShoppingList.items));
+      }
+    };
+    refreshData();
+  }, [dataShoppingList]);
 
   return (
     <ScrollView style={styles.block}>
@@ -144,7 +158,6 @@ const HomeScreen = () => {
             </View>
 
             <ShoppingListBlock
-              shoppingLists={data ? data.items : []}
               onPressShoppingList={async (item) => {
                 await dispatch(setSelectedShoppingList(item));
                 //@ts-ignore
@@ -163,7 +176,6 @@ const HomeScreen = () => {
           >
             <Text style={styles.shoppingListBlock}>Últimos preços</Text>
             <ShoppingListBlock
-              shoppingLists={data ? data.items : []}
               onPressShoppingList={function (item: ShoppingList): void {
                 console.log("Function not implemented.");
               }}

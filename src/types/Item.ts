@@ -1,5 +1,6 @@
 import { Product } from "./Product";
 import { ShoppingList } from "./ShoppingList";
+import { Unit } from "./Unit";
 
 export interface Item {
   id: string;
@@ -12,6 +13,7 @@ export interface Item {
   createdAt: string;
   updatedAt: string;
   added: boolean;
+  unit: Unit;
 }
 
 export type ItemPost = {
@@ -24,6 +26,9 @@ export type ItemPost = {
     code: string;
   };
   shoppingList: {
+    id: string;
+  };
+  unit: {
     id: string;
   };
 };

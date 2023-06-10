@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start-local": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start",
+    "start-local": "cross-env API_BASE_URL=http://172.20.0.1:8080/ API_AUTH_BASE_URL=http://172.20.0.1:8085/ expo start",
     "start": "expo start",
     "plop": "npx plop --plopfile ./plop/plopfile.js",
-    "android": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start --android",
-    "ios": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start --ios",
-    "web": "cross-env API_BASE_URL=http://192.168.1.12:8080/ API_AUTH_BASE_URL=http://192.168.1.12:8085/ expo start --web"
+    "android": "cross-env API_BASE_URL=http://172.20.0.1:8080/ API_AUTH_BASE_URL=http://172.20.0.1:8085/ expo start --android",
+    "ios": "cross-env API_BASE_URL=http://172.20.0.1:8080/ API_AUTH_BASE_URL=http://172.20.0.1:8085/ expo start --ios",
+    "web": "cross-env API_BASE_URL=http://172.20.0.1:8080/ API_AUTH_BASE_URL=http://172.20.0.1:8085/ expo start --web"
   },
   "dependencies": {
     "@expo/webpack-config": "^18.0.1",
@@ -44,7 +44,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.8",
     "react-native": "0.71.7",
-    "react-native-actions-sheet": "^0.8.29",
+    "react-native-actions-sheet": "^0.8.21",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-chart-kit": "^6.12.0",
     "react-native-currency-formatter": "^1.0.3",
@@ -56,6 +56,7 @@
     "react-native-reanimated": "~2.14.4",
     "react-native-safe-area-context": "^4.5.3",
     "react-native-screens": "~3.20.0",
+    "react-native-skeleton-content": "^1.0.28",
     "react-native-svg": "13.4.0",
     "react-native-tab-view": "^3.5.1",
     "react-native-vector-icons": "^9.2.0",

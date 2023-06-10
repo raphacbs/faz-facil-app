@@ -26,4 +26,5 @@ export interface InitialState {
   shoppingListToSave: ShoppingListPost;
   selectedShoppingList: ShoppingList;
   shoppingLists: Array<ShoppingList>;
+  homeShoppingLists: Array<ShoppingList>;
 }

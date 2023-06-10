@@ -14,6 +14,7 @@ import CustomButton from "./Button";
 import { PriceHistoryPost } from "../types/PriceHistories";
 import { Item, ItemPost } from "../types/Item";
 import { useSelector } from "react-redux";
+import useUtils from "../hooks/useUtils";
 
 interface PriceProps {
   item: Item;
@@ -36,13 +37,13 @@ const PriceItem: React.FC<PriceProps> = ({
   const { width } = useWindowDimensions(); // obter largura da tela do dispositivo
   const fontRatio = width / 375; // proporção da largura da tela (375 é a largura do iPhone 11)
   const [selectedLanguage, setSelectedLanguage] = useState(
-    units.find((x: Unit) => x.id != null)?.id
+    units.find((unit: Unit) => unit.id == item.unit.id).id
   );
   const [quantity, setQuantity] = useState<number>(item.quantity);
   const [value, setValue] = useState<number>(item.perUnit);
   const selectedUnit = units.find((unit: Unit) => unit.id === selectedLanguage);
   const [isDecimalUnit, setDecimalUnit] = useState<boolean>(
-    selectedUnit?.type === "decimal"
+    selectedUnit?.integerType
   );
   const [isDisableButtonSave, setDisableButtonSave] = useState<boolean>(true);
   const [formattedQuantity, setFormattedQuantity] = useState<string>(
@@ -57,6 +58,8 @@ const PriceItem: React.FC<PriceProps> = ({
     { limit: 10000, size: 20 },
     { limit: Infinity, size: 10 },
   ];
+
+  const { isDecimalOrInteger } = useUtils();
 
   const formattedValue =
     value >= 1000
@@ -93,32 +96,51 @@ const PriceItem: React.FC<PriceProps> = ({
 
   const handleOnChangePrice = (price: number) => {
     setValue(price);
-    onChange({ ...item, perUnit: price });
+    let newPrice = parseFloat((quantity * price).toFixed(2));
+    onChange({ ...item, perUnit: price, price: newPrice });
   };
 
   const handleOnChangeQuantity = (quantity: number) => {
     setQuantity(quantity);
-    onChange({ ...item, quantity });
+    let newPrice = parseFloat((quantity * value).toFixed(2));
+    onChange({
+      ...item,
+      quantity,
+      unit: units.find((unit: Unit) => unit.id === selectedLanguage) as Unit,
+      price: newPrice,
+    });
   };
 
   useEffect(() => {
     const unit = units.find(
       (unit: Unit) => unit.id === selectedLanguage
     ) as Unit;
-    if (unit.type == "integer") {
+    if (unit.integerType) {
       setDecimalUnit(false);
       // setQuantity(1);
-      handleOnChangeQuantity(item.quantity);
-      setFormattedQuantity(item.quantity.toString());
+      let quantityTemp = parseInt(item.quantity.toFixed(1));
+      quantityTemp = quantityTemp == 0 ? 1 : quantityTemp;
+      handleOnChangeQuantity(quantityTemp);
+      setFormattedQuantity(quantityTemp.toString());
     } else {
       setDecimalUnit(true);
       // setQuantity(0.1);
-      handleOnChangeQuantity(0.1);
-      setFormattedQuantity(
-        (0.1).toLocaleString("pt-BR", {
-          minimumFractionDigits: 3,
-        })
-      );
+      if (isDecimalOrInteger(item.quantity)) {
+        handleOnChangeQuantity(item.quantity);
+        setFormattedQuantity(
+          item.quantity.toLocaleString("pt-BR", {
+            minimumFractionDigits: 3,
+          })
+        );
+      } else {
+        let newQuantity = parseFloat(item.quantity.toFixed(3));
+        handleOnChangeQuantity(newQuantity);
+        setFormattedQuantity(
+          newQuantity.toLocaleString("pt-BR", {
+            minimumFractionDigits: 3,
+          })
+        );
+      }
     }
   }, [selectedLanguage]);
 
@@ -141,7 +163,7 @@ const PriceItem: React.FC<PriceProps> = ({
         (unit: Unit) => unit.id === selectedLanguage
       ) as Unit;
       if (unit) {
-        if (unit.type == "integer") {
+        if (unit.integerType) {
           // unidade do tipo inteiro
           const intValue = parseInt(text, 10);
           if (!isNaN(intValue)) {
@@ -185,15 +207,20 @@ const PriceItem: React.FC<PriceProps> = ({
   const handleSubtract = () => {
     if (typeof quantity === "number") {
       if (selectedLanguage) {
-        const unit = units.find((unit: Unit) => unit.id === selectedLanguage);
+        const unit: Unit = units.find(
+          (unit: Unit) => unit.id === selectedLanguage
+        );
         if (unit) {
-          if (unit.type === "integer") {
+          if (unit.integerType) {
             let newQuantity = Math.max(quantity - 1, 1);
             // setQuantity(newQuantity);
             handleOnChangeQuantity(newQuantity);
             setFormattedQuantity(newQuantity.toString());
           } else {
-            let newQuantity = Math.max(quantity - 0.1, 0.1);
+            let newQuantity = parseFloat(
+              Math.max(quantity - 0.1, 0.1).toFixed(3)
+            );
+
             // setQuantity(newQuantity);
             handleOnChangeQuantity(newQuantity);
             setFormattedQuantity(
@@ -208,17 +235,20 @@ const PriceItem: React.FC<PriceProps> = ({
   const handleAdd = () => {
     if (typeof quantity === "number") {
       if (selectedLanguage) {
-        const unit = units.find((unit: Unit) => unit.id === selectedLanguage);
+        const unit: Unit = units.find(
+          (unit: Unit) => unit.id === selectedLanguage
+        );
         if (unit) {
-          if (unit.type === "integer") {
+          if (unit.integerType) {
             // setQuantity(quantity + 1);
             handleOnChangeQuantity(quantity + 1);
             setFormattedQuantity((quantity + 1).toString());
           } else {
             // setQuantity(quantity + 0.1);
-            handleOnChangeQuantity(quantity + 1);
+            let quantityTemp = parseFloat((quantity + 0.1).toFixed(3));
+            handleOnChangeQuantity(quantityTemp);
             setFormattedQuantity(
-              (quantity + 0.1).toLocaleString("pt-BR", {
+              quantityTemp.toLocaleString("pt-BR", {
                 minimumFractionDigits: 3,
               })
             );

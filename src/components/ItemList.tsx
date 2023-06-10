@@ -46,6 +46,7 @@ const ItemList: React.FC<Props> = ({
       <ItemComponent
         item={item}
         onPressItem={(item: Item) => {
+          onPressItem(item);
           SheetManager.show("item-sheet", {
             payload: { item },
           });

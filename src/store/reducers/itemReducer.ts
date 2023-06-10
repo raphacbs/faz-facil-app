@@ -14,6 +14,9 @@ export const initialState: InitialState = {
     shoppingList: {
       id: "",
     },
+    unit: {
+      id: "",
+    },
   },
   selectedItem: {
     id: "",
@@ -46,6 +49,12 @@ export const initialState: InitialState = {
         totalValueAdded: 0,
       },
     },
+    unit: {
+      description: "",
+      id: "",
+      initials: "",
+      integerType: true,
+    },
     createdAt: "",
     updatedAt: "",
     added: false,
@@ -53,7 +62,8 @@ export const initialState: InitialState = {
   items: [],
 };
 
-const { SET_ITEM_TO_SAVE, SET_ITEMS, SET_SELECTED_ITEM } = useConstants();
+const { SET_ITEM_TO_SAVE, SET_ITEMS, SET_SELECTED_ITEM, CHANGE_ITEM_IN_ITEMS } =
+  useConstants();
 
 const reducer = (state = initialState, action: { type: any; payload: any }) => {
   switch (action.type) {
@@ -63,6 +73,14 @@ const reducer = (state = initialState, action: { type: any; payload: any }) => {
       return { ...state, items: action.payload };
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.payload };
+    case CHANGE_ITEM_IN_ITEMS:
+      const items = state.items.map((item) => {
+        if (item.id === action.payload.id) {
+          return { ...action.payload };
+        }
+        return item;
+      });
+      return { ...state, items: items };
     default:
       return state;
   }
