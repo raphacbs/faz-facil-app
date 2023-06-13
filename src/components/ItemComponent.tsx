@@ -16,6 +16,8 @@ import { updateItem } from "../store/actions/itemAction";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigation } from "@react-navigation/native";
 import useUtils from "../hooks/useUtils";
+import { useDispatch } from "react-redux";
+import { setStatusSelectedShoppingList } from "../store/actions/shoppingListAction";
 
 interface ItemProps {
   item: Item;
@@ -26,6 +28,7 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onPressItem }) => {
   const [localItem, setLocalItem] = useState<Item>({ ...item });
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setLocalItem({ ...item });
@@ -42,6 +45,11 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onPressItem }) => {
       await queryClient.invalidateQueries({ queryKey: ["shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["home-shoppingLists"] });
       await queryClient.invalidateQueries({ queryKey: ["items"] });
+      console.log("fim da invalidação");
+    },
+    onMutate: async () => {
+      console.log("altera status global da shopping list para loading");
+      await dispatch(setStatusSelectedShoppingList("loading"));
     },
   });
 
@@ -70,100 +78,82 @@ const ItemComponent: React.FC<ItemProps> = ({ item, onPressItem }) => {
       style={[styles.item, { flex: 1, width: "100%", height: "100%" }]}
       onPress={() => onPressItem(localItem)}
     >
-      {isLoading ? (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <ActivityIndicator
-            size={"large"}
-            style={{ alignSelf: "center", justifyContent: "center" }}
-          />
-        </View>
-      ) : (
-        <View>
-          <View style={styles.icon}>
-            <View style={styles.rowOne}>
-              <Icon name="barcode-scan" size={20} color={myTheme.colors.dark} />
-              <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-                {localItem.product.code}
-              </Text>
-            </View>
-            <View style={styles.added}>
-              <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-                {localItem.added ? "Adicionado" : "Planejado"}
-              </Text>
-              <Switch
-                trackColor={{ false: "#767577", true: myTheme.colors.success }}
-                thumbColor={
-                  localItem.added
-                    ? myTheme.colors.primary
-                    : myTheme.colors.light
-                }
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={localItem.added}
-              />
-            </View>
+      <View>
+        <View style={styles.icon}>
+          <View style={styles.rowOne}>
+            <Icon name="barcode-scan" size={20} color={myTheme.colors.dark} />
+            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
+              {localItem.product.code}
+            </Text>
           </View>
-          <View style={styles.description}>
-            <Icon
-              name="card-text-outline"
+          <View style={styles.added}>
+            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
+              {localItem.added ? "Adicionado" : "Planejado"}
+            </Text>
+            <Switch
+              trackColor={{ false: "#767577", true: myTheme.colors.success }}
+              thumbColor={
+                localItem.added ? myTheme.colors.primary : myTheme.colors.light
+              }
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={localItem.added}
+            />
+          </View>
+        </View>
+        <View style={styles.description}>
+          <Icon
+            name="card-text-outline"
+            size={20}
+            color={myTheme.colors.dark}
+          />
+          <Text
+            numberOfLines={2}
+            style={[
+              styles.itemTitle,
+              { marginLeft: 5, marginRight: 5, width: 300 },
+            ]}
+          >
+            {truncateString(localItem.product.description, 55)}
+          </Text>
+        </View>
+        <View style={styles.brand}>
+          <Icon name="factory" size={20} color={myTheme.colors.dark} />
+          <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
+            {localItem.product.brand}
+          </Text>
+        </View>
+        <View style={styles.price}>
+          <View style={styles.unitPrice}>
+            <Entypo name="price-tag" size={20} color={myTheme.colors.dark} />
+            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
+              {localItem.perUnit.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </Text>
+          </View>
+          <View style={styles.unitPrice}>
+            <Entypo name="colours" size={20} color={myTheme.colors.dark} />
+            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
+              {localItem.quantity} {localItem.unit.initials}
+            </Text>
+          </View>
+          <View style={styles.unitPrice}>
+            <Foundation
+              name="pricetag-multiple"
               size={20}
               color={myTheme.colors.dark}
             />
-            <Text
-              numberOfLines={2}
-              style={[
-                styles.itemTitle,
-                { marginLeft: 5, marginRight: 5, width: 300 },
-              ]}
-            >
-              {truncateString(localItem.product.description, 55)}
-            </Text>
-          </View>
-          <View style={styles.brand}>
-            <Icon name="factory" size={20} color={myTheme.colors.dark} />
             <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-              {localItem.product.brand}
+              {localItem.price.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
             </Text>
-          </View>
-          <View style={styles.price}>
-            <View style={styles.unitPrice}>
-              <Entypo name="price-tag" size={20} color={myTheme.colors.dark} />
-              <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-                {localItem.perUnit.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })}
-              </Text>
-            </View>
-            <View style={styles.unitPrice}>
-              <Entypo name="colours" size={20} color={myTheme.colors.dark} />
-              <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-                {localItem.quantity} {localItem.unit.initials}
-              </Text>
-            </View>
-            <View style={styles.unitPrice}>
-              <Foundation
-                name="pricetag-multiple"
-                size={20}
-                color={myTheme.colors.dark}
-              />
-              <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-                {localItem.price.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })}
-              </Text>
-            </View>
           </View>
         </View>
-      )}
+      </View>
     </TouchableOpacity>
   );
 };

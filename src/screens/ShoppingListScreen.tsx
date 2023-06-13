@@ -14,12 +14,22 @@ import ItemList from "../components/ItemList";
 import { Item } from "../types/Item";
 import { FAB } from "react-native-paper";
 import ShoppingListInfo from "../components/ShoppingListInfo";
+import {
+  getShoppingList,
+  setShoppingLists,
+  setStatusSelectedShoppingList,
+} from "../store/actions/shoppingListAction";
 
 const ShoppingListScreen = () => {
   const selectedShoppingList: ShoppingList = useSelector(
     //@ts-ignore
     (state) => state.shoppingList.selectedShoppingList
   );
+  const statusSelectedShoppingList: string = useSelector(
+    //@ts-ignore
+    (state) => state.shoppingList.statusSelectedShoppingList
+  );
+
   const items: Array<Item> = useSelector(
     //@ts-ignore
     (state) => state.item.items
@@ -72,6 +82,43 @@ const ShoppingListScreen = () => {
     }
   );
 
+  const {
+    data: dataShoppingList,
+    isLoading: loadingShoppingList,
+    isFetching: isFetchingShoppingList,
+  } = useInfiniteQuery(
+    ["home-shoppingLists"],
+    ({ pageParam = 1 }) => getShoppingList(pageParam, ""),
+    {
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.last) {
+          return lastPage.pageNo + 1;
+        }
+        return false;
+      },
+    }
+  );
+
+  useEffect(() => {
+    const refreshData = async () => {
+      if (dataShoppingList?.pages) {
+        console.log("useEffect in HomeScreen to update SHoppingLists");
+        await dispatch(
+          setShoppingLists(
+            dataShoppingList.pages.map((page) => page.items).flat()
+          )
+        );
+
+        const processedQueryKeys = queryClient
+          .getQueryCache()
+          .getAll()
+          .map((query) => query.queryKey);
+        console.log("QueryKeys processadas in home:", processedQueryKeys);
+      }
+    };
+    refreshData();
+  }, [dataShoppingList]);
+
   useEffect(() => {
     const refreshData = async () => {
       if (data?.pages) {
@@ -87,7 +134,7 @@ const ShoppingListScreen = () => {
 
   return (
     <Container isLoading={isLoading} error={error}>
-      <ShoppingListInfo />
+      <ShoppingListInfo isLoading={statusSelectedShoppingList == "loading"} />
       {data?.pages && (
         <ItemList
           items={items}

@@ -8,7 +8,7 @@ import {
 import Container from "../components/Container";
 import { ShoppingList } from "../types/ShoppingList";
 import ShoppingListBlock from "../components/ShoppingListBlock";
-import { useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 
 import { FAB } from "react-native-elements";
 import { myTheme } from "../theme/theme";
@@ -20,7 +20,7 @@ import {
   setSelectedShoppingList,
   setShoppingLists,
 } from "../store/actions/shoppingListAction";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const mockShoppingLists: ShoppingList[] = [
   {
@@ -103,27 +103,68 @@ const mockShoppingLists: ShoppingList[] = [
 const HomeScreen = () => {
   //@ts-ignore
   const isLogged = useSelector((state) => state.userInfo.isLogged);
+  const [searchDescription, setSearchDescription] = useState("");
 
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  // const {
+  //   data: dataShoppingList,
+  //   isLoading: loadingShoppingList,
+  //   isError,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["home-shoppingLists"],
+  //   queryFn: () => getShoppingList(1, null),
+  //   enabled: isLogged,
+  // });
+
   const {
     data: dataShoppingList,
     isLoading: loadingShoppingList,
     isError,
     error,
-  } = useQuery({
-    queryKey: ["home-shoppingLists"],
-    queryFn: () => getShoppingList(1, null),
-    enabled: isLogged,
-  });
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(
+    ["home-shoppingLists"],
+    ({ pageParam = 1 }) => getShoppingList(pageParam, searchDescription),
+    {
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.last) {
+          return lastPage.pageNo + 1;
+        }
+        return false;
+      },
+      enabled: isLogged,
+    }
+  );
 
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   const refreshData = async () => {
+  //     if (dataShoppingList) {
+  //       console.log("useEffect in HomeScreen to update SHoppingLists");
+  //       await dispatch(setShoppingLists(dataShoppingList.items));
+  //     }
+  //   };
+  //   refreshData();
+  // }, [dataShoppingList]);
+
   useEffect(() => {
     const refreshData = async () => {
-      if (dataShoppingList) {
+      if (dataShoppingList?.pages) {
         console.log("useEffect in HomeScreen to update SHoppingLists");
-        await dispatch(setShoppingLists(dataShoppingList.items));
+        await dispatch(
+          setShoppingLists(
+            dataShoppingList.pages.map((page) => page.items).flat()
+          )
+        );
+        const processedQueryKeys = queryClient
+          .getQueryCache()
+          .getAll()
+          .map((query) => query.queryKey);
+        console.log("QueryKeys processadas in home:", processedQueryKeys);
       }
     };
     refreshData();

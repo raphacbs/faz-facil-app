@@ -13,6 +13,7 @@ const {
   SET_SHOPPING_LIST_TO_SAVE,
   SET_SHOPPING_LISTS,
   SET_SELECTED_SHOPPING_LIST,
+  SET_STATUS_SELECTED_SHOPPING_LIST,
 } = useConstants();
 
 export const setShoppingListToSave: any = (
@@ -32,6 +33,17 @@ export const setSelectedShoppingList: any = (
     dispatch({
       type: SET_SELECTED_SHOPPING_LIST,
       payload: selectedShoppingList,
+    });
+  };
+};
+
+export const setStatusSelectedShoppingList: any = (
+  status: "empty" | "loading" | "loaded"
+) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: SET_STATUS_SELECTED_SHOPPING_LIST,
+      payload: status,
     });
   };
 };

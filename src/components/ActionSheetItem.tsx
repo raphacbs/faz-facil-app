@@ -32,6 +32,7 @@ import {
 import { Button } from "react-native-paper";
 import useUtils from "../hooks/useUtils";
 import { useDispatch, useSelector } from "react-redux";
+import { setStatusSelectedShoppingList } from "../store/actions/shoppingListAction";
 
 const ActionSheetItem: React.FC<SheetProps> = ({
   sheetId,
@@ -68,8 +69,12 @@ const ActionSheetItem: React.FC<SheetProps> = ({
         queryKey: ["home-shoppingLists"],
       });
       await queryClient.invalidateQueries({
-        queryKey: ["items"],
+        queryKey: ["items", item.shoppingList.id],
       });
+    },
+    onMutate: async () => {
+      console.log("altera status global da shopping list para loading");
+      await dispatch(setStatusSelectedShoppingList("loading"));
     },
   });
 
@@ -89,10 +94,14 @@ const ActionSheetItem: React.FC<SheetProps> = ({
         queryKey: ["home-shoppingLists"],
       });
       await queryClient.invalidateQueries({
-        queryKey: ["items"],
+        queryKey: ["items", item.shoppingList.id],
       });
       const data = queryClient.getQueryData("shoppingLists");
       console.log("data", data);
+    },
+    onMutate: async () => {
+      console.log("altera status global da shopping list para loading");
+      await dispatch(setStatusSelectedShoppingList("loading"));
     },
   });
 

@@ -24,12 +24,14 @@ const initialState: InitialState = {
   },
   shoppingLists: [],
   homeShoppingLists: [],
+  statusSelectedShoppingList: "empty",
 };
 
 const {
   SET_SHOPPING_LIST_TO_SAVE,
   SET_SHOPPING_LISTS,
   SET_SELECTED_SHOPPING_LIST,
+  SET_STATUS_SELECTED_SHOPPING_LIST,
 } = useConstants();
 
 const reducer = (state = initialState, action: { type: any; payload: any }) => {
@@ -47,11 +49,18 @@ const reducer = (state = initialState, action: { type: any; payload: any }) => {
           ...state,
           shoppingLists: action.payload,
           selectedShoppingList: selectedShoppingList,
+          statusSelectedShoppingList: "loaded",
         };
       }
       return { ...state, shoppingLists: action.payload };
     case SET_SELECTED_SHOPPING_LIST:
-      return { ...state, selectedShoppingList: action.payload };
+      return {
+        ...state,
+        selectedShoppingList: action.payload,
+        statusSelectedShoppingList: "loaded",
+      };
+    case SET_STATUS_SELECTED_SHOPPING_LIST:
+      return { ...state, statusSelectedShoppingList: action.payload };
     default:
       return state;
   }

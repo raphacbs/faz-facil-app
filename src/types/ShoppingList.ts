@@ -1,3 +1,5 @@
+import { string } from "yup";
+
 export interface ShoppingList {
   id: string;
   description: string;
@@ -27,4 +29,5 @@ export interface InitialState {
   selectedShoppingList: ShoppingList;
   shoppingLists: Array<ShoppingList>;
   homeShoppingLists: Array<ShoppingList>;
+  statusSelectedShoppingList: "empty" | "loaded" | "loading";
 }
