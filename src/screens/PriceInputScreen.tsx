@@ -11,6 +11,8 @@ import { Product } from "../types/Product";
 import { Item, ItemPost } from "../types/Item";
 import { addItem } from "../store/actions/itemAction";
 import { useMutation, useQueryClient } from "react-query";
+import * as Haptics from "expo-haptics";
+import { SheetManager } from "react-native-actions-sheet";
 
 const PriceInputScreen = () => {
   const dispatch = useDispatch();
@@ -59,7 +61,14 @@ const PriceInputScreen = () => {
 
   useEffect(() => {
     if (data) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setProduct(data);
+    } else if (isLoading == false) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      //@ts-ignore
+      navigation.navigate("ShoppingListScreen");
+      //@ts-ignore
+      SheetManager.show("register-sheet");
     }
   }, [data]);
 

@@ -49,8 +49,9 @@ const getProductByCode = async (code: string) => {
   try {
     const url = `/api/v1/products/${code}`;
 
-    const response = await api.get(url);
-    return response.data;
+    // const response = await api.get(url);
+    //  return response.data;
+    return null;
   } catch (error: any) {
     if (error.response) {
       // Houve uma resposta HTTP do servidor

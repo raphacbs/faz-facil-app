@@ -4,6 +4,9 @@ import { Input } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as Yup from "yup";
 import { myTheme } from "../theme/theme";
+import { useSelector } from "react-redux";
+import PriceItem from "./PriceItem";
+import { Item, ItemNewProductPost, ItemPost } from "../types/Item";
 // import {useTheme} from '../../hooks';
 export type Field = {
   name: string;
@@ -17,18 +20,73 @@ export type Field = {
 };
 
 type FormProps = {
-  fields: Field[];
-  onSubmit: (values: Record<string, string>) => void;
+  onSubmit: (item: ItemNewProductPost) => void;
   submitButtonTitle: string;
   isLoading: boolean;
 };
 
-const Form = ({
-  fields,
+const FormRegisterProduct = ({
   onSubmit,
   submitButtonTitle,
   isLoading,
 }: FormProps) => {
+  //@ts-ignore
+  const code = useSelector((state) => state.product.codeSearched);
+  //@ts-ignore
+  const shoppingList = useSelector(
+    //@ts-ignore
+    (state) => state.shoppingList.selectedShoppingList
+  );
+  //@ts-ignore
+  const units = useSelector((state) => state.unit.units);
+
+  const [isEnableSubmit, setIsEnableSubmit] = useState<boolean>(false);
+
+  const [localItem, setLocalItem] = useState<Item>({
+    added: true,
+    perUnit: 0.0,
+    shoppingList: shoppingList,
+    createdAt: "",
+    id: "",
+    note: "",
+    price: 0.0,
+    product: {
+      code: "",
+      description: "",
+      brand: "",
+      createdAt: "",
+      updateAt: "",
+    },
+    quantity: 1,
+    unit: units[0],
+    updatedAt: "",
+  });
+
+  const fields: Field[] = [
+    {
+      name: "productCode",
+      label: "Código",
+      rule: Yup.string().required("Informe o código do produto"),
+      placeholder: "",
+      defaultValue: code,
+    },
+    {
+      name: "productDescription",
+      label: "Descrição",
+      rule: Yup.string().required("Informe a descrição do produto"),
+      placeholder: "BISCOITO AMANTEIGADO PACOTE 100G",
+      isUpperCase: true,
+      autoFocus: true,
+    },
+    {
+      name: "productBrand",
+      label: "Marca/Fabricante",
+      rule: Yup.string().required("Informe a marca do produto"),
+      placeholder: "VITARELLA",
+      isUpperCase: true,
+    },
+  ];
+
   const [values, setValues] = useState<Record<string, string>>(
     fields.reduce((obj, field) => {
       obj[field.name] = field.defaultValue || "";
@@ -55,7 +113,27 @@ const Form = ({
         )
         .validate(values, { abortEarly: false });
 
-      onSubmit(values);
+      if (isEnableSubmit) {
+        const item: ItemNewProductPost = {
+          note: "",
+          quantity: localItem.quantity,
+          price: localItem.price,
+          perUnit: localItem.perUnit,
+          added: true,
+          product: {
+            code: values.productCode,
+            description: values.productDescription,
+            brand: values.productBrand,
+          },
+          shoppingList: {
+            id: localItem.shoppingList.id,
+          },
+          unit: {
+            id: localItem.unit.id,
+          },
+        };
+        onSubmit(item);
+      }
       setErrors({});
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
@@ -77,7 +155,7 @@ const Form = ({
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       {fields.map((field, index) => (
         <Input
           key={field.name}
@@ -94,15 +172,22 @@ const Form = ({
           ref={(ref) => (inputRefs.current[index] = ref)}
         />
       ))}
-      {/* <Button
-        disabled={isLoading}
-        title={submitButtonTitle}
-        onPress={handleSubmit}
-        color={useTheme.colors.primary}
-      /> */}
+      <PriceItem
+        style={{ marginTop: 10, marginBottom: 10 }}
+        item={localItem}
+        onChange={(item) => {
+          setLocalItem(item);
+          setIsEnableSubmit(item.perUnit > 0);
+        }}
+      />
       <TouchableOpacity
-        disabled={isLoading}
-        style={styles.button}
+        disabled={isLoading || !isEnableSubmit}
+        style={[
+          styles.button,
+          (isLoading || !isEnableSubmit) && {
+            backgroundColor: myTheme.colors.secondary,
+          },
+        ]}
         onPress={handleSubmit}
       >
         <Text style={styles.textButton}>{submitButtonTitle}</Text>
@@ -111,7 +196,7 @@ const Form = ({
   );
 };
 
-export default Form;
+export default FormRegisterProduct;
 
 const styles = StyleSheet.create({
   button: {
@@ -119,10 +204,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 8,
     paddingHorizontal: 16,
+    marginTop: 20,
   },
   textButton: {
     color: myTheme.colors.light,
     justifyContent: "center",
     alignSelf: "center",
+  },
+  container: {
+    justifyContent: "space-between",
+    alignContent: "space-between",
   },
 });

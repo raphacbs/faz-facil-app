@@ -18,13 +18,14 @@ import ActionSheet, {
   RouteScreenProps,
   useSheetRouteParams,
 } from "react-native-actions-sheet";
-import { Item } from "../types/Item";
+import { Item, ItemNewProductPost, ItemPost } from "../types/Item";
 import { myTheme } from "../theme/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import PriceItem from "./PriceItem";
 import { initialState } from "../store/reducers/itemReducer";
 import { QueryKey, useMutation, useQueryClient } from "react-query";
 import {
+  addItemWithNewProduct,
   changeItemFromItems,
   removeItem,
   updateItem,
@@ -33,77 +34,80 @@ import { Button } from "react-native-paper";
 import useUtils from "../hooks/useUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { setStatusSelectedShoppingList } from "../store/actions/shoppingListAction";
+import Form, { Field } from "./Form";
+import * as Yup from "yup";
+import FormRegisterProduct from "./FormRegisterProduct";
 
-const ActionSheetItem: React.FC<SheetProps> = ({
+const ActionSheetRegister: React.FC<SheetProps> = ({
   sheetId,
   payload,
 }: SheetProps<{ item: Item }>) => {
-  const [toggleAdd, setToggleAdd] = useState<boolean>(
-    payload ? payload.item.added : false
-  );
   const [isCancel, setIsCancel] = useState<boolean>(false);
-  const item: Item = useSelector(
-    //@ts-ignore
-    (state) => state.item.selectedItem
-  );
-  const [localItem, setLocalItem] = useState<Item>({ ...item });
+  //@ts-ignore
+  const code = useSelector((state) => state.product.codeSearched);
+  const [localItem, setLocalItem] = useState<Item>();
 
   const actionSheetRef = useRef<ActionSheetRef>(null);
-  const scrollHandlers = useScrollHandlers<ScrollView>("1", actionSheetRef);
+  const scrollHandlers = useScrollHandlers<ScrollView>("0", actionSheetRef);
   const queryClient = useQueryClient();
   const { equals } = useUtils();
   const router = useSheetRouter();
   const dispatch = useDispatch();
+
   const {
-    mutate: updateItemMutation,
+    mutate: addItemMutation,
     isLoading,
     error,
     isError,
   } = useMutation({
-    mutationFn: (item: Item) => updateItem(item),
+    mutationFn: (item: ItemNewProductPost) => addItemWithNewProduct(item),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["items"],
+      });
       await queryClient.invalidateQueries({
         queryKey: ["shoppingLists"],
       });
       await queryClient.invalidateQueries({
         queryKey: ["home-shoppingLists"],
       });
-      await queryClient.invalidateQueries({
-        queryKey: ["items", item.shoppingList.id],
-      });
     },
     onMutate: async () => {
       console.log("altera status global da shopping list para loading");
       await dispatch(setStatusSelectedShoppingList("loading"));
+      actionSheetRef.current?.hide();
     },
   });
 
-  const {
-    mutate: removeItemMutation,
-    isLoading: isLoadingRemove,
-    error: errorRemove,
-    isError: isErrorRemove,
-    status: statusRemove,
-  } = useMutation({
-    mutationFn: (itemId: string) => removeItem(itemId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["shoppingLists"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["home-shoppingLists"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["items", item.shoppingList.id],
-      });
-      const data = queryClient.getQueryData("shoppingLists");
-      console.log("data", data);
+  const handleSubmit = (item: ItemNewProductPost) => {
+    console.log(item);
+    addItemMutation(item);
+  };
+
+  const fields: Field[] = [
+    {
+      name: "productCode",
+      label: "Código",
+      rule: Yup.string().required("Informe o código do produto"),
+      placeholder: "",
+      defaultValue: code,
     },
-    onMutate: async () => {
-      console.log("altera status global da shopping list para loading");
-      await dispatch(setStatusSelectedShoppingList("loading"));
+    {
+      name: "productDescription",
+      label: "Descrição",
+      rule: Yup.string().required("Informe a descrição do produto"),
+      placeholder: "BISCOITO AMANTEIGADO PACOTE 100G",
+      isUpperCase: true,
+      autoFocus: true,
     },
-  });
+    {
+      name: "productBrand",
+      label: "Marca/Fabricante",
+      rule: Yup.string().required("Informe a marca do produto"),
+      placeholder: "VITARELLA",
+      isUpperCase: true,
+    },
+  ];
 
   const RouteLoading = ({ router }: RouteScreenProps) => {
     return (
@@ -133,16 +137,13 @@ const ActionSheetItem: React.FC<SheetProps> = ({
     );
   };
 
-  const RouteRemove = ({ router }: RouteScreenProps) => {
+  const RouteQuestion = ({ router }: RouteScreenProps) => {
     return (
       <View style={styles.containerRouteRemove}>
         <Text style={styles.text}>
-          Deseja remover o item
-          <Text style={{ fontWeight: "bold" }}>
-            {" "}
-            {localItem.product.description}
-          </Text>
-          ?
+          O produto com o código
+          <Text style={{ fontWeight: "bold" }}> {code} </Text>
+          não foi localizado, deseja cadastra-lo?
         </Text>
         <View style={styles.buttonContainer}>
           <Button
@@ -150,18 +151,17 @@ const ActionSheetItem: React.FC<SheetProps> = ({
             textColor={myTheme.colors.dark}
             style={{ marginBottom: 15 }}
             onPress={() => {
-              router.goBack();
+              actionSheetRef.current?.hide();
             }}
           >
             Não
           </Button>
           <Button
             mode="contained-tonal"
-            buttonColor={myTheme.colors.danger}
+            buttonColor={myTheme.colors.primary}
             textColor={myTheme.colors.light}
             onPress={() => {
-              removeItemMutation(localItem.id);
-              router.navigate("route-loading");
+              router.navigate("route-register");
             }}
           >
             Sim
@@ -170,143 +170,20 @@ const ActionSheetItem: React.FC<SheetProps> = ({
       </View>
     );
   };
-
-  const RouteItem = ({ router, payload }: RouteScreenProps) => {
-    const params = useSheetRouteParams();
-    const [item, setItem] = useState<Item>(
-      payload ? { ...payload.item } : initialState.selectedItem
-    );
+  const RouteFormCreate = ({ router }: RouteScreenProps) => {
     return (
-      <View
-        style={{
-          paddingHorizontal: 12,
-          maxHeight: "100%",
-        }}
-      >
-        <View style={styles.container}>
-          <View style={styles.rowOne}>
-            <MaterialCommunityIcons
-              name="barcode-scan"
-              size={20}
-              color={myTheme.colors.dark}
-            />
-            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-              {item.product.code}
-            </Text>
-          </View>
-          <View style={styles.added}>
-            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-              {item.added ? "Adicionado" : "Planejado"}
-            </Text>
-            <Switch
-              trackColor={{ false: "#767577", true: myTheme.colors.success }}
-              thumbColor={
-                item.added ? myTheme.colors.primary : myTheme.colors.light
-              }
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={(value) => {
-                // setToggleAdd(value);
-                setItem({ ...item, added: value });
-                setLocalItem({ ...item, added: value });
-                // updateItemMutation({ ...item, added: value });
-              }}
-              value={item.added}
-            />
-          </View>
-        </View>
-        <View style={styles.container2}>
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <View style={[styles.description, { flex: 2 }]}>
-              <MaterialCommunityIcons
-                name="card-text-outline"
-                size={20}
-                color={myTheme.colors.dark}
-              />
-              <Text style={[styles.itemTitle, { marginLeft: 5 }]}>
-                {item.product.description}
-              </Text>
-            </View>
-
-            <View style={[styles.image, { flex: 1 }]}>
-              <Image
-                source={{
-                  uri: item.product.thumbnail
-                    ? item.product.thumbnail
-                    : "https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4",
-                }}
-                style={styles.thumbnail}
-              />
-            </View>
-          </View>
-
-          <View style={styles.brand}>
-            <MaterialCommunityIcons
-              name="factory"
-              size={20}
-              color={myTheme.colors.dark}
-            />
-            <Text style={[styles.itemSubtitle, { marginLeft: 5 }]}>
-              {item.product.brand}
-            </Text>
-          </View>
-          <PriceItem
-            style={{ marginTop: 10 }}
-            item={item}
-            onChange={(item) => {
-              setLocalItem(item);
-            }}
-          />
-        </View>
-        <View style={styles.contentBtn}>
-          <Button
-            mode="contained"
-            buttonColor={myTheme.colors.danger}
-            onPress={() => {
-              router.navigate("route-remove");
-            }}
-          >
-            Remover
-          </Button>
-          <Button
-            mode="contained"
-            style={{ marginTop: 10 }}
-            buttonColor={myTheme.colors.secondary}
-            onPress={async () => {
-              await setIsCancel(true);
-              actionSheetRef.current?.hide();
-            }}
-          >
-            Cancelar
-          </Button>
-          <Button
-            mode="contained"
-            buttonColor={myTheme.colors.success}
-            style={{ marginTop: 10 }}
-            onPress={async () => {
-              await setIsCancel(false);
-              actionSheetRef.current?.hide();
-            }}
-          >
-            Salvar
-          </Button>
-        </View>
-        {/* <View style={styles.contentBtnSave}>
-          <Button
-            mode="contained"
-            buttonColor={myTheme.colors.success}
-            onPress={async () => {
-              await setIsCancel(false);
-              actionSheetRef.current?.hide();
-            }}
-          >
-            Salvar
-          </Button>
-        </View> */}
-        <ScrollView {...scrollHandlers} style={styles.scrollView}></ScrollView>
+      <View style={styles.containerRouteRegiste}>
+        {/* <Form
+          fields={fields}
+          onSubmit={handleSubmit}
+          submitButtonTitle="Salvar"
+          isLoading={false}
+        /> */}
+        <FormRegisterProduct
+          onSubmit={handleSubmit}
+          submitButtonTitle="Salvar"
+          isLoading={isLoading}
+        />
       </View>
     );
   };
@@ -315,23 +192,19 @@ const ActionSheetItem: React.FC<SheetProps> = ({
     router && router.navigate("route-error");
   };
 
-  useEffect(() => {
-    if (statusRemove == "success") {
-      actionSheetRef.current?.hide();
-    }
-    if (statusRemove == "error") {
-      goRouteError();
-    }
-  }, [statusRemove]);
+  // useEffect(() => {
+  //   if (statusRemove == "success") {
+  //     actionSheetRef.current?.hide();
+  //   }
+  //   if (statusRemove == "error") {
+  //     goRouteError();
+  //   }
+  // }, [statusRemove]);
 
   const routes: Route[] = [
     {
-      name: "route-remove",
-      component: RouteRemove,
-    },
-    {
-      name: "route-item",
-      component: RouteItem,
+      name: "route-question",
+      component: RouteQuestion,
     },
     {
       name: "route-loading",
@@ -341,6 +214,10 @@ const ActionSheetItem: React.FC<SheetProps> = ({
       name: "route-error",
       component: RouteError,
     },
+    {
+      name: "route-register",
+      component: RouteFormCreate,
+    },
   ];
 
   return (
@@ -348,17 +225,7 @@ const ActionSheetItem: React.FC<SheetProps> = ({
       id={sheetId}
       ref={actionSheetRef}
       onBeforeShow={() => {}}
-      onBeforeClose={async (data) => {
-        const ignoreProperties = ["product", "shoppingList"];
-        if (
-          //@ts-ignore
-          equals(data?.item, localItem, ignoreProperties) == false &&
-          isCancel == false
-        ) {
-          await dispatch(changeItemFromItems({ ...localItem }));
-          updateItemMutation({ ...localItem });
-        }
-      }}
+      onBeforeClose={async (data) => {}}
       containerStyle={{
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
@@ -367,8 +234,8 @@ const ActionSheetItem: React.FC<SheetProps> = ({
         width: 100,
         height: 10,
       }}
-      snapPoints={[50, 100]}
-      initialSnapIndex={1}
+      snapPoints={[100]}
+      initialSnapIndex={0}
       statusBarTranslucent
       drawUnderStatusBar={true}
       gestureEnabled={true}
@@ -377,9 +244,9 @@ const ActionSheetItem: React.FC<SheetProps> = ({
       onClose={() => {}}
       enableRouterBackNavigation={true}
       routes={routes}
-      closeOnTouchBackdrop={false}
-      closeOnPressBack={false}
-      initialRoute="route-item"
+      closeOnTouchBackdrop={true}
+      closeOnPressBack={true}
+      initialRoute="route-question"
     ></ActionSheet>
   );
 };
@@ -475,6 +342,16 @@ const styles = StyleSheet.create({
     marginRight: 15,
     marginBottom: 50,
     height: 200,
+  },
+  containerRouteRegiste: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+
+    marginTop: 15,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 50,
+    height: "100%",
   },
   container2: {
     flexDirection: "column",
@@ -574,4 +451,4 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
 });
-export default ActionSheetItem;
+export default ActionSheetRegister;

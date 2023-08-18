@@ -4,6 +4,7 @@ import { getUserLogged } from "../store/actions/userAction";
 import { UserInfo } from "../types/UserInfo";
 //url dev : https://faz-feira-hml.herokuapp.com
 // url local: http://192.168.1.16:8080
+console.log(Env.API_BASE_URL);
 const api = axios.create({
   baseURL: Env.API_BASE_URL,
   // headers: {

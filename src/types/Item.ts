@@ -33,6 +33,25 @@ export type ItemPost = {
   };
 };
 
+export type ItemNewProductPost = {
+  note: string;
+  quantity: number;
+  price: number;
+  perUnit: number;
+  added: boolean;
+  product: {
+    code: string;
+    description: string;
+    brand: string;
+  };
+  shoppingList: {
+    id: string;
+  };
+  unit: {
+    id: string;
+  };
+};
+
 export interface InitialState {
   itemToSave: ItemPost;
   selectedItem: Item;

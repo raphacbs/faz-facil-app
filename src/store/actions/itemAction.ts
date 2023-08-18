@@ -6,7 +6,7 @@ import { Env } from "../../Env";
 import { getUserLogged } from "./userAction";
 import { UserInfo } from "../../types/UserInfo";
 import axios from "axios";
-import { Item, ItemPost } from "../../types/Item";
+import { Item, ItemNewProductPost, ItemPost } from "../../types/Item";
 
 const endPoint = "/api/v1/shopping-lists";
 
@@ -59,6 +59,19 @@ export const addItem = async (itemPost: ItemPost) => {
   });
   return itemResponse.data;
 };
+
+export const addItemWithNewProduct = async (itemPost: ItemNewProductPost) => {
+  const userLogged: UserInfo | undefined = await getUserLogged();
+  const url = `${Env.API_BASE_URL}api/v1/items/product`;
+  console.log(itemPost);
+  const itemResponse = await axios.post(url, itemPost, {
+    headers: {
+      Authorization: `Bearer ${userLogged?.tokenDto.token}`,
+    },
+  });
+  return itemResponse.data;
+};
+
 export const updateItem = async (itemPost: ItemPost) => {
   const userLogged: UserInfo | undefined = await getUserLogged();
   const url = `${Env.API_BASE_URL}api/v1/items`;

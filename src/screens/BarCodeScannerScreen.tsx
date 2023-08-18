@@ -8,6 +8,7 @@ import { setSearchCode } from "../store/actions/productActions";
 import Container from "../components/Container";
 import useConstants from "../hooks/useConstants";
 import { useQueryClient } from "react-query";
+import * as Haptics from "expo-haptics";
 
 const BarCodeScannerScreen = () => {
   const navigation = useNavigation();
@@ -50,6 +51,7 @@ const BarCodeScannerScreen = () => {
           : "BarCodeScannerScreen",
       });
     }
+
     setCode(code);
   };
   const onPressCancel = () => {

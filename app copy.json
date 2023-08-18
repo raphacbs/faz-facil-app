@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "Faz Feira",
+    "slug": "faz-feira",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": ["com.raphacbs.fazfeiraapp", "fb635889885070244"],
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      },
+      "bundleIdentifier": "com.raphacbs.fazfeiraapp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.raphacbs.fazfeiraapp",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "24784022-2fe9-4f30-9f2e-0251b6b16edb"
+      },
+      "googleSignIn": {
+        "androidClientId": "44441057218-kdf86o25q9hnq142cg7sa8u0ueomngak.apps.googleusercontent.com",
+        "expoClientId": "44441057218-am9cvl3t8tv880pblatp8dln5nqto3eo.apps.googleusercontent.com"
+      }
+    },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ]
+    ],
+    "owner": "raphacbs"
+  }
+}

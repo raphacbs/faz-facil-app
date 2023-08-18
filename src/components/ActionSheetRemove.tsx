@@ -28,6 +28,7 @@ const ActionSheetRemove: React.FC<SheetProps> = ({
       defaultOverlayOpacity={0.3}
       payload={payload}
       onClose={() => {}}
+      enableRouterBackNavigation={true}
     >
       <Text style={styles.text}>
         Deseja remover o item {payload?.item.product.description}?
