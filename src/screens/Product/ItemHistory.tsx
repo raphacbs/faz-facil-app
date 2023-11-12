@@ -51,7 +51,7 @@ const ProductHistory: React.FC<Props> = ({ product }) => {
   const getHistData = () => {
     if (product) {
       let prices = product.priceHistories;
-      if (prices.length > 0) {
+      if (prices != null && prices.length > 0) {
         prices = prices.sort(compareDate);
         const _labels = prices.map((x: any) =>
           formatDate(x.updatedAt, "DD/MM/YY")

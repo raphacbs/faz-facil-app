@@ -46,7 +46,7 @@ const Item: React.FC<Props> = ({ item, shoppingList }) => {
 
   const verifyIfPriceUp = () => {
     let prices = item.product.priceHistories;
-    if (prices.length > 0) {
+    if (prices != null && prices.length > 0) {
       const last = prices[prices.length - 1];
       const diference = (item.perUnit - last.price).toFixed(2);
       if (item.perUnit > last.price) {

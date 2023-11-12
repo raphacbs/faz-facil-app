@@ -5,14 +5,26 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "API_URL": "diycompany.online:8084"
+      },
+      "releaseChannel": "dev"
     },
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "API_URL": "diycompany.online:8084"
       }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "API_URL": "diycompany.online:8085"
+      },
+      "releaseChannel": "stating"
+    }
   },
   "submit": {
     "production": {}

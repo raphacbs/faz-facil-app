@@ -2,7 +2,7 @@
   "expo": {
     "name": "Faz Feira",
     "slug": "faz-feira",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,10 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#0099e6"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -24,15 +23,18 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.raphacbs.fazfeira",
-      "versionCode": 6
+      "versionCode": 7
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "5dee3b8c-e988-4978-80f9-0980cfcf8218"
+        "projectId": "24784022-2fe9-4f30-9f2e-0251b6b16edb"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   },
   "react-native-google-mobile-ads": {

@@ -39,6 +39,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const signIn: AuthContextType["signIn"] = useCallback(async (data) => {
     try {
       dispatch({ type: CLEAR_ERROR });
+      console.log("URL", process.env.API_URL)
       const response = await apiAuth.post(endPointLogin, data);
       const token = response.data.token;
       const payload: UserSigned = jwtDecode(token);

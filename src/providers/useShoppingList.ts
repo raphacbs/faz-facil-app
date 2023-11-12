@@ -8,6 +8,7 @@ export const fetchShoppingLists = async (
   pageParam: number,
   description?: string
 ) => {
+  console.log(api.getUri())
   const url = `${endPoint}?pageNo=${pageParam}&pageSize=10&sortBy=updatedAt&sortDir=desc${
     description ? "&description=" + description : ""
   }`;

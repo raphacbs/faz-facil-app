@@ -86,8 +86,8 @@ const ActionItem: React.FC<Props> = ({
   const getHistData = () => {
     if (item) {
       let prices = item?.product.priceHistories;
-
-      if (prices.length > 0) {
+      console.log("prices", prices)
+      if (prices != null && prices.length > 0) {
         prices = prices
           .sort(compareDate)
           .filter((x: any) =>
@@ -118,7 +118,7 @@ const ActionItem: React.FC<Props> = ({
   const verifyIfPriceUp = () => {
     let prices = item.product.priceHistories;
 
-    if (prices.length > 0) {
+    if (prices != null && prices.length > 0) {
       const last = prices[0];
       setLastHist(last);
       const diference = (item.perUnit - last.price).toFixed(2);
