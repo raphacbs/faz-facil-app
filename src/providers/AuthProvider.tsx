@@ -39,10 +39,10 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const signIn: AuthContextType["signIn"] = useCallback(async (data) => {
     try {
       dispatch({ type: CLEAR_ERROR });
-      console.log("URL", process.env.API_URL)
       const response = await apiAuth.post(endPointLogin, data);
       const token = response.data.token;
       const payload: UserSigned = jwtDecode(token);
+      console.log("payload", payload);
       payload.initials = getInitials(
         payload.firstName + " " + payload.lastName
       );
@@ -51,6 +51,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       await setToken(token);
       setIsSignedIn(true);
     } catch (error: any) {
+      console.log("error", error);
       setIsSignedIn(false);
       let message = "errors.unknown";
       if (error.message.includes("401")) {
@@ -87,13 +88,16 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   const getInitials = (fullName: string) => {
-    let rgx = new RegExp(/(\p{L}{1})\p{L}+/, "gu");
+    let rgx = new RegExp(/\b(\p{L})/gu);
 
-    let initials: RegExpMatchArray[] = [...fullName.matchAll(rgx)];
+    let initials: string[] = [];
 
-    return (
-      (initials.shift()?.[1] || "") + (initials.pop()?.[1] || "")
-    ).toUpperCase();
+    let match: RegExpMatchArray | null;
+    while ((match = rgx.exec(fullName)) !== null) {
+      initials.push(match[1].toUpperCase());
+    }
+
+    return initials.join("");
   };
 
   const value = useMemo(() => {

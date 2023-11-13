@@ -6,11 +6,6 @@ import Container from "../../components/Container";
 import ListFooter from "../../components/ListFooter";
 import FABActions from "./components/FABAction";
 import useQueryShoppingLists from "../../providers/useShoppingList";
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-} from "react-native-google-mobile-ads";
 
 const HomeScreen = () => {
   const [params, setParams] = useState({
@@ -41,9 +36,6 @@ const HomeScreen = () => {
       fetchNextPage();
     }
   };
-  const adUnitId = __DEV__
-    ? TestIds.BANNER
-    : "ca-app-pub-7365840623551942/8728556154";
 
   return (
     <VStack flex={1}>
@@ -68,16 +60,6 @@ const HomeScreen = () => {
             <FABActions />
           </VStack>
         </Container>
-      </VStack>
-      <VStack flex={0.1}>
-        <BannerAd
-          unitId={adUnitId}
-          onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        />
       </VStack>
     </VStack>
   );

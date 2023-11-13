@@ -22,8 +22,8 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.raphacbs.fazfeira",
-      "versionCode": 7
+      "versionCode": 7,
+      "package": "com.raphacbs.fazfeira"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -35,9 +35,10 @@
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
-    }
-  },
-  "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-7365840623551942~7434837546"
+    },
+    "plugins": [
+      "expo-localization",
+      "expo-router"
+    ]
   }
 }

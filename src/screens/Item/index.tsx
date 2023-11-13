@@ -16,11 +16,6 @@ import useQueryItems from "../../providers/useItemQuery";
 import ListFooter from "../../components/ListFooter";
 import { getShoppingListById } from "../../providers/useShoppingList";
 import FABItemActions from "./FABItemAction";
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-} from "react-native-google-mobile-ads";
 
 const initialParams = {
   pageNo: 1,
@@ -65,9 +60,6 @@ const ItemScreen = ({ route }: any) => {
       fetchNextPage();
     }
   };
-  const adUnitId = __DEV__
-    ? TestIds.BANNER
-    : "ca-app-pub-7365840623551942/8728556154";
 
   return (
     <VStack flex={1}>
@@ -126,16 +118,6 @@ const ItemScreen = ({ route }: any) => {
             <FABItemActions shoppingListId={shoppingList.id} />
           </VStack>
         </Container>
-      </VStack>
-      <VStack flex={0.1}>
-        <BannerAd
-          unitId={adUnitId}
-          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          onAdFailedToLoad={(error) => console.log("AdFailed to load", error)}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
       </VStack>
     </VStack>
   );

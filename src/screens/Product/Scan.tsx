@@ -163,7 +163,7 @@ const ScanScreen = ({ route }: any) => {
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
-        barCodeTypes={["ean13", "ean8", "code128"]}
+      //  barCodeTypes={["ean13", "ean8", "code128"]}
       >
         <BarcodeMask
           width={300}
